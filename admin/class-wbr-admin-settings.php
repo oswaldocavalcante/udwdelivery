@@ -26,6 +26,8 @@ class Wbr_Admin_Settings {
 	private $api_client_secret;
 	private $api_access_token;
 
+	private $api_pickup_address;
+
 	public function __construct() {
 
 		$this->api_client_id = 		get_option( 'wbr-api-client-id' );
@@ -64,5 +66,10 @@ class Wbr_Admin_Settings {
 		
 		$this->get_api_access_token();
 		require_once 'partials/wbr-admin-display-settings.php';
+	}
+
+	public function get_api_pickup_address() {
+
+		return $this->api_pickup_address;
 	}
 }

@@ -20,49 +20,30 @@
  * @subpackage Wbr/admin
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
+
+include_once 'actions/class-wbr-admin-create-quote.php';
+
 class Wbr_Admin_Delivery {
 
 	private $base_url;
 	private $customer_id;
 	private $access_token;
 
-	private $quote;
+	private $create_quote_endpoint;
 
 	public function __construct() {
 		
 		$this->base_url = 'https://api.uber.com/v1/customers/';
 		$this->customer_id = get_option( 'wbr-api-customer-id' );
 		$this->access_token = get_option( 'wbr-api-access-token' );
+
+		$this->create_quote_endpoint = '/delivery_quotes';
 	}
 
-	// TODO: Conveter em uma classe
 	public function create_quote( $pickup_address, $dropoff_address ) {
 
-		$url = $this->base_url . $this->customer_id . '/delivery_quotes';
-
-		$headers = array(
-			'Content-Type' => 'application/json',
-			'Authorization' => 'Bearer ' . $this->access_token,
-		);
-
-		$body = array(
-			'pickup_address' => $pickup_address,
-			'dropoff_address' => $dropoff_address,
-		);
-
-		$response = wp_remote_post( 
-			$url, 
-			array (
-				'headers' => $headers,
-				'body' => json_encode($body),
-			) 
-		);
-
-		$this->quote = json_decode(wp_remote_retrieve_body($response), true);
-		var_dump($this->quote);
-		update_option( 'wbr-api-quote', $this->quote );
-
-		return $this->quote;
+		$create_quote = new Wbr_Admin_Create_Quote( $this->base_url, $this->create_quote_endpoint, $this->customer_id, $this->access_token );
+		$create_quote->execute( $pickup_address, $dropoff_address );
 	}
 
 	public function display() {
