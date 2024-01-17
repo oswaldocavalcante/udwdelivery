@@ -36,7 +36,6 @@ class Wbr_Admin_Settings {
 	public function get_api_access_token() {
 
 		if( get_option( 'wbr-api-access-token' ) == '' ) {
-
 			$response = wp_remote_post( 
 				'https://auth.uber.com/oauth/v2/token', 
 				array(
@@ -52,7 +51,7 @@ class Wbr_Admin_Settings {
 				)
 			);
 
-			$body = json_decode(wp_remote_retrieve_body( $response), true);
+			$body = json_decode( wp_remote_retrieve_body($response), true );
 			$this->api_access_token = $body['access_token'];
 
 			update_option( 'wbr-api-access-token', $this->api_access_token );

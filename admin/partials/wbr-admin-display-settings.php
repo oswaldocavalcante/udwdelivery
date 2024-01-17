@@ -12,9 +12,10 @@
  * @subpackage Wbr/admin/partials
  */
 
-$client_id =        get_option('wbr-api-client-id');
-$client_secret =    get_option('wbr-api-client-secret');
-$access_token =     get_option('wbr-api-access-token');
+$customer_id =      get_option( 'wbr-api-customer-id' );
+$client_id =        get_option( 'wbr-api-client-id' );
+$client_secret =    get_option( 'wbr-api-client-secret' );
+$access_token =     get_option( 'wbr-api-access-token' );
 
 ?>
 
@@ -31,6 +32,14 @@ $access_token =     get_option('wbr-api-access-token');
             <div class="inside">
                 <table class="form-table">
                     <tbody>
+                        <tr class="mb-3">
+                            <th>
+                                <label class="form-label">Customer ID</label>
+                            </th>
+                            <td>
+                                <input type="text" name="wbr-api-customer-id" value="<?php echo $customer_id ?>" class="form-control" id="wbr-api-customer-id">
+                            </td>
+                        </tr>
                         <tr class="mb-3">
                             <th>
                                 <label class="form-label">Client ID</label>

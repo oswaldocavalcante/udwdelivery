@@ -11,6 +11,7 @@
  */
 
 include_once 'class-wbr-admin-settings.php';
+include_once 'class-wbr-admin-delivery.php';
 
 /**
  * The admin-specific functionality of the plugin.
@@ -107,6 +108,7 @@ class Wbr_Admin {
 
 	public function wbr_admin_register_settings() {
 
+		register_setting( 'woober_settings', 'wbr-api-customer-id', 	array( 'type' => 'string', 'default' => '' ) );
 		register_setting( 'woober_settings', 'wbr-api-client-id', 		array( 'type' => 'string', 'default' => '' ) );
 		register_setting( 'woober_settings', 'wbr-api-client-secret', 	array( 'type' => 'string', 'default' => '' ) );
 		register_setting( 'woober_settings', 'wbr-api-access-token', 	array( 'type' => 'string', 'default' => '' ) );
@@ -115,11 +117,22 @@ class Wbr_Admin {
 	public function wbr_admin_add_menu() {
 
 		add_menu_page( 'Woober', 'Woober', 'manage_options', 'woober', array($this, 'wbr_admin_display_settings'), '', 57 );
+		add_submenu_page( 'woober', 'Delivery', 'Delivery' ,'manage_options', 'woober-delivery', array($this, 'wbr_admin_display_delivery'), 1 );
 	}
 
 	public function wbr_admin_display_settings() {
 
 		$this->wbr_admin_settings->display();
+	}
+
+	public function wbr_admin_display_delivery() {
+
+		$admin_delivery = new Wbr_Admin_Delivery();
+		$admin_delivery->create_quote(
+			'Rua Hamilton de Barros Soutinho, 1460 - Jatiúca, Maceió - AL, 57035-690',
+			'Av. Comendador Gustavo Paiva, 3741 - Mangabeiras, Maceió - AL, 57037-285'
+		);
+		$admin_delivery->display();
 	}
 
 }
