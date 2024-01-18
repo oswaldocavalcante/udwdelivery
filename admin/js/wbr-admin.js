@@ -1,6 +1,9 @@
 (function( $ ) {
 	'use strict';
 
+	if ( typeof wbr_delivery_params === 'undefined' ) {
+		return false;
+	}
 	/**
 	 * All of the code for your admin-facing JavaScript source
 	 * should reside in this file.
@@ -28,5 +31,41 @@
 	 * Although scripts in the WordPress core, Plugins and Themes may be
 	 * practising this, we should strive to set a better example in our own work.
 	 */
+var WCOrdersTable = function () {
+
+    $(document).on('click', '#wbr-send-button:not(.disabled)', function () {
+        var $sendButton = $(this);
+        var $order_id = $sendButton.data('order-id');
+
+        $.ajax({
+			url: wbr_delivery_params.url,
+            data: {
+                order_id: $order_id,
+				action: 'woober_get_delivery_details',
+				security: wbr_delivery_params.nonce,
+            },
+            type: 'POST',
+            success: function (response) {
+                if (response.success) {
+					console.log(response.data);
+					$(this).WCBackboneModal({
+						template: 'wbr-modal-view-delivery',
+						variable: response.data
+					});
+                } else {
+                    console.error(response.data);
+                }
+            },
+            error: function (xhr, status, error) {
+				console.error(error);
+            }
+        });
+    });
+};
+
+/**
+ * Init WCOrdersTable.
+ */
+new WCOrdersTable();
 
 })( jQuery );

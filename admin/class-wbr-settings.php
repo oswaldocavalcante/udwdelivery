@@ -20,7 +20,7 @@
  * @subpackage Wbr/admin
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
-class Wbr_Admin_Settings {
+class Wbr_Settings {
 
 	private $api_client_id;
 	private $api_client_secret;
@@ -65,7 +65,7 @@ class Wbr_Admin_Settings {
 	public function display() {
 		
 		$this->get_api_access_token();
-		require_once 'partials/wbr-admin-display-settings.php';
+		require_once 'pages/wbr-admin-display-settings.php';
 	}
 
 	public function get_api_pickup_address() {

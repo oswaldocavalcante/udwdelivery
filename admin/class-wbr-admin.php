@@ -10,9 +10,6 @@
  * @subpackage Wbr/admin
  */
 
-include_once 'class-wbr-admin-settings.php';
-include_once 'class-wbr-admin-delivery.php';
-
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -23,6 +20,10 @@ include_once 'class-wbr-admin-delivery.php';
  * @subpackage Wbr/admin
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
+
+include_once 'class-wbr-settings.php';
+include_once 'class-wbr-wc-integration.php';
+
 class Wbr_Admin {
 
 	/**
@@ -44,6 +45,7 @@ class Wbr_Admin {
 	private $version;
 
 	private $wbr_admin_settings;
+	private $wbr_admin_integration;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -57,7 +59,36 @@ class Wbr_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 
-		$this->wbr_admin_settings = new Wbr_Admin_Settings();
+		if ( $this->is_woocommerce_active() ) {
+			$this->wbr_admin_settings = new Wbr_Settings();
+			$this->wbr_admin_integration = new Wbr_Wc_Integration();
+		} else {
+			add_action( 'admin_notices', array( $this, 'notice_activate_wc' ) );
+		}
+	}
+	
+	public function is_woocommerce_active() {
+
+		$active_plugins = (array) get_option( 'active_plugins', array() );
+		if ( is_multisite() ) {
+			$active_plugins = array_merge( $active_plugins, get_site_option( 'active_sitewide_plugins', array() ) );
+		}
+		if ( in_array( 'woocommerce/woocommerce.php', $active_plugins ) || array_key_exists( 'woocommerce/woocommerce.php', $active_plugins ) ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function notice_activate_wc() { ?>
+		<div class="error">
+			<p>
+				<?php
+				printf( esc_html__( 'Please install and activate %1$sWooCommerce%2$s to use Woober!' ), '<a href="' . esc_url( admin_url( 'plugin-install.php?tab=search&s=WooCommerce&plugin-search-input=Search+Plugins' ) ) . '">', '</a>' );
+				?>
+			</p>
+		</div>
+		<?php
 	}
 
 	/**
@@ -65,19 +96,7 @@ class Wbr_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Wbr_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Wbr_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
+	public function wbr_enqueue_styles() {
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/wbr-admin.css', array(), $this->version, 'all' );
 
@@ -88,25 +107,18 @@ class Wbr_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Wbr_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Wbr_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
+	public function wbr_enqueue_scripts() {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wbr-admin.js', array( 'jquery' ), $this->version, false );
+		
+		wp_localize_script( $this->plugin_name, 'wbr_delivery_params', array(
+			'url' => admin_url('admin-ajax.php'),
+			'nonce' => wp_create_nonce('wbr_delivery_nonce'),
+		));
 
 	}
 
-	public function wbr_admin_register_settings() {
+	public function wbr_register_settings() {
 
 		register_setting( 'woober_settings', 'wbr-api-customer-id', 	array( 'type' => 'string', 'default' => '' ) );
 		register_setting( 'woober_settings', 'wbr-api-client-id', 		array( 'type' => 'string', 'default' => '' ) );
@@ -114,25 +126,14 @@ class Wbr_Admin {
 		register_setting( 'woober_settings', 'wbr-api-access-token', 	array( 'type' => 'string', 'default' => '' ) );
 	}
 
-	public function wbr_admin_add_menu() {
+	public function wbr_add_menu() {
 
 		add_menu_page( 'Woober', 'Woober', 'manage_options', 'woober', array($this, 'wbr_admin_display_settings'), '', 57 );
-		add_submenu_page( 'woober', 'Delivery', 'Delivery' ,'manage_options', 'woober-delivery', array($this, 'wbr_admin_display_delivery'), 1 );
 	}
 
 	public function wbr_admin_display_settings() {
 
 		$this->wbr_admin_settings->display();
-	}
-
-	public function wbr_admin_display_delivery() {
-
-		$admin_delivery = new Wbr_Admin_Delivery();
-		$admin_delivery->create_quote(
-			'Rua Hamilton de Barros Soutinho, 1460 - Jatiúca, Maceió - AL, 57035-690',
-			'Av. Comendador Gustavo Paiva, 3741 - Mangabeiras, Maceió - AL, 57037-285'
-		);
-		$admin_delivery->display();
 	}
 
 }

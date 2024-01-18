@@ -2,3 +2,37 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+ #wbr-shipping-preview {
+    padding-bottom: 40px;
+ }
+
+.wbr-shipping-preview-block {
+    margin-bottom: 50px;
+}
+
+.wbr-shipping-preview-input-wrapper {
+    margin-bottom: 15px;
+
+}
+
+.wbr-shipping-preview-input-wrapper label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.wbr-shipping-preview-input-wrapper input {
+    width: 100%;
+}
+
+.wbr-shipping-preview-input-names-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-gap: 0px 20px;
+}
+
+.wbr-shipping-preview-input-wrapper.name {
+    /* width: 100%; */
+
+    justify-content: space-between;
+}
