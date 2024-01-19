@@ -26,7 +26,7 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 		}
 
 		public function create_shipping_method() {
-			// include_once('shipping/class-wbr-wc-shipping-method.php');
+			include_once('shipping/class-wbr-wc-shipping-method.php');
 		}
 
 		public function add_shipping_method( $methods ) {
