@@ -4,33 +4,7 @@
 	if ( typeof wbr_delivery_params === 'undefined' ) {
 		return false;
 	}
-	/**
-	 * All of the code for your admin-facing JavaScript source
-	 * should reside in this file.
-	 *
-	 * Note: It has been assumed you will write jQuery code here, so the
-	 * $ function reference has been prepared for usage within the scope
-	 * of this function.
-	 *
-	 * This enables you to define handlers, for when the DOM is ready:
-	 *
-	 * $(function() {
-	 *
-	 * });
-	 *
-	 * When the window is loaded:
-	 *
-	 * $( window ).load(function() {
-	 *
-	 * });
-	 *
-	 * ...and/or other possibilities.
-	 *
-	 * Ideally, it is not considered best practise to attach more than a
-	 * single DOM-ready or window-load handler for a particular page.
-	 * Although scripts in the WordPress core, Plugins and Themes may be
-	 * practising this, we should strive to set a better example in our own work.
-	 */
+
 var WCOrdersTable = function () {
 
 	$(document).on('click', '#wbr-button-pre-send:not(.disabled)', function () {
@@ -47,6 +21,7 @@ var WCOrdersTable = function () {
             type: 'POST',
             success: function (response) {
                 if (response.success) {
+					console.log(response.data);
 					$(this).WCBackboneModal({
 						template: 'wbr-modal-view-delivery',
 						variable: response.data
@@ -67,15 +42,23 @@ var WCOrdersTable = function () {
 
 		$.ajax({
 			url: wbr_delivery_params.url,
+			type: 'POST',
 			data: {
 				order_id: $order_id,
 				action: 'woober_create_delivery',
 				security: wbr_delivery_params.nonce,
 			},
-			type: 'POST',
+			beforeSend: function() {
+				document.getElementById('wbr-shipping-preview').innerHTML = '<div>Solicitando motorista...</div>';
+			},
 			success: function (response) {
+				document.getElementById('wbr-shipping-preview').innerHTML = '<div>Motorista encontrado...</div>';
+				console.log(response.data);
+
 				if (response.success) {
-					console.log(response.data);
+					$(this).WCBackboneModal({
+						variable: response.data
+					});
 				} else {
 					console.error(response.data);
 				}
@@ -88,9 +71,6 @@ var WCOrdersTable = function () {
 
 };
 
-/**
- * Init WCOrdersTable.
- */
 new WCOrdersTable();
 
 })( jQuery );
