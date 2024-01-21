@@ -33,3 +33,11 @@
 .wbr-shipping-preview-input-wrapper.name {
     justify-content: space-between;
 }
+
+#wbr-metabox-action {
+    text-align: right;
+}
+
+#wbr-metabox-action button {
+    float: right;
+}

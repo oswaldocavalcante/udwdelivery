@@ -2,6 +2,7 @@
 
 use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 require_once 'shipping/class-wbr-ud-api.php';
+require_once 'shipping/class-wbr-ud-manifest-item.php';
 
 if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 
@@ -19,10 +20,11 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 			add_action( 'add_meta_boxes', 							array( $this, 'add_meta_box' ) );
 			add_filter( 'manage_edit-shop_order_columns', 			array( $this, 'add_column_in_order_list' ), 20 );
 			add_action( 'manage_shop_order_posts_custom_column',	array( $this, 'order_column_fecth_data' ), 20, 2 );
-			add_action( 'wp_ajax_woober_get_delivery_details',		array( $this, 'get_delivery_details'), 20 );
 			add_action( 'admin_footer', 							array( $this, 'echo_delivery_preview_template' ) );
 			add_action( 'woocommerce_shipping_init', 				array( $this, 'create_shipping_method' ) );
 			add_filter( 'woocommerce_shipping_methods', 			array( $this, 'add_shipping_method' ) );
+			add_action( 'wp_ajax_woober_get_order',					array( $this, 'get_order_to_ajax'), 20 );
+			add_action( 'wp_ajax_woober_create_delivery',			array( $this, 'create_delivery_to_ajax'), 20 );
 		}
 
 		public function create_shipping_method() {
@@ -40,74 +42,52 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 					$screen = class_exists( '\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController' ) && wc_get_container()->get( CustomOrdersTableController::class )->custom_orders_table_usage_is_enabled()
 					? wc_get_page_screen_id( 'shop_order' )
 					: 'shop_order';
-					add_meta_box( 'wc-wbr-widget', __( 'Woober', 'wbr-widget' ), array( $this, 'render_meta_box' ),  $screen , 'side', 'high' );
+					add_meta_box( 'wc-wbr-widget', __( 'Entrega (Uber Direct)', 'wbr-widget' ), array( $this, 'render_meta_box' ),  $screen , 'side', 'high' );
 				} else {
 					$array = explode( '/', esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
 					if ( substr( end( $array ), 0, strlen( 'Woober-new.php' ) ) !== 'post-new.php') {
-						add_meta_box( 'wc-wbr-widget', __( 'Woober', 'wbr-widget' ), array( $this, 'render_meta_box' ), 'shop_order', 'side', 'high' );
+						add_meta_box( 'wc-wbr-widget', __( 'Entrega (Uber Direct)', 'wbr-widget' ), array( $this, 'render_meta_box' ), 'shop_order', 'side', 'high' );
 					}
 				}
 			}
 		}
 
-		public function render_meta_box($wc_post) {
-			// global $post;
-			// $wc_order_id            = isset($post) ? $post->ID : $wc_post->get_id();
-			// $lalamove_order_id      = lalamove_get_single_order_id( $wc_order_id );
-			// $send_again_with_status = lalamove_get_send_again_with_status();
+		public function render_meta_box( $wc_post ) {
 
-			// if ( is_null( $lalamove_order_id ) ) {
-			// 	$lalamove_order_status = null;
-			// 	$button_text           = 'Send with Uber Direct';
-			// 	$button_background     = 'background: #F16622;';
-			// 	$delivery_status_text  = lalamove_get_order_status_string( -1 );
-			// } else {
-			// 	$order_detail              = lalamove_get_order_detail( $lalamove_order_id );
-			// 	$lalamove_order_display_id = $order_detail->order_display_id ?? null;
-			// 	$lalamove_order_status     = $order_detail->order_status ?? null;
-			// 	$lalamove_share_link       = $order_detail->share_link ?? '';
+			global $post;
+			$order_id = isset($post) ? $post->ID : $wc_post->get_id();
+			$order = wc_get_order( $order_id );
+			$order_address = $order->get_shipping_address_1();
+			$wbr_shipping_status = __( 'undefined', 'woober');
 
-			// 	$delivery_status_text = lalamove_get_order_status_string( $lalamove_order_status );
+			if ( $order->meta_exists('wbr_shipping_status') ) {
+				$wbr_shipping_status = $order->get_meta('wbr_shipping_status');
+				var_dump( $wbr_shipping_status );
+			} else {
+				$wbr_shipping_status = __( 'undelivered', 'woober' );
+			}
 
-			// 	if ( is_null( $lalamove_order_status ) ) {
-			// 		$button_text       = 'Send with Uber Direct';
-			// 		$button_background = 'background: #F16622;';
-			// 	} elseif ( in_array( $lalamove_order_status, $send_again_with_status ) ) {
-			// 		$button_text       = 'Send Again with Uber Direct';
-			// 		$button_background = 'background: #F16622;';
-			// 	} else {
-			// 		$button_text       = 'View Records';
-			// 		$button_background = 'background: #1228E9;';
-			// 	}
-			// }
-
-			// echo '<div class="delivery-status-container" style="margin-top: 10px;display: flex;align-items: center;"">';
-			// echo '<label style="font-size: 14px">Delivery Status:</label>';
-			// echo '<div id="delivery-status" style="margin-left:8px; padding: 4px 8px;background: #F7F7F7;border: 1px solid #000000;border-radius: 10px;font-size: 14px">' . esc_html( $delivery_status_text ) . '</div>';
-			// echo '</div>';
-
-			// if ( ! is_null( $lalamove_order_status ) && ! in_array( $lalamove_order_status, $send_again_with_status ) ) {
-			// 	if ( ! is_null( $lalamove_order_display_id ) ) {
-			// 		echo '<div style="display: flex;align-items: center;height: 30px;margin-top: 5px;" >
-			// 				<p style="font-size: 14px">Lalamove Order: ' . $lalamove_order_display_id . '</p>
-			// 		  	  </div>';
-			// 	}
-			// 	echo '<div style="display: flex;align-items: center;height: 30px" >
-			// 			<p style="font-size: 14px"> Track Your Order: </p>
-			// 			<a rel="noopener" target="_blank" style="line-height: 1.5;font-size: 14px;margin-left: 5px;" href="' . esc_url( $lalamove_share_link ) . '"> Lalamove Sharelink </a>
-			// 		  </div>';
-			// }
-			// echo '<div class="send-with-container" style="margin-top: 10px">';
-
-			// if ( is_null( $lalamove_order_status ) || in_array( $lalamove_order_status, $send_again_with_status ) ) {
-			// 	$cta_button_href = lalamove_get_current_admin_url() . '?page=Lalamove&sub-page=place-order&id=' . $wc_order_id;
-			// } else {
-			// 	$cta_button_href = Lalamove_App::$wc_llm_web_app_host . '/orders/' . $lalamove_order_id;
-			// }
-
-			// echo '<a href="' . esc_html( $cta_button_href ) . '"  target="_blank" class="button button-send-with" style="font-weight: bold;text-align: center;color: #FFFFFF;font-size: 14px;border-radius: 10px;display: block;line-height: 40px;height: 40px;' . esc_html( $button_background ) . ';" >
-			// 	' . esc_html( $button_text ) . '</a>';
-			// echo '</div>';
+			?>
+				<div id="wbr-metabox-container">
+					<div id="wbr-metabox-status">
+						<p>
+							<? echo sprintf(__('Status da entrega: %s', 'woober'), $wbr_shipping_status ); ?>
+						</p>
+					</div>
+					<div id="wbr-metabox-quote">
+						<p>
+							<? 
+								$wbr_shipping_quote = $this->wbr_ud_api->create_quote($order_address);
+								$wbr_shipping_price = wc_price( $wbr_shipping_quote['fee'] / 100 );
+								echo sprintf(__('Custo da entrega: %s', 'woober'), $wbr_shipping_price );
+							?>
+						</p>
+					</div>
+					<div id="wbr-metabox-action">
+						<a class="button button-primary" id="wbr-button-pre-send" data-order-id="<?php echo $order_id ?>" href="#">Enviar</a>
+					</div>
+				</div>
+			<?
 		}
 
 		function add_column_in_order_list( $columns ) {
@@ -134,16 +114,16 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 				echo ('
 					<a 
 						href="' . esc_html( '#' ) . '" 
-						id="wbr-send-button"
+						id="wbr-button-pre-send"
 						data-order-id="' . $order_id . '"
 						class="button action">' . 
-						esc_html( __('Enviar (R$ ' . $quote_fee . ')') ) .
+						sprintf( 'Enviar (%s)', wc_price($quote_fee) ) .
 					'</a>
 				');
 			}
 		}
 
-		public function get_delivery_details() {
+		public function get_order_to_ajax() {
 			
 			$order_id = $_POST['order_id'];
 			$order = wc_get_order( $order_id );
@@ -151,10 +131,10 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 		}
 
 		public function echo_delivery_preview_template(): void {
-			echo $this->get_delivery_preview_template();
+			echo $this->render_delivery_preview_template();
 		}
 
-		public function get_delivery_preview_template(): string {
+		public function render_delivery_preview_template(): string {
 			ob_start();
 			?>
 			<script type="text/template" id="tmpl-wbr-modal-view-delivery">
@@ -225,7 +205,7 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 							<footer>
 								<div class="inner">
 									<h3 style="float: left;"><?php echo esc_html( sprintf( __( 'Custo do envio: R$ %s', 'woober' ), '{{ data.shipping_total }}' ) ); ?></h3>
-									<a class="button button-primary button-large inner" aria-label="<?php esc_attr_e( 'Enviar', 'woober' ); ?>" href="<?php echo '#'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" ><?php esc_html_e( 'Enviar', 'woober' ); ?></a>
+									<a id="wbr-button-create-delivery" data-order-id="{{data.number}}" class="button button-primary button-large inner" aria-label="<?php esc_attr_e( 'Enviar', 'woober' ); ?>" href="<?php echo '#'; ?>" ><?php esc_html_e( 'Enviar', 'woober' ); ?></a>
 								</div>
 							</footer>
 						</section>
@@ -238,6 +218,27 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 			$html = ob_get_clean();
 
 			return $html;
+		}
+
+		public function create_delivery_to_ajax() {
+
+			$order_id = $_POST['order_id'];
+			$order = wc_get_order( $order_id );
+
+			$dropoff_name 			= $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name();
+			$dropoff_address 		= $order->get_shipping_address_1() . ' ' . $order->get_shipping_postcode();
+			$dropoff_notes 			= $order->get_shipping_address_2();
+			$dropoff_phone_number 	= $order->get_shipping_phone();
+			$manifest_items 		= array();
+
+			foreach ( $order->get_items() as $item ) {
+				$manifest_items[] = new ManifestItem($item->get_name(), $item->get_quantity());
+			}
+
+			$ud_delivery = $this->wbr_ud_api->create_delivery( $order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items );
+			
+			wp_send_json_success( $ud_delivery );
+
 		}
 
 	}

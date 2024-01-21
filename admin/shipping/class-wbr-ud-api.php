@@ -65,8 +65,35 @@ class Wbr_Ud_Api {
 		return $quote;
 	}
 
-	public function create_delivery() {
+	public function create_delivery( $order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items = array() ) {
 
+		$headers = array(
+			'Content-Type' => 'application/json',
+			'Authorization' => 'Bearer ' . $this->access_token,
+		);
+
+		$body = array(
+			'pickup_name' 			=> get_bloginfo('name'),
+			'pickup_address' 		=> get_option('woocommerce_store_address'),
+			'pickup_phone_number' 	=> '+558232355224',
+			'dropoff_name' 			=> $dropoff_name,
+			'dropoff_address' 		=> $dropoff_address,
+			'dropoff_notes'			=> $dropoff_notes,
+			'dropoff_phone_number' 	=> '+55' . $dropoff_phone_number,
+			'manifest_items' 		=> $manifest_items,
+			'external_id' 			=> $order_id,
+		);
+
+		$response = wp_remote_post( 
+			$this->endpoint_create_delivery, 
+			array (
+				'headers' => $headers,
+				'body' => json_encode($body),
+			) 
+		);
+
+		$delivery = json_decode(wp_remote_retrieve_body($response));
+		return $delivery;
 	}
 
 	public function display() {
