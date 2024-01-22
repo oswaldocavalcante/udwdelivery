@@ -23,7 +23,6 @@ var WCOrdersTable = function () {
                 if (response.success) {
 					// Selects which template to display
 					if(response.data.dropoff) {
-						console.log(response.data);
 						$(this).WCBackboneModal({
 							template: 'wbr-modal-delivery',
 							variable: response.data
@@ -57,17 +56,17 @@ var WCOrdersTable = function () {
 				security: wbr_delivery_params.nonce,
 			},
 			beforeSend: function() {
-				document.getElementById('wbr-shipping-preview').innerHTML = '<div>Solicitando motorista...</div>';
+				document.getElementById('wbr-quote').innerHTML = '<div>Solicitando motorista...</div>';
 			},
 			success: function (response) {
-				document.getElementById('wbr-shipping-preview').innerHTML = '<div>Motorista encontrado...</div>';
-				console.log(response.data);
-
 				if (response.success) {
+					document.getElementById('wbr-modal-quote-container').remove();
 					$(this).WCBackboneModal({
+						template: 'wbr-modal-delivery',
 						variable: response.data
 					});
-					console.log(response.data);
+					document.getElementById('wbr-button-pre-send').innerHTML = 'Ver envio';
+					document.getElementById('wbr-button-create-delivery').remove();
 				} else {
 					console.error(response.data);
 				}

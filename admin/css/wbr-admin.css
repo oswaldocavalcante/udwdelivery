@@ -3,7 +3,7 @@
  * included in this file.
  */
 
- #wbr-shipping-preview {
+ #wbr-quote-container, #wbr-delivery-container {
     padding-bottom: 40px;
  }
 

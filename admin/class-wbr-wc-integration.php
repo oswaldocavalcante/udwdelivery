@@ -26,7 +26,6 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 			add_action( 'wp_ajax_woober_get_data',					array( $this, 'ajax_get_data'), 20 );
 			add_action( 'wp_ajax_woober_create_delivery',			array( $this, 'ajax_create_delivery'), 20 );
 			add_action( 'admin_footer', 							array( $this, 'add_modal_templates' ) );
-
 		}
 
 		public function create_shipping_method() {
@@ -54,21 +53,25 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 		function add_order_list_column_buttons( $column, $order_id ) {
 			if ( $column === 'wbr-shipping' ) {
 
-				$wc_order = wc_get_order( $order_id );
-				$shipping_address = $wc_order->get_shipping_address_1() . ', ' . $wc_order->get_shipping_city() . ', ' . $wc_order->get_shipping_postcode();
+				$order = wc_get_order( $order_id );
+				$shipping_address = $order->get_shipping_address_1() . ', ' . $order->get_shipping_city() . ', ' . $order->get_shipping_postcode();
 				$quote = $this->wbr_ud_api->create_quote( $shipping_address );
 				$quote_fee = $quote['fee'] / 100;
 
-				echo '<a 
-					href="' . esc_html( '#' ) . '" 
-					id="wbr-button-pre-send"
-					data-order-id="' . $order_id . '"
-					class="button action"
-				>';
-				if ( $wc_order->get_meta('_wbr_delivery_id') )
-					echo __( 'Ver envio', 'woober');
-				else echo sprintf( 'Enviar (%s)', wc_price($quote_fee) );
-				echo '</a>';
+				if ( $order->get_shipping_total() == 0 ) {
+					echo $order->get_shipping_method();
+				} else {
+					echo '<a 
+						href="' . esc_html( '#' ) . '" 
+						id="wbr-button-pre-send"
+						data-order-id="' . $order_id . '"
+						class="button action"
+					>';
+					if ( $order->get_meta('_wbr_delivery_id') )
+						echo __( 'Ver envio', 'woober');
+					else echo sprintf( 'Enviar (%s)', wc_price($quote_fee) );
+					echo '</a>';
+				}
 			}
 		}
 
@@ -140,6 +143,31 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 			}
 		}
 
+		public function ajax_create_delivery() {
+
+			$order_id = $_POST['order_id'];
+			$order = wc_get_order( $order_id );
+
+			$dropoff_name 			= $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name();
+			$dropoff_address 		= $order->get_shipping_address_1() . ', ' . $order->get_shipping_postcode();
+			$dropoff_notes 			= $order->get_shipping_address_2();
+			$dropoff_phone_number 	= $order->get_billing_phone();
+
+			$manifest_items 		= array();
+			foreach ( $order->get_items() as $item ) {
+				$manifest_items[] = new ManifestItem($item->get_name(), $item->get_quantity());
+			}
+
+			$ud_delivery = $this->wbr_ud_api->create_delivery( $order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items );
+			
+			if( !$order->meta_exists('_wbr_delivery_id') ) {
+				$order->add_meta_data( '_wbr_delivery_id', $ud_delivery->id );
+				$order->save_meta_data();
+			}
+
+			wp_send_json_success( $ud_delivery );
+		}
+
 		public function add_modal_templates(): void {
 			echo $this->render_modal_quote();
 			echo $this->render_modal_delivery();
@@ -149,88 +177,90 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 			ob_start();
 			?>
 			<script type="text/template" id="tmpl-wbr-modal-quote">
-				<div class="wc-backbone-modal">
-					<div class="wc-backbone-modal-content">
-						<section class="wc-backbone-modal-main" role="main">
-							
-							<header class="wc-backbone-modal-header">
-								<mark class="order-status status-{{ data.status }}" style="float: right; margin-right: 54px"><span>{{ data.status }}</span></mark>
-								<?php /* translators: %s: order ID */ ?>
-								<h1><?php echo esc_html( sprintf( __( 'Envio do pedido #%s', 'woober' ), '{{ data.number }}' ) ); ?></h1>
-								<button class="modal-close modal-close-link dashicons dashicons-no-alt">
-									<span class="screen-reader-text"><?php esc_html_e( 'Close modal panel', 'woocommerce' ); ?></span>
-								</button>
-							</header>
+				<div id="wbr-modal-quote-container">
+					<div class="wc-backbone-modal">
+						<div class="wc-backbone-modal-content">
+							<section class="wc-backbone-modal-main" role="main">
+								
+								<header class="wc-backbone-modal-header">
+									<mark class="order-status status-{{ data.status }}" style="float: right; margin-right: 54px"><span>{{ data.status }}</span></mark>
+									<?php /* translators: %s: order ID */ ?>
+									<h1><?php echo esc_html( sprintf( __( 'Envio do pedido #%s', 'woober' ), '{{ data.number }}' ) ); ?></h1>
+									<button class="modal-close modal-close-link dashicons dashicons-no-alt">
+										<span class="screen-reader-text"><?php esc_html_e( 'Close modal panel', 'woocommerce' ); ?></span>
+									</button>
+								</header>
 
-							<article>
-								<# if ( data.shipping ) { #>
-								<div id="wbr-shipping-preview">
+								<article>
+									<div id="wbr-quote-container">
+										<# if ( data.shipping ) { #>
 
-									<div id="wbr-shipping-preview-address" class="wbr-shipping-preview-block">
-										<h2><?php esc_html_e( 'Informações do envio', 'woober' ); ?></h2>
-										<div class="wbr-shipping-preview-input-wrapper">
-											<label><?php echo  __( 'Enderço de entrega', 'woober' ) ?></label>
-											<input type="text" class="short wbr-shipping-input-address-1" value="{{{ data.shipping.address_1 }}}" disabled/>
-										</div>
-										<div class="wbr-shipping-preview-input-wrapper">
-											<label><?php echo  __( 'Complemento', 'woober' ) ?></label>
-											<input type="text" class="wbr-shipping-input-address-2" value="{{{ data.shipping.address_2 }}}" disabled/>
-										</div>
-									</div>
-
-									<div id="wbr-shipping-preview-buyer" class="wbr-shipping-preview-block">
-										<h2><?php esc_html_e( 'Informações do destinatário', 'woober' ); ?></h2>
-										<div class="wbr-shipping-preview-input-names-container">
-											<div class="wbr-shipping-preview-input-wrapper name">
-												<label><?php esc_html_e( 'Nome', 'woober' ); ?></label>
-												<input type="text" class="wbr-shipping-input-first_name" value="{{{ data.shipping.first_name }}}" disabled/>
+										<div id="wbr-shipping-preview-address" class="wbr-shipping-preview-block">
+											<h2><?php esc_html_e( 'Informações do envio', 'woober' ); ?></h2>
+											<div class="wbr-shipping-preview-input-wrapper">
+												<label><?php echo  __( 'Enderço de entrega', 'woober' ) ?></label>
+												<input type="text" class="short wbr-shipping-input-address-1" value="{{{ data.shipping.address_1 }}}" disabled/>
 											</div>
-
-											<div class="wbr-shipping-preview-input-wrapper name">
-												<label><?php esc_html_e( 'Sobrenome', 'woober' ); ?></label>
-												<input type="text" class="wbr-shipping-input-last_name" value="{{{ data.shipping.last_name }}}" disabled/>
+											<div class="wbr-shipping-preview-input-wrapper">
+												<label><?php echo  __( 'Complemento', 'woober' ) ?></label>
+												<input type="text" class="wbr-shipping-input-address-2" value="{{{ data.shipping.address_2 }}}" disabled/>
 											</div>
 										</div>
 
-										<div class="wbr-shipping-preview-input-wrapper">
-											<label><?php esc_html_e( 'Telefone', 'woober' ); ?></label>
-											<input type="text" class="wbr-shipping-input-phone" value="{{{ data.shipping.phone }}}" disabled/>
+										<div id="wbr-shipping-preview-buyer" class="wbr-shipping-preview-block">
+											<h2><?php esc_html_e( 'Informações do destinatário', 'woober' ); ?></h2>
+											<div class="wbr-shipping-preview-input-names-container">
+												<div class="wbr-shipping-preview-input-wrapper name">
+													<label><?php esc_html_e( 'Nome', 'woober' ); ?></label>
+													<input type="text" class="wbr-shipping-input-first_name" value="{{{ data.shipping.first_name }}}" disabled/>
+												</div>
+
+												<div class="wbr-shipping-preview-input-wrapper name">
+													<label><?php esc_html_e( 'Sobrenome', 'woober' ); ?></label>
+													<input type="text" class="wbr-shipping-input-last_name" value="{{{ data.shipping.last_name }}}" disabled/>
+												</div>
+											</div>
+
+											<div class="wbr-shipping-preview-input-wrapper">
+												<label><?php esc_html_e( 'Telefone', 'woober' ); ?></label>
+												<input type="text" class="wbr-shipping-input-phone" value="{{{ data.shipping.phone }}}" disabled/>
+											</div>
+
+											<# if ( data.customer_note ) { #>
+											<div class="wbr-shipping-preview-input-wrapper">
+												<div class="wc-order-preview-note">
+													<strong><?php esc_html_e( 'Observações', 'woober' ); ?></strong>
+													{{ data.customer_note }}
+												</div>
+											</div>
+											<# } #>
 										</div>
 
-										<# if ( data.customer_note ) { #>
-										<div class="wbr-shipping-preview-input-wrapper">
-											<div class="wc-order-preview-note">
-												<strong><?php esc_html_e( 'Observações', 'woober' ); ?></strong>
-												{{ data.customer_note }}
+										<div id="wbr-shipping-preview-package" class="wbr-shipping-preview-block">
+											<h2><?php esc_html_e( 'Informações do pacote', 'woober' ); ?></h2>
+											<div class="wbr-shipping-preview-input-wrapper">
+												<label><?php esc_html_e( 'ID do Pedido', 'woober' ); ?></label>
+												<input type="text" class="wbr-shipping-order-id" value="{{{ data.number }}}" disabled />
 											</div>
 										</div>
+
 										<# } #>
 									</div>
+								</article>
 
-									<div id="wbr-shipping-preview-package" class="wbr-shipping-preview-block">
-										<h2><?php esc_html_e( 'Informações do pacote', 'woober' ); ?></h2>
-										<div class="wbr-shipping-preview-input-wrapper">
-											<label><?php esc_html_e( 'ID do Pedido', 'woober' ); ?></label>
-											<input type="text" class="wbr-shipping-order-id" value="{{{ data.number }}}" disabled />
-										</div>
+								<footer>
+									<div class="inner">
+										<h3 style="float: left;">
+										<?php echo 'Custo do envio: R$ ' . '{{data.shipping_total}}'; ?></h3>
+										<a id="wbr-button-create-delivery" data-order-id="{{data.number}}" class="button button-primary button-large inner" aria-label="<?php esc_attr_e( 'Solicitar entregador', 'woober' ); ?>" href="<?php echo '#'; ?>" ><?php esc_html_e( 'Solicitar entregador', 'woober' ); ?></a>
 									</div>
+								</footer>
 
-								</div>
-								<# } #>
-							</article>
-
-							<footer>
-								<div class="inner">
-									<h3 style="float: left;">
-									<?php echo 'Custo do envio: R$ ' . '{{data.shipping_total}}'; ?></h3>
-									<a id="wbr-button-create-delivery" data-order-id="{{data.number}}" class="button button-primary button-large inner" aria-label="<?php esc_attr_e( 'Solicitar entregador', 'woober' ); ?>" href="<?php echo '#'; ?>" ><?php esc_html_e( 'Solicitar entregador', 'woober' ); ?></a>
-								</div>
-							</footer>
-
-						</section>
+							</section>
+						</div>
 					</div>
+					<div class="wc-backbone-modal-backdrop modal-close"></div>
 				</div>
-				<div class="wc-backbone-modal-backdrop modal-close"></div>
 			</script>
 			<?php
 
@@ -259,7 +289,7 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 							</header>
 
 							<article>
-								<div id="wbr-delivery-info">
+								<div id="wbr-delivery-container">
 
 									<div id="wbr-delivery-dropoff" class="wbr-delivery-block">
 										<h2><?php esc_html_e( 'Informações do destinatário', 'woober' ); ?></h2>
@@ -336,6 +366,7 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 											<input type="text" class="wbr-shipping-order-id" value="{{{ data.tracking_url }}}" disabled />
 										</div>
 									</div>
+									
 									<# } #>
 
 								</div>
@@ -345,7 +376,8 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 								<# if( data.fee ) { #>
 								<div class="inner">
 									<h3 style="float: left;">
-										<?php echo 'Custo do envio: R$ ' . '{{data.fee}}'; ?>
+										<?php 
+										echo 'Custo do envio: R$ ' . '{{data.fee}}';										?>
 									</h3>
 									<!-- <a id="wbr-button-create-delivery" data-order-id="{{data.number}}" class="button button-primary button-large inner" aria-label="<?php esc_attr_e( 'Solicitar entregador', 'woober' ); ?>" href="<?php echo '#'; ?>" ><?php esc_html_e( 'Solicitar entregador', 'woober' ); ?></a> -->
 								</div>
@@ -362,32 +394,6 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 			$html = ob_get_clean();
 
 			return $html;
-		}
-
-		public function ajax_create_delivery() {
-
-			$order_id = $_POST['order_id'];
-			$order = wc_get_order( $order_id );
-
-			$dropoff_name 			= $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name();
-			$dropoff_address 		= $order->get_shipping_address_1() . ', ' . $order->get_shipping_postcode();
-			$dropoff_notes 			= $order->get_shipping_address_2();
-			$dropoff_phone_number 	= $order->get_billing_phone();
-			error_log($dropoff_phone_number);
-
-			$manifest_items 		= array();
-			foreach ( $order->get_items() as $item ) {
-				$manifest_items[] = new ManifestItem($item->get_name(), $item->get_quantity());
-			}
-
-			$ud_delivery = $this->wbr_ud_api->create_delivery( $order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items );
-			
-			if( !$order->meta_exists('_wbr_delivery_id') ) {
-				$order->add_meta_data( '_wbr_delivery_id', $ud_delivery->id );
-				$order->save_meta_data();
-			}
-
-			wp_send_json_success( $ud_delivery );
 		}
 	}
 }
