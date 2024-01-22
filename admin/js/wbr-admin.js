@@ -15,17 +15,25 @@ var WCOrdersTable = function () {
 			url: wbr_delivery_params.url,
             data: {
                 order_id: $order_id,
-				action: 'woober_get_order',
+				action: 'woober_get_data',
 				security: wbr_delivery_params.nonce,
             },
             type: 'POST',
             success: function (response) {
                 if (response.success) {
-					console.log(response.data);
-					$(this).WCBackboneModal({
-						template: 'wbr-modal-view-delivery',
-						variable: response.data
-					});
+					// Selects which template to display
+					if(response.data.dropoff) {
+						console.log(response.data);
+						$(this).WCBackboneModal({
+							template: 'wbr-modal-delivery',
+							variable: response.data
+						});
+					} else {
+						$(this).WCBackboneModal({
+							template: 'wbr-modal-quote',
+							variable: response.data
+						});
+					}
                 } else {
                     console.error(response.data);
                 }
@@ -59,6 +67,7 @@ var WCOrdersTable = function () {
 					$(this).WCBackboneModal({
 						variable: response.data
 					});
+					console.log(response.data);
 				} else {
 					console.error(response.data);
 				}

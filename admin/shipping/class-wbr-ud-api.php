@@ -39,6 +39,7 @@ class Wbr_Ud_Api {
 
 		$this->endpoint_create_quote = $this->base_url . $this->customer_id . '/delivery_quotes';
 		$this->endpoint_create_delivery = $this->base_url . $this->customer_id . '/deliveries';
+		$this->endpoint_get_delivery = $this->base_url . $this->customer_id . '/deliveries/';
 	}
 
 	public function create_quote( $dropoff_address, $pickup_address = '' ) {
@@ -90,6 +91,24 @@ class Wbr_Ud_Api {
 				'headers' => $headers,
 				'body' => json_encode($body),
 			) 
+		);
+
+		$delivery = json_decode(wp_remote_retrieve_body($response));
+		return $delivery;
+	}
+
+	public function get_delivery( $delivery_id ) {
+
+		$headers = array(
+			'Content-Type' => 'application/json',
+			'Authorization' => 'Bearer ' . $this->access_token,
+		);
+
+		$response = wp_remote_get( 
+			$this->endpoint_get_delivery . $delivery_id, 
+			array (
+				'headers' => $headers,
+			)
 		);
 
 		$delivery = json_decode(wp_remote_retrieve_body($response));
