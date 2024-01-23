@@ -3,6 +3,10 @@
  * included in this file.
  */
 
+ #wbr_settings {
+    margin-top: 40px;
+ }
+
  #wbr-quote-container, #wbr-delivery-container {
     padding-bottom: 40px;
  }

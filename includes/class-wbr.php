@@ -146,11 +146,11 @@ class Wbr {
 
 		$plugin_admin = new Wbr_Admin( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'wbr_enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'wbr_enqueue_scripts' );
+		$this->loader->add_action( 'admin_enqueue_scripts', 	$plugin_admin, 'wbr_enqueue_styles' );
+		$this->loader->add_action( 'admin_enqueue_scripts', 	$plugin_admin, 'wbr_enqueue_scripts' );
 
-		$this->loader->add_action( 'admin_init', 		$plugin_admin, 'wbr_register_settings');
-		$this->loader->add_action( 'admin_menu', 		$plugin_admin, 'wbr_add_menu');
+		$this->loader->add_action( 'admin_init', 				$plugin_admin, 'wbr_register_settings');
+		$this->loader->add_filter( 'woocommerce_integrations', 	$plugin_admin, 'wbr_add_integration');
 	}
 
 	/**

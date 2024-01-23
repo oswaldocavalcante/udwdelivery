@@ -7,22 +7,83 @@ require_once 'shipping/class-wbr-ud-manifest-item.php';
 
 if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 
-	class Wbr_Wc_Integration {
+	class Wbr_Wc_Integration extends WC_Integration {
 
 		private $wbr_ud_api;
 
 		public function __construct() {
 
+            $this->id = 'woober';
+            $this->method_title = __('Woober');
+            $this->method_description = __('Integrates Uber Direct delivery for Woocommerce.', 'woober');
+
+            $this->init_form_fields();
+            $this->init_settings();
+
 			$this->wbr_ud_api = new Wbr_Ud_Api();
 			$this->define_woocommerce_hooks();
 		}
+
+		public function init_form_fields() {
+			$this->form_fields = array(
+				'wbr-api-customer-id' => array(
+					'title'       => __( 'Customer ID', 'woober' ),
+					'type'        => 'text',
+					'description' => __( 'Your Customer (Business ID) in Uber Direct settings.', 'woober' ),
+					'default'     => '',
+				),
+				'wbr-api-client-id' => array(
+					'title'       => __( 'Client ID', 'woober' ),
+					'type'        => 'text',
+					'description' => __( 'Your Client ID in Uber Direct settings.', 'woober' ),
+					'default'     => '',
+				),
+				'wbr-api-client-secret' => array(
+					'title'       => __( 'Client Secret', 'woober' ),
+					'type'        => 'text',
+					'description' => __( 'Your Client Secret in Uber Direct settings.', 'woober' ),
+					'default'     => '',
+				),
+				'wbr-api-access-token' => array(
+					'title'       => __( 'Access Token', 'woober' ),
+					'type'        => 'text',
+					'description' => __( 'Your generated Access Token to grant acess to Uber Direct API.', 'woober' ),
+					'default'     => '',
+				),
+			);
+		}
+
+		public function admin_options() {
+
+			$this->wbr_ud_api->get_access_token();
+
+			$client_id = $this->get_option('wbr-api-client-id');
+			$client_secret = $this->get_option('wbr-api-client-secret');
+			$access_token = $this->get_option('wbr-api-access-token');
+
+			update_option( 'wbr-api-client-id', $client_id );
+			update_option( 'wbr-api-client-secret', $client_secret );
+
+			echo '<h2>' . esc_html( $this->get_method_title() ) . '</h2>';
+			echo wp_kses_post( wpautop( $this->get_method_description() ) );
+			echo sprintf(__('See how to create your account and get your credentials in <a href="https://developer.uber.com/docs/deliveries/get-started" target="blank">%s</a>', 'woober'), 'https://developer.uber.com/docs/deliveries/get-started');
+			echo '<div id="wbr_settings">';
+			echo '<div><input type="hidden" name="section" value="' . esc_attr( $this->id ) . '" /></div>';
+			echo '<table class="form-table">' . $this->generate_settings_html( $this->get_form_fields(), false ) . '</table>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '</div>';
+
+			if ( $access_token == '' && ( $client_id || $client_secret != '' ) ) {
+				echo 'Credenciais inválidas';
+			}
+		}
 		
 		private function define_woocommerce_hooks() {
-			add_action( 'add_meta_boxes', 							array( $this, 'add_meta_box' ) );
-			add_filter( 'manage_edit-shop_order_columns', 			array( $this, 'add_order_list_column' ), 20 );
-			add_action( 'manage_shop_order_posts_custom_column',	array( $this, 'add_order_list_column_buttons' ), 20, 2 );
+			add_action(	'woocommerce_update_options_integration_' . $this->id, array($this, 'process_admin_options'));
 			add_action( 'woocommerce_shipping_init', 				array( $this, 'create_shipping_method' ) );
 			add_filter( 'woocommerce_shipping_methods', 			array( $this, 'add_shipping_method' ) );
+			add_filter( 'manage_edit-shop_order_columns', 			array( $this, 'add_order_list_column' ), 20 );
+			add_action( 'manage_shop_order_posts_custom_column',	array( $this, 'add_order_list_column_buttons' ), 20, 2 );
+			add_action( 'add_meta_boxes', 							array( $this, 'add_meta_box' ) );
 			add_action( 'wp_ajax_woober_get_data',					array( $this, 'ajax_get_data'), 20 );
 			add_action( 'wp_ajax_woober_create_delivery',			array( $this, 'ajax_create_delivery'), 20 );
 			add_action( 'admin_footer', 							array( $this, 'add_modal_templates' ) );
@@ -54,10 +115,8 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 			if ( $column === 'wbr-shipping' ) {
 
 				$order = wc_get_order( $order_id );
-				$shipping_address = $order->get_shipping_address_1() . ', ' . $order->get_shipping_city() . ', ' . $order->get_shipping_postcode();
-				$quote = $this->wbr_ud_api->create_quote( $shipping_address );
-				$quote_fee = $quote['fee'] / 100;
 
+				// Checks if the order isnt set to delivery
 				if ( $order->get_shipping_total() == 0 ) {
 					echo $order->get_shipping_method();
 				} else {
@@ -67,9 +126,15 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 						data-order-id="' . $order_id . '"
 						class="button action"
 					>';
-					if ( $order->get_meta('_wbr_delivery_id') )
+					// Checks if the order has not been sended
+					if( !$order->meta_exists('_wbr_delivery_id') ) {
+						$shipping_address = $order->get_shipping_address_1() . ', ' . $order->get_shipping_city() . ', ' . $order->get_shipping_postcode();
+						$quote = $this->wbr_ud_api->create_quote( $shipping_address );
+						$quote_fee = $quote['fee'] / 100;
+						echo sprintf( 'Enviar (%s)', wc_price($quote_fee) );
+					} else {
 						echo __( 'Ver envio', 'woober');
-					else echo sprintf( 'Enviar (%s)', wc_price($quote_fee) );
+					}
 					echo '</a>';
 				}
 			}
@@ -101,7 +166,6 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 
 			if ( $order->meta_exists('wbr_shipping_status') ) {
 				$wbr_shipping_status = $order->get_meta('wbr_shipping_status');
-				var_dump( $wbr_shipping_status );
 			} else {
 				$wbr_shipping_status = __( 'undelivered', 'woober' );
 			}

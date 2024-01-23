@@ -21,9 +21,6 @@
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
 
-include_once 'class-wbr-settings.php';
-include_once 'class-wbr-wc-integration.php';
-
 class Wbr_Admin {
 
 	/**
@@ -45,7 +42,7 @@ class Wbr_Admin {
 	private $version;
 
 	private $wbr_admin_settings;
-	private $wbr_admin_integration;
+	// private $wbr_admin_integration;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -58,13 +55,6 @@ class Wbr_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
-		if ( $this->is_woocommerce_active() ) {
-			$this->wbr_admin_settings = new Wbr_Settings();
-			$this->wbr_admin_integration = new Wbr_Wc_Integration();
-		} else {
-			add_action( 'admin_notices', array( $this, 'notice_activate_wc' ) );
-		}
 	}
 	
 	public function is_woocommerce_active() {
@@ -79,6 +69,20 @@ class Wbr_Admin {
 			return false;
 		}
 	}
+
+	public function wbr_add_integration() {
+
+		if ( $this->is_woocommerce_active() ) {
+			include_once 'class-wbr-wc-integration.php';
+
+			$integrations[] = 'Wbr_Wc_Integration';
+			return $integrations;
+		} else {
+			add_action( 'admin_notices', array( $this, 'notice_activate_wc' ) );
+		}
+
+		return null;
+	}	
 
 	public function notice_activate_wc() { ?>
 		<div class="error">
@@ -123,17 +127,6 @@ class Wbr_Admin {
 		register_setting( 'woober_settings', 'wbr-api-customer-id', 	array( 'type' => 'string', 'default' => '' ) );
 		register_setting( 'woober_settings', 'wbr-api-client-id', 		array( 'type' => 'string', 'default' => '' ) );
 		register_setting( 'woober_settings', 'wbr-api-client-secret', 	array( 'type' => 'string', 'default' => '' ) );
-		register_setting( 'woober_settings', 'wbr-api-access-token', 	array( 'type' => 'string', 'default' => '' ) );
-	}
-
-	public function wbr_add_menu() {
-
-		add_menu_page( 'Woober', 'Woober', 'manage_options', 'woober', array($this, 'wbr_admin_display_settings'), '', 57 );
-	}
-
-	public function wbr_admin_display_settings() {
-
-		$this->wbr_admin_settings->display();
 	}
 
 }
