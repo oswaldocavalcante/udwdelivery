@@ -27,42 +27,40 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 		public function init_form_fields() {
 			$this->form_fields = array(
 				'wbr-api-customer-id' => array(
-					'title'       => __( 'Customer ID', 'woober' ),
-					'type'        => 'text',
-					'description' => __( 'Your Customer (Business ID) in Uber Direct settings.', 'woober' ),
-					'default'     => '',
+					'title'       	=> __( 'Customer ID', 'woober' ),
+					'type'        	=> 'text',
+					'description' 	=> __( 'Your Customer (Business ID) in Uber Direct settings.', 'woober' ),
+					'default'     	=> '',
 				),
 				'wbr-api-client-id' => array(
-					'title'       => __( 'Client ID', 'woober' ),
-					'type'        => 'text',
-					'description' => __( 'Your Client ID in Uber Direct settings.', 'woober' ),
-					'default'     => '',
+					'title'       	=> __( 'Client ID', 'woober' ),
+					'type'        	=> 'text',
+					'description' 	=> __( 'Your Client ID in Uber Direct settings.', 'woober' ),
+					'default'     	=> '',
 				),
 				'wbr-api-client-secret' => array(
-					'title'       => __( 'Client Secret', 'woober' ),
-					'type'        => 'text',
-					'description' => __( 'Your Client Secret in Uber Direct settings.', 'woober' ),
-					'default'     => '',
+					'title'       	=> __( 'Client Secret', 'woober' ),
+					'type'        	=> 'text',
+					'description' 	=> __( 'Your Client Secret in Uber Direct settings.', 'woober' ),
+					'default'     	=> '',
 				),
 				'wbr-api-access-token' => array(
-					'title'       => __( 'Access Token', 'woober' ),
-					'type'        => 'text',
-					'description' => __( 'Your generated Access Token to grant acess to Uber Direct API.', 'woober' ),
-					'default'     => '',
+					'title'       	=> __( 'Access Token', 'woober' ),
+					'type'        	=> 'text',
+					'description' 	=> __( 'Your generated Access Token to grant acess to Uber Direct API.', 'woober' ),
+					'default'     	=> '',
+					'disabled'		=> true,
 				),
 			);
 		}
 
 		public function admin_options() {
+			
+			update_option( 'wbr-api-customer-id', 	$this->get_option('wbr-api-customer-id') );
+			update_option( 'wbr-api-client-id', 	$this->get_option('wbr-api-client-id') );
+			update_option( 'wbr-api-client-secret', $this->get_option('wbr-api-client-secret') );
 
 			$this->wbr_ud_api->get_access_token();
-
-			$client_id = $this->get_option('wbr-api-client-id');
-			$client_secret = $this->get_option('wbr-api-client-secret');
-			$access_token = $this->get_option('wbr-api-access-token');
-
-			update_option( 'wbr-api-client-id', $client_id );
-			update_option( 'wbr-api-client-secret', $client_secret );
 
 			echo '<h2>' . esc_html( $this->get_method_title() ) . '</h2>';
 			echo wp_kses_post( wpautop( $this->get_method_description() ) );
@@ -71,10 +69,6 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 			echo '<div><input type="hidden" name="section" value="' . esc_attr( $this->id ) . '" /></div>';
 			echo '<table class="form-table">' . $this->generate_settings_html( $this->get_form_fields(), false ) . '</table>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			echo '</div>';
-
-			if ( $access_token == '' && ( $client_id || $client_secret != '' ) ) {
-				echo 'Credenciais inválidas';
-			}
 		}
 		
 		private function define_woocommerce_hooks() {
@@ -124,15 +118,13 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 						href="' . esc_html( '#' ) . '" 
 						id="wbr-button-pre-send"
 						data-order-id="' . $order_id . '"
-						class="button action"
-					>';
+					';
 					// Checks if the order has not been sended
 					if( !$order->meta_exists('_wbr_delivery_id') ) {
-						$shipping_address = $order->get_shipping_address_1() . ', ' . $order->get_shipping_city() . ', ' . $order->get_shipping_postcode();
-						$quote = $this->wbr_ud_api->create_quote( $shipping_address );
-						$quote_fee = $quote['fee'] / 100;
-						echo sprintf( 'Enviar (%s)', wc_price($quote_fee) );
+						echo 'class="button button-primary button-large" >';
+						echo __( 'Enviar agora', 'woober');
 					} else {
+						echo 'class="button button-large" >';
 						echo __( 'Ver envio', 'woober');
 					}
 					echo '</a>';
@@ -223,13 +215,24 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 			}
 
 			$ud_delivery = $this->wbr_ud_api->create_delivery( $order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items );
-			
+			$this->update_delivery_tip( $order->get_shipping_total(), $ud_delivery->fee / 100, $ud_delivery->id ); // Repass the difference between the quote and delivery fee to Uber for tax issues
+
 			if( !$order->meta_exists('_wbr_delivery_id') ) {
 				$order->add_meta_data( '_wbr_delivery_id', $ud_delivery->id );
 				$order->save_meta_data();
 			}
 
 			wp_send_json_success( $ud_delivery );
+		}
+
+		public function update_delivery_tip( $shipping_total, $delivery_fee, $delivery_id ) {
+
+			$tip = $shipping_total - $delivery_fee;
+
+			if( $tip > 0 ) {
+
+				$this->wbr_ud_api->update_delivery( $delivery_id, $tip);
+			}
 		}
 
 		public function add_modal_templates(): void {
@@ -262,12 +265,16 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 										<div id="wbr-shipping-preview-address" class="wbr-shipping-preview-block">
 											<h2><?php esc_html_e( 'Informações do envio', 'woober' ); ?></h2>
 											<div class="wbr-shipping-preview-input-wrapper">
-												<label><?php echo  __( 'Enderço de entrega', 'woober' ) ?></label>
+												<label><?php echo  __( 'Endereço de entrega', 'woober' ) ?></label>
 												<input type="text" class="short wbr-shipping-input-address-1" value="{{{ data.shipping.address_1 }}}" disabled/>
 											</div>
 											<div class="wbr-shipping-preview-input-wrapper">
 												<label><?php echo  __( 'Complemento', 'woober' ) ?></label>
 												<input type="text" class="wbr-shipping-input-address-2" value="{{{ data.shipping.address_2 }}}" disabled/>
+											</div>
+											<div class="wbr-shipping-preview-input-wrapper">
+												<label><?php echo  __( 'Frete pago', 'woober' ) ?></label>
+												<input type="text" class="wbr-shipping-input-shipping_total" value="R$ {{{ data.shipping_total }}}" disabled/>
 											</div>
 										</div>
 
@@ -287,7 +294,7 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 
 											<div class="wbr-shipping-preview-input-wrapper">
 												<label><?php esc_html_e( 'Telefone', 'woober' ); ?></label>
-												<input type="text" class="wbr-shipping-input-phone" value="{{{ data.shipping.phone }}}" disabled/>
+												<input type="text" class="wbr-shipping-input-phone" value="{{{ data.billing.phone }}}" disabled/>
 											</div>
 
 											<# if ( data.customer_note ) { #>
@@ -314,8 +321,6 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 
 								<footer>
 									<div class="inner">
-										<h3 style="float: left;">
-										<?php echo 'Custo do envio: R$ ' . '{{data.shipping_total}}'; ?></h3>
 										<a id="wbr-button-create-delivery" data-order-id="{{data.number}}" class="button button-primary button-large inner" aria-label="<?php esc_attr_e( 'Solicitar entregador', 'woober' ); ?>" href="<?php echo '#'; ?>" ><?php esc_html_e( 'Solicitar entregador', 'woober' ); ?></a>
 									</div>
 								</footer>
@@ -430,7 +435,6 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 											<input type="text" class="wbr-shipping-order-id" value="{{{ data.tracking_url }}}" disabled />
 										</div>
 									</div>
-									
 									<# } #>
 
 								</div>

@@ -23,28 +23,23 @@
 
 class Wbr_Ud_Api {
 
-	private $client_id;
-	private $client_secret;
 	private $access_token;
-
 	private $base_url;
 	private $customer_id;
-	private $delivery_id;
 
 	private $endpoint_create_quote;
 	private $endpoint_create_delivery;
 	private $endpoint_get_delivery;
+	private $endpoint_update_delivery;
 
 	public function __construct() {
-		$this->client_id = 		get_option( 'wbr-api-client-id' );
-		$this->client_secret = 	get_option( 'wbr-api-client-secret' );
-		$this->access_token = 	get_transient( 'wbr-api-access-token' );
-		
+		$this->access_token = get_transient( 'wbr-api-access-token' );
 		$this->base_url = 'https://api.uber.com/v1/customers/';
 		$this->customer_id = get_option( 'wbr-api-customer-id' );
 
 		$this->endpoint_create_quote = $this->base_url . $this->customer_id . '/delivery_quotes';
 		$this->endpoint_create_delivery = $this->base_url . $this->customer_id . '/deliveries';
+		$this->endpoint_update_delivery = $this->base_url . $this->customer_id . '/deliveries/';
 		$this->endpoint_get_delivery = $this->base_url . $this->customer_id . '/deliveries/';
 	}
 
@@ -60,8 +55,8 @@ class Wbr_Ud_Api {
 						'Content-Type' => 'application/x-www-form-urlencoded',
 					),
 					'body' => array(
-						'client_id' => $this->client_id,
-						'client_secret' => $this->client_secret,
+						'client_id' => get_option( 'wbr-api-client-id' ),
+						'client_secret' => get_option( 'wbr-api-client-secret' ),
 						'grant_type' => 'client_credentials',
 						'scope' => 'eats.deliveries',
 					)
@@ -70,11 +65,11 @@ class Wbr_Ud_Api {
 
 			$response_body = json_decode( wp_remote_retrieve_body($response), true );
 
-			if($response_body['access_token']){
+			if(array_key_exists('access_token', $response_body)){
 				$this->access_token = $response_body['access_token'];
 				set_transient( 'wbr-api-access-token', $this->access_token, $response_body['expires_in'] );
 			} else {
-				wc_add_notice( __( 'Invalid credentials provided', 'woober' ), 'error' );
+				wp_admin_notice( __( 'Preencha corretamente suas credenciais de acesso', 'woober' ), array( 'warning', false ) );
 			}
 		}
 
@@ -85,7 +80,7 @@ class Wbr_Ud_Api {
 
 		$headers = array(
 			'Content-Type' => 'application/json',
-			'Authorization' => 'Bearer ' . $this->access_token,
+			'Authorization' => 'Bearer ' . $this->get_access_token(),
 		);
 
 		$body = array(
@@ -109,11 +104,12 @@ class Wbr_Ud_Api {
 
 		$headers = array(
 			'Content-Type' => 'application/json',
-			'Authorization' => 'Bearer ' . $this->access_token,
+			'Authorization' => 'Bearer ' . $this->get_access_token(),
 		);
 
 		$body = array(
 			'pickup_name' 			=> get_bloginfo('name'),
+			'pickup_business_name'	=> get_bloginfo('name'),
 			'pickup_address' 		=> get_option('woocommerce_store_address'),
 			'pickup_phone_number' 	=> '+558232355224',
 			'dropoff_name' 			=> $dropoff_name,
@@ -122,6 +118,7 @@ class Wbr_Ud_Api {
 			'dropoff_phone_number' 	=> '+55' . $dropoff_phone_number,
 			'manifest_items' 		=> $manifest_items,
 			'external_id' 			=> $order_id,
+			'idempotency_key'		=> $order_id,
 		);
 
 		$response = wp_remote_post( 
@@ -136,11 +133,34 @@ class Wbr_Ud_Api {
 		return $delivery;
 	}
 
+	public function update_delivery( $delivery_id, $tip ) {
+
+		$headers = array(
+			'Content-Type' => 'application/json',
+			'Authorization' => 'Bearer ' . $this->get_access_token(),
+		);
+
+		$body = array(
+			'tip_by_customer' => $tip * 100, // Tip is an integer amount in cents
+		);
+
+		$response = wp_remote_post( 
+			$this->endpoint_update_delivery, 
+			array (
+				'headers' => $headers,
+				'body' => json_encode($body),
+			) 
+		);
+
+		$delivery = json_decode(wp_remote_retrieve_body($response));
+		return $delivery;
+	}
+
 	public function get_delivery( $delivery_id ) {
 
 		$headers = array(
 			'Content-Type' => 'application/json',
-			'Authorization' => 'Bearer ' . $this->access_token,
+			'Authorization' => 'Bearer ' . $this->get_access_token(),
 		);
 
 		$response = wp_remote_get( 
@@ -152,10 +172,5 @@ class Wbr_Ud_Api {
 
 		$delivery = json_decode(wp_remote_retrieve_body($response));
 		return $delivery;
-	}
-
-	public function display() {
-
-		require_once 'pages/wbr-admin-display-delivery.php';
 	}
 }

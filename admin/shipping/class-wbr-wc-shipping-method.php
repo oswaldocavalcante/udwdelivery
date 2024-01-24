@@ -40,11 +40,13 @@ if ( ! class_exists( 'Wbr_Wc_Shipping_Method' ) ) {
 			$destination = $package['destination']['address'] . ', ' . $package['destination']['postcode'];
 			
 			$delivery_quote = $this->ud_api->create_quote($destination);
+			$delivery_variation = 2; // Maximum variable of variation price for delivery
+			$delivery_cost = ($delivery_quote['fee'] / 100) + $delivery_variation;
 
 			$rate = array(
 				'id'       => $this->id,
 				'label'    => $this->title,
-				'cost'     => $delivery_quote['fee'] / 100,
+				'cost'     => $delivery_cost,
 				'calc_tax' => 'per_order',
 			);
 
