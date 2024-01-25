@@ -7,16 +7,20 @@
     margin-top: 40px;
  }
 
+ /* General modals */
+
  #wbr-quote-container, #wbr-delivery-container {
     padding-bottom: 40px;
  }
 
-.wbr-shipping-preview-block {
+ /* Modal shipping preview */
+
+.wbr-shipping-preview-block, .wbr-delivery-block {
     margin-bottom: 50px;
 }
 
-.wbr-shipping-preview-input-wrapper {
-    margin-bottom: 15px;
+.wbr-shipping-preview-input-wrapper, .wbr-delivery-data-wrapper {
+    margin-bottom: 20px;
 }
 
 .wbr-shipping-preview-input-wrapper label {
@@ -38,6 +42,27 @@
     justify-content: space-between;
 }
 
+/* Modal delivery */
+
+.wbr-delivery-block .wbr-delivery-data-wrapper small {
+    font-weight: bold;
+}
+
+.wbr-delivery-block .wbr-delivery-data-wrapper p {
+    margin-top: 5px;
+}
+
+.wbr-delivery-block .wbr-delivery-data-wrapper label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.wbr-delivery-block .wbr-delivery-data-wrapper input {
+    width: 40%;
+}
+
+/* Meta boxes */
+
 #wbr-metabox-action {
     text-align: right;
 }
@@ -45,3 +70,4 @@
 #wbr-metabox-action button {
     float: right;
 }
+

@@ -77,6 +77,16 @@ var WCOrdersTable = function () {
 		});
 	});
 
+	$(document).on('click', '#wbr-delivery-btn_coppy-tracking_url', function () {
+
+		var $url = document.getElementById('wbr-delivery-tracking_url');
+
+		$url.select();
+		$url.setSelectionRange(0, 99999);
+
+		navigator.clipboard.writeText($url.value);
+	});
+
 };
 
 new WCOrdersTable();

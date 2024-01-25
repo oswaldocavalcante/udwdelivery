@@ -163,25 +163,25 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 			}
 
 			?>
-				<div id="wbr-metabox-container">
-					<div id="wbr-metabox-status">
-						<p>
-							<? echo sprintf(__('Status da entrega: %s', 'woober'), $wbr_shipping_status ); ?>
-						</p>
-					</div>
-					<div id="wbr-metabox-quote">
-						<p>
-							<? 
-								$wbr_shipping_quote = $this->wbr_ud_api->create_quote($order_address);
-								$wbr_shipping_price = wc_price( $wbr_shipping_quote['fee'] / 100 );
-								echo sprintf(__('Custo da entrega: %s', 'woober'), $wbr_shipping_price );
-							?>
-						</p>
-					</div>
-					<div id="wbr-metabox-action">
-						<a class="button button-primary" id="wbr-button-pre-send" data-order-id="<?php echo $order_id ?>" href="#">Enviar</a>
-					</div>
+			<div id="wbr-metabox-container">
+				<div id="wbr-metabox-status">
+					<p>
+						<? echo sprintf(__('Status da entrega: %s', 'woober'), $wbr_shipping_status ); ?>
+					</p>
 				</div>
+				<div id="wbr-metabox-quote">
+					<p>
+						<? 
+							$wbr_shipping_quote = $this->wbr_ud_api->create_quote($order_address);
+							$wbr_shipping_price = wc_price( $wbr_shipping_quote['fee'] / 100 );
+							echo sprintf(__('Custo da entrega: %s', 'woober'), $wbr_shipping_price );
+						?>
+					</p>
+				</div>
+				<div id="wbr-metabox-action">
+					<a class="button button-primary" id="wbr-button-pre-send" data-order-id="<?php echo $order_id ?>" href="#">Enviar</a>
+				</div>
+			</div>
 			<?
 		}
 
@@ -359,30 +359,30 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 										<h2><?php esc_html_e( 'Informações do destinatário', 'woober' ); ?></h2>
 
 										<# if ( data.dropoff.name ) { #>
-										<div class="wbr-delivery-dropoff-wrapper">
-											<?php echo  __( 'Nome do destinatário', 'woober' ) ?>
-											{{ data.dropoff.name }}
+										<div class="wbr-delivery-data-wrapper">
+											<small><?php echo  __( 'Nome do destinatário', 'woober' ) ?></small>
+											<p>{{ data.dropoff.name }}</p>
 										</div>
 										<# } #>
 
 										<# if ( data.dropoff.phone_number ) { #>
-										<div class="wbr-delivery-dropoff-wrapper">
-											<?php echo  __( 'Telefone', 'woober' ) ?>
-											{{ data.dropoff.phone_number }}
+										<div class="wbr-delivery-data-wrapper">
+											<small><?php echo  __( 'Telefone', 'woober' ) ?></small>
+											<p>{{ data.dropoff.phone_number }}</p>
 										</div>
 										<# } #>
 
 										<# if ( data.dropoff.address ) { #>
-										<div class="wbr-delivery-dropoff-wrapper">
-											<?php echo  __( 'Enderço de entrega', 'woober' ) ?>
-											{{ data.dropoff.address }}
+										<div class="wbr-delivery-data-wrapper">
+											<small><?php echo  __( 'Enderço de entrega', 'woober' ) ?></small>
+											<p>{{ data.dropoff.address }}</p>
 										</div>
 										<# } #>
 
 										<# if( data.dropoff.notes ) { #>
-										<div class="wbr-delivery-dropoff-wrapper">
-											<?php echo  __( 'Observações', 'woober' ) ?>
-											{{ data.dropoff.notes }}
+										<div class="wbr-delivery-data-wrapper">
+											<small><?php echo  __( 'Observações', 'woober' ) ?></small>
+											<p>{{ data.dropoff.notes }}</p>
 										</div>
 										<# } #>
 									</div>
@@ -393,29 +393,29 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 										<div class="wbr-delivery-courier-container">
 
 											<# if( data.courier.img_href ) { #>
-											<div class="wbr-delivery-courier name">
+											<div class="wbr-delivery-data-wrapper">
 												<img src="{{{data.courier.img_href}}}" />
 											</div>
 											<# } #>
 
 											<# if( data.courier.name ) { #>
-											<div class="wbr-delivery-courier name">
-												<?php esc_html_e( 'Nome', 'woober' ); ?>
-												{{ data.courier.name }}
+											<div class="wbr-delivery-data-wrapper">
+												<small><?php esc_html_e( 'Nome', 'woober' ); ?></small>
+												<p>{{ data.courier.name }}</p>
 											</div>
 											<# } #>
 
 											<# if( data.courier.vehicle_type ) { #>
-											<div class="wbr-delivery-courier vehicle">
-												<<?php esc_html_e( 'Veículo', 'woober' ); ?>
-												{{ data.courier.vehicle_type }}
+											<div class="wbr-delivery-data-wrapper">
+												<small><?php esc_html_e( 'Veículo', 'woober' ); ?></small>
+												<p>{{ data.courier.vehicle_type }}</p>
 											</div>
 											<# } #>
 
 											<# if( data.courier.phone_number ) { #>
-											<div class="wbr-delivery-courier phone">
-												<<?php esc_html_e( 'Telefone', 'woober' ); ?>
-												{{ data.courier.phone_number }}
+											<div class="wbr-delivery-data-wrapper">
+												<small><?php esc_html_e( 'Telefone', 'woober' ); ?></small>
+												<p>{{ data.courier.phone_number }}</p>
 											</div>
 											<# } #>
 										</div>
@@ -423,11 +423,12 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 									<# } #>
 
 									<# if( data.tracking_url ) { #>
-									<div id="wbr-delivery-tracking_url" class="wbr-delivery-block">
+									<div id="wbr-delivery-tracking_url-container" class="wbr-delivery-block">
 										<h2><?php esc_html_e( 'Informações do pacote', 'woober' ); ?></h2>
-										<div class="wbr-delivery-tracking_url-wrapper">
+										<div class="wbr-delivery-data-wrapper">
 											<label><?php esc_html_e( 'URL do acompanhamento ', 'woober' ); ?></label>
-											<input type="text" class="wbr-shipping-order-id" value="{{{ data.tracking_url }}}" disabled />
+											<input id="wbr-delivery-tracking_url" type="text" value="{{{ data.tracking_url }}}" readonly />
+											<button id="wbr-delivery-btn_coppy-tracking_url" class="button">Copiar</button>
 										</div>
 									</div>
 									<# } #>
