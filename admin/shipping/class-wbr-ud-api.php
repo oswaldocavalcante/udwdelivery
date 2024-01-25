@@ -145,7 +145,7 @@ class Wbr_Ud_Api {
 		);
 
 		$response = wp_remote_post( 
-			$this->endpoint_update_delivery, 
+			$this->endpoint_update_delivery . $delivery_id, 
 			array (
 				'headers' => $headers,
 				'body' => json_encode($body),

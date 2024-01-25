@@ -215,7 +215,12 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 			}
 
 			$ud_delivery = $this->wbr_ud_api->create_delivery( $order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items );
-			$this->update_delivery_tip( $order->get_shipping_total(), $ud_delivery->fee / 100, $ud_delivery->id ); // Repass the difference between the quote and delivery fee to Uber for tax issues
+
+			$tip = (float) $order->get_shipping_total() - ($ud_delivery->fee / 100); // Fee is in cents
+			if( $tip > 0 ) {
+				// Updates the delivery repassing the difference between the quote and the real delivery to Uber for tax issues
+				$ud_delivery = $this->wbr_ud_api->update_delivery( $ud_delivery->id, $tip);
+			}
 
 			if( !$order->meta_exists('_wbr_delivery_id') ) {
 				$order->add_meta_data( '_wbr_delivery_id', $ud_delivery->id );
@@ -223,16 +228,6 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 			}
 
 			wp_send_json_success( $ud_delivery );
-		}
-
-		public function update_delivery_tip( $shipping_total, $delivery_fee, $delivery_id ) {
-
-			$tip = $shipping_total - $delivery_fee;
-
-			if( $tip > 0 ) {
-
-				$this->wbr_ud_api->update_delivery( $delivery_id, $tip);
-			}
 		}
 
 		public function add_modal_templates(): void {
@@ -441,15 +436,17 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 							</article>
 
 							<footer>
-								<# if( data.fee ) { #>
 								<div class="inner">
+									<# if( data.fee ) { #>
 									<h3 style="float: left;">
-										<?php 
-										echo 'Custo do envio: R$ ' . '{{data.fee}}';										?>
+										<?php echo 'Custo do envio: R$ ' . '{{data.fee}}'; ?>
 									</h3>
+									<p>
+										<?php echo 'Gorjeta: R$ ' . '{{data.tip}}'; ?>
+									</p>
 									<!-- <a id="wbr-button-create-delivery" data-order-id="{{data.number}}" class="button button-primary button-large inner" aria-label="<?php esc_attr_e( 'Solicitar entregador', 'woober' ); ?>" href="<?php echo '#'; ?>" ><?php esc_html_e( 'Solicitar entregador', 'woober' ); ?></a> -->
+									<# } #>
 								</div>
-								<# } #>
 							</footer>
 
 						</section>

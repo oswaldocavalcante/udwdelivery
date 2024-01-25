@@ -56,6 +56,7 @@ var WCOrdersTable = function () {
 				security: wbr_delivery_params.nonce,
 			},
 			beforeSend: function() {
+				document.getElementById('wbr-button-create-delivery').remove();
 				document.getElementById('wbr-quote-container').innerHTML = '<div>Solicitando motorista...</div>';
 			},
 			success: function (response) {
