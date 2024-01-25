@@ -438,13 +438,14 @@ if ( ! class_exists( 'Wbr_Wc_Integration' ) ) {
 							<footer>
 								<div class="inner">
 									<# if( data.fee ) { #>
-									<h3 style="float: left;">
+									<h3  id="wbr-delivery-fee">
 										<?php echo 'Custo do envio: R$ ' . '{{data.fee}}'; ?>
 									</h3>
-									<p>
+									<# } #>
+									<# if( data.tip ) { #>
+									<p id="wbr-delivery-tip">
 										<?php echo 'Gorjeta: R$ ' . '{{data.tip}}'; ?>
 									</p>
-									<!-- <a id="wbr-button-create-delivery" data-order-id="{{data.number}}" class="button button-primary button-large inner" aria-label="<?php esc_attr_e( 'Solicitar entregador', 'woober' ); ?>" href="<?php echo '#'; ?>" ><?php esc_html_e( 'Solicitar entregador', 'woober' ); ?></a> -->
 									<# } #>
 								</div>
 							</footer>

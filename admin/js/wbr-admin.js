@@ -62,11 +62,11 @@ var WCOrdersTable = function () {
 			success: function (response) {
 				if (response.success) {
 					document.getElementById('wbr-modal-quote-container').remove();
+					$("a[data-order-id='" + $order_id + "']").text('Ver envio');
 					$(this).WCBackboneModal({
 						template: 'wbr-modal-delivery',
 						variable: response.data
 					});
-					document.getElementById('wbr-button-pre-send').innerHTML = 'Ver envio';
 				} else {
 					console.error(response.data);
 				}
