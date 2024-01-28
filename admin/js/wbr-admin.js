@@ -15,7 +15,7 @@ var WCOrdersTable = function () {
 			url: wbr_delivery_params.url,
             data: {
                 order_id: $order_id,
-				action: 'woober_get_data',
+				action: 'woober_get_delivery_data',
 				security: wbr_delivery_params.nonce,
             },
             type: 'POST',

@@ -14,7 +14,7 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Woober
- * Plugin URI:        https://http://github.com/oswaldocavalcante/woober
+ * Plugin URI:        https://github.com/oswaldocavalcante/woober
  * Description:       Uber delivery service for WooCommerce.
  * Version:           1.0.0
  * Author:            Oswaldo Cavalcante

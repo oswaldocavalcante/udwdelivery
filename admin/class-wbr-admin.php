@@ -41,9 +41,6 @@ class Wbr_Admin {
 	 */
 	private $version;
 
-	private $wbr_admin_settings;
-	// private $wbr_admin_integration;
-
 	/**
 	 * Initialize the class and set its properties.
 	 *
@@ -70,12 +67,12 @@ class Wbr_Admin {
 		}
 	}
 
-	public function wbr_add_integration() {
+	public function add_integration( $integrations ) {
 
 		if ( $this->is_woocommerce_active() ) {
 			include_once 'class-wbr-wc-integration.php';
-
 			$integrations[] = 'Wbr_Wc_Integration';
+
 			return $integrations;
 		} else {
 			add_action( 'admin_notices', array( $this, 'notice_activate_wc' ) );
@@ -100,7 +97,7 @@ class Wbr_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function wbr_enqueue_styles() {
+	public function enqueue_styles() {
 
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/wbr-admin.css', array(), $this->version, 'all' );
 
@@ -111,7 +108,7 @@ class Wbr_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function wbr_enqueue_scripts() {
+	public function enqueue_scripts() {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wbr-admin.js', array( 'jquery' ), $this->version, false );
 		
@@ -122,8 +119,7 @@ class Wbr_Admin {
 
 	}
 
-	public function wbr_register_settings() {
-
+	public function register_settings() {
 		register_setting( 'woober_settings', 'wbr-api-customer-id', 	array( 'type' => 'string', 'default' => '' ) );
 		register_setting( 'woober_settings', 'wbr-api-client-id', 		array( 'type' => 'string', 'default' => '' ) );
 		register_setting( 'woober_settings', 'wbr-api-client-secret', 	array( 'type' => 'string', 'default' => '' ) );

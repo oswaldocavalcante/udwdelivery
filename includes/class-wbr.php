@@ -72,7 +72,7 @@ class Wbr {
 		} else {
 			$this->version = '1.0.0';
 		}
-		$this->plugin_name = 'wbr';
+		$this->plugin_name = 'woober';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -146,11 +146,11 @@ class Wbr {
 
 		$plugin_admin = new Wbr_Admin( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', 	$plugin_admin, 'wbr_enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', 	$plugin_admin, 'wbr_enqueue_scripts' );
+		$this->loader->add_action( 'admin_enqueue_scripts', 	$plugin_admin, 'enqueue_styles' );
+		$this->loader->add_action( 'admin_enqueue_scripts', 	$plugin_admin, 'enqueue_scripts' );
 
-		$this->loader->add_action( 'admin_init', 				$plugin_admin, 'wbr_register_settings');
-		$this->loader->add_filter( 'woocommerce_integrations', 	$plugin_admin, 'wbr_add_integration');
+		$this->loader->add_action( 'admin_init', 				$plugin_admin, 'register_settings');
+		$this->loader->add_filter( 'woocommerce_integrations', 	$plugin_admin, 'add_integration');
 	}
 
 	/**

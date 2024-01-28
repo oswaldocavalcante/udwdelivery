@@ -3,9 +3,23 @@
  * included in this file.
  */
 
- #wbr_settings {
-    margin-top: 40px;
+ #wbr-settings {
+    margin-top: 16px;
  }
+
+ #wbr-settings h2 {
+    display: inline;
+ }
+
+ .wbr-integration-connection:before {
+    color: green;
+    margin: 0 5px;
+ }
+
+.wbr-integration-connection {
+    font-size: 10px;
+    color: darkslategray;
+}
 
  /* General modals */
 

@@ -69,7 +69,7 @@ class Wbr_Ud_Api {
 				$this->access_token = $response_body['access_token'];
 				set_transient( 'wbr-api-access-token', $this->access_token, $response_body['expires_in'] );
 			} else {
-				wp_admin_notice( __( 'Preencha corretamente suas credenciais de acesso', 'woober' ), array( 'warning', false ) );
+				return false;
 			}
 		}
 
