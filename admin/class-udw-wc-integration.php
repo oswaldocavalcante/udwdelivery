@@ -21,6 +21,19 @@ class Udw_Wc_Integration extends WC_Integration {
 		$this->define_woocommerce_hooks();
 	}
 
+	private function define_woocommerce_hooks()
+	{
+		add_action('woocommerce_update_options_integration_' . $this->id, array($this, 'process_admin_options'));
+		add_action('woocommerce_shipping_init', 				array($this, 'create_shipping_method'));
+		add_filter('woocommerce_shipping_methods', 			array($this, 'add_shipping_method'));
+		add_filter('manage_edit-shop_order_columns', 			array($this, 'add_order_list_column'), 20);
+		add_action('manage_shop_order_posts_custom_column',	array($this, 'add_order_list_column_buttons'), 20, 2);
+		add_action('add_meta_boxes', 							array($this, 'add_meta_box'));
+		add_action('wp_ajax_uberdirect_get_delivery_data',		array($this, 'ajax_get_delivery_data'), 20);
+		add_action('wp_ajax_uberdirect_create_delivery',		array($this, 'ajax_create_delivery'), 20);
+		add_action('admin_footer', 							array($this, 'add_modal_templates'));
+	}
+
 	public function init_form_fields() {
 		$this->form_fields = array(
 			'wck-credentials-section' => array(
@@ -67,17 +80,7 @@ class Udw_Wc_Integration extends WC_Integration {
 		echo '</div>';
 	}
 	
-	private function define_woocommerce_hooks() {
-		add_action(	'woocommerce_update_options_integration_' . $this->id, array($this, 'process_admin_options'));
-		add_action( 'woocommerce_shipping_init', 				array( $this, 'create_shipping_method' ) );
-		add_filter( 'woocommerce_shipping_methods', 			array( $this, 'add_shipping_method' ) );
-		add_filter( 'manage_edit-shop_order_columns', 			array( $this, 'add_order_list_column' ), 20 );
-		add_action( 'manage_shop_order_posts_custom_column',	array( $this, 'add_order_list_column_buttons' ), 20, 2 );
-		add_action( 'add_meta_boxes', 							array( $this, 'add_meta_box' ) );
-		add_action( 'wp_ajax_uberdirect_get_delivery_data',		array( $this, 'ajax_get_delivery_data'), 20 );
-		add_action( 'wp_ajax_uberdirect_create_delivery',		array( $this, 'ajax_create_delivery'), 20 );
-		add_action( 'admin_footer', 							array( $this, 'add_modal_templates' ) );
-	}
+
 
 	public function create_shipping_method() {
 		include_once('shipping/class-udw-wc-shipping-method.php');
