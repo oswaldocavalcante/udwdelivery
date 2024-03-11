@@ -6,8 +6,8 @@
  * @link       https://oswaldocavalcante.com
  * @since      1.0.0
  *
- * @package    Wbr
- * @subpackage Wbr/admin
+ * @package    Udw
+ * @subpackage Udw/admin
  */
 
 /**
@@ -16,12 +16,12 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Wbr
- * @subpackage Wbr/admin
+ * @package    Udw
+ * @subpackage Udw/admin
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
 
-class Wbr_Ud_Api {
+class Udw_Ud_Api {
 
 	private $access_token;
 	private $base_url;
@@ -33,20 +33,20 @@ class Wbr_Ud_Api {
 	private $endpoint_update_delivery;
 
 	public function __construct() {
-		$this->access_token = get_transient( 'wbr-api-access-token' );
-		$this->base_url = 'https://api.uber.com/v1/customers/';
-		$this->customer_id = get_option( 'wbr-api-customer-id' );
+		$this->base_url 	= 'https://api.uber.com/v1/customers/';
+		$this->access_token = get_transient( 'udw-api-access-token' );
+		$this->customer_id 	= get_option( 'udw-api-customer-id' );
 
-		$this->endpoint_create_quote = $this->base_url . $this->customer_id . '/delivery_quotes';
+		$this->endpoint_create_quote 	= $this->base_url . $this->customer_id . '/delivery_quotes';
 		$this->endpoint_create_delivery = $this->base_url . $this->customer_id . '/deliveries';
 		$this->endpoint_update_delivery = $this->base_url . $this->customer_id . '/deliveries/';
-		$this->endpoint_get_delivery = $this->base_url . $this->customer_id . '/deliveries/';
+		$this->endpoint_get_delivery 	= $this->base_url . $this->customer_id . '/deliveries/';
 	}
 
 	public function get_access_token() {
 
 		// Checks if the Access Token is expired to regenate it
-		if( false === ( $this->access_token = get_transient( 'wbr-api-access-token' ) ) ) {
+		if( false === ( $this->access_token = get_transient( 'udw-api-access-token' ) ) ) {
 
 			$response = wp_remote_post( 
 				'https://auth.uber.com/oauth/v2/token', 
@@ -55,8 +55,8 @@ class Wbr_Ud_Api {
 						'Content-Type' => 'application/x-www-form-urlencoded',
 					),
 					'body' => array(
-						'client_id' => get_option( 'wbr-api-client-id' ),
-						'client_secret' => get_option( 'wbr-api-client-secret' ),
+						'client_id' => get_option( 'udw-api-client-id' ),
+						'client_secret' => get_option( 'udw-api-client-secret' ),
 						'grant_type' => 'client_credentials',
 						'scope' => 'eats.deliveries',
 					)
@@ -67,7 +67,7 @@ class Wbr_Ud_Api {
 
 			if(array_key_exists('access_token', $response_body)){
 				$this->access_token = $response_body['access_token'];
-				set_transient( 'wbr-api-access-token', $this->access_token, $response_body['expires_in'] );
+				set_transient( 'udw-api-access-token', $this->access_token, $response_body['expires_in'] );
 			} else {
 				return false;
 			}
@@ -125,7 +125,7 @@ class Wbr_Ud_Api {
 			$this->endpoint_create_delivery, 
 			array (
 				'headers' => $headers,
-				'body' => json_encode($body),
+				'body' => wp_json_encode($body),
 			) 
 		);
 
@@ -148,7 +148,7 @@ class Wbr_Ud_Api {
 			$this->endpoint_update_delivery . $delivery_id, 
 			array (
 				'headers' => $headers,
-				'body' => json_encode($body),
+				'body' => wp_json_encode($body),
 			) 
 		);
 

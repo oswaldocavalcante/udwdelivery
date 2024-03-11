@@ -22,7 +22,7 @@
  * @link       https://oswaldocavalcante.com
  * @since      1.0.0
  *
- * @package    Wbr
+ * @package    Udw
  */
 
 // If uninstall not called from WordPress, then exit.

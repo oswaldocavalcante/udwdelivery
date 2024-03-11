@@ -9,8 +9,8 @@
  * @link       https://oswaldocavalcante.com
  * @since      1.0.0
  *
- * @package    Wbr
- * @subpackage Wbr/includes
+ * @package    Udw
+ * @subpackage Udw/includes
  */
 
 /**
@@ -23,11 +23,11 @@
  * version of the plugin.
  *
  * @since      1.0.0
- * @package    Wbr
- * @subpackage Wbr/includes
+ * @package    Udw
+ * @subpackage Udw/includes
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
-class Wbr {
+class UberDirect {
 
 	/**
 	 * The loader that's responsible for maintaining and registering all hooks that power
@@ -35,7 +35,7 @@ class Wbr {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      Wbr_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      Udw_Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -67,12 +67,12 @@ class Wbr {
 	 * @since    1.0.0
 	 */
 	public function __construct() {
-		if ( defined( 'WBR_VERSION' ) ) {
-			$this->version = WBR_VERSION;
+		if ( defined( 'UBERDIRECT_VERSION' ) ) {
+			$this->version = UBERDIRECT_VERSION;
 		} else {
 			$this->version = '1.0.0';
 		}
-		$this->plugin_name = 'woober';
+		$this->plugin_name = 'uberdirect';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -84,10 +84,10 @@ class Wbr {
 	 *
 	 * Include the following files that make up the plugin:
 	 *
-	 * - Wbr_Loader. Orchestrates the hooks of the plugin.
-	 * - Wbr_i18n. Defines internationalization functionality.
-	 * - Wbr_Admin. Defines all hooks for the admin area.
-	 * - Wbr_Public. Defines all hooks for the public side of the site.
+	 * - Udw_Loader. Orchestrates the hooks of the plugin.
+	 * - Udw_i18n. Defines internationalization functionality.
+	 * - Udw_Admin. Defines all hooks for the admin area.
+	 * - Udw_Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -101,27 +101,27 @@ class Wbr {
 		 * The class responsible for orchestrating the actions and filters of the
 		 * core plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wbr-loader.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-uberdirect-loader.php';
 
 		/**
 		 * The class responsible for defining internationalization functionality
 		 * of the plugin.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-wbr-i18n.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-uberdirect-i18n.php';
 
 		/**
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-wbr-admin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-udw-admin.php';
 
-		$this->loader = new Wbr_Loader();
+		$this->loader = new UberDirect_Loader();
 
 	}
 
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the Wbr_i18n class in order to set the domain and to register the hook
+	 * Uses the Udw_i18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
@@ -129,7 +129,7 @@ class Wbr {
 	 */
 	private function set_locale() {
 
-		$plugin_i18n = new Wbr_i18n();
+		$plugin_i18n = new UberDirect_i18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
@@ -144,7 +144,7 @@ class Wbr {
 	 */
 	private function define_admin_hooks() {
 
-		$plugin_admin = new Wbr_Admin( $this->get_plugin_name(), $this->get_version() );
+		$plugin_admin = new Udw_Admin( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_enqueue_scripts', 	$plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', 	$plugin_admin, 'enqueue_scripts' );
@@ -177,7 +177,7 @@ class Wbr {
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
 	 * @since     1.0.0
-	 * @return    Wbr_Loader    Orchestrates the hooks of the plugin.
+	 * @return    Udw_Loader    Orchestrates the hooks of the plugin.
 	 */
 	public function get_loader() {
 		return $this->loader;

@@ -10,18 +10,18 @@
  *
  * @link              https://oswaldocavalcante.com
  * @since             1.0.0
- * @package           Wbr
+ * @package           Udw
  *
  * @wordpress-plugin
- * Plugin Name:       Woober
- * Plugin URI:        https://github.com/oswaldocavalcante/woober
- * Description:       Uber delivery service for WooCommerce.
+ * Plugin Name:       Uber Direct for WooCommerce
+ * Plugin URI:        https://github.com/oswaldocavalcante/uberdirect
+ * Description:       Uber direct delivery service for WooCommerce.
  * Version:           1.0.0
  * Author:            Oswaldo Cavalcante
  * Author URI:        https://oswaldocavalcante.com/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       wbr
+ * Text Domain:       uberdirect
  * Domain Path:       /languages
  */
 
@@ -35,34 +35,32 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'WBR_VERSION', '1.0.0' );
+define( 'UBERDIRECT_VERSION', '1.0.0' );
 
 /**
  * The code that runs during plugin activation.
- * This action is documented in includes/class-wbr-activator.php
  */
-function activate_wbr() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wbr-activator.php';
-	Wbr_Activator::activate();
+function activate_udw() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-uberdirect-activator.php';
+	UberDirect_Activator::activate();
 }
 
 /**
  * The code that runs during plugin deactivation.
- * This action is documented in includes/class-wbr-deactivator.php
  */
-function deactivate_wbr() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-wbr-deactivator.php';
-	Wbr_Deactivator::deactivate();
+function deactivate_udw() {
+	require_once plugin_dir_path( __FILE__ ) . 'includes/class-uberdirect-deactivator.php';
+	UberDirect_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_wbr' );
-register_deactivation_hook( __FILE__, 'deactivate_wbr' );
+register_activation_hook( __FILE__, 'activate_udw' );
+register_deactivation_hook( __FILE__, 'deactivate_udw' );
 
 /**
  * The core plugin class that is used to define internationalization,
  * admin-specific hooks, and public-facing site hooks.
  */
-require plugin_dir_path( __FILE__ ) . 'includes/class-wbr.php';
+require plugin_dir_path( __FILE__ ) . 'includes/class-uberdirect.php';
 
 /**
  * Begins execution of the plugin.
@@ -73,10 +71,10 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-wbr.php';
  *
  * @since    1.0.0
  */
-function run_wbr() {
+function run_udw() {
 
-	$plugin = new Wbr();
+	$plugin = new UberDirect();
 	$plugin->run();
 
 }
-run_wbr();
+run_udw();

@@ -3,85 +3,85 @@
  * included in this file.
  */
 
- #wbr-settings {
+ #udw-settings {
     margin-top: 16px;
  }
 
- #wbr-settings h2 {
+ #udw-settings h2 {
     display: inline;
  }
 
- .wbr-integration-connection:before {
+ .udw-integration-connection:before {
     color: green;
     margin: 0 5px;
  }
 
-.wbr-integration-connection {
+.udw-integration-connection {
     font-size: 10px;
     color: darkslategray;
 }
 
  /* General modals */
 
- #wbr-quote-container, #wbr-delivery-container {
+ #udw-quote-container, #udw-delivery-container {
     padding-bottom: 40px;
  }
 
  /* Modal shipping preview */
 
-.wbr-shipping-preview-block, .wbr-delivery-block {
+.udw-shipping-preview-block, .udw-delivery-block {
     margin-bottom: 50px;
 }
 
-.wbr-shipping-preview-input-wrapper, .wbr-delivery-data-wrapper {
+.udw-shipping-preview-input-wrapper, .udw-delivery-data-wrapper {
     margin-bottom: 20px;
 }
 
-.wbr-shipping-preview-input-wrapper label {
+.udw-shipping-preview-input-wrapper label {
     display: block;
     margin-bottom: 5px;
 }
 
-.wbr-shipping-preview-input-wrapper input {
+.udw-shipping-preview-input-wrapper input {
     width: 100%;
 }
 
-.wbr-shipping-preview-input-names-container {
+.udw-shipping-preview-input-names-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     grid-gap: 0px 20px;
 }
 
-.wbr-shipping-preview-input-wrapper.name {
+.udw-shipping-preview-input-wrapper.name {
     justify-content: space-between;
 }
 
 /* Modal delivery */
 
-.wbr-delivery-block .wbr-delivery-data-wrapper small {
+.udw-delivery-block .udw-delivery-data-wrapper small {
     font-weight: bold;
 }
 
-.wbr-delivery-block .wbr-delivery-data-wrapper p {
+.udw-delivery-block .udw-delivery-data-wrapper p {
     margin-top: 5px;
 }
 
-.wbr-delivery-block .wbr-delivery-data-wrapper label {
+.udw-delivery-block .udw-delivery-data-wrapper label {
     display: block;
     margin-bottom: 10px;
 }
 
-.wbr-delivery-block .wbr-delivery-data-wrapper input {
+.udw-delivery-block .udw-delivery-data-wrapper input {
     width: 40%;
 }
 
 /* Meta boxes */
 
-#wbr-metabox-action {
+#udw-metabox-action {
     text-align: right;
 }
 
-#wbr-metabox-action button {
+#udw-metabox-action button {
     float: right;
 }
 

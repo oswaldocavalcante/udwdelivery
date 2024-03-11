@@ -6,8 +6,8 @@
  * @link       https://oswaldocavalcante.com
  * @since      1.0.0
  *
- * @package    Wbr
- * @subpackage Wbr/includes
+ * @package    Udw
+ * @subpackage Udw/includes
  */
 
 /**
@@ -17,11 +17,11 @@
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    Wbr
- * @subpackage Wbr/includes
+ * @package    Udw
+ * @subpackage Udw/includes
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
-class Wbr_Loader {
+class UberDirect_Loader {
 
 	/**
 	 * The array of actions registered with WordPress.

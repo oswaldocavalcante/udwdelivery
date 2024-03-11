@@ -9,8 +9,8 @@
  * @link       https://oswaldocavalcante.com
  * @since      1.0.0
  *
- * @package    Wbr
- * @subpackage Wbr/includes
+ * @package    Udw
+ * @subpackage Udw/includes
  */
 
 /**
@@ -20,11 +20,11 @@
  * so that it is ready for translation.
  *
  * @since      1.0.0
- * @package    Wbr
- * @subpackage Wbr/includes
+ * @package    Udw
+ * @subpackage Udw/includes
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
-class Wbr_i18n {
+class UberDirect_i18n {
 
 
 	/**
@@ -35,7 +35,7 @@ class Wbr_i18n {
 	public function load_plugin_textdomain() {
 
 		load_plugin_textdomain(
-			'wbr',
+			'udw',
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);

@@ -6,8 +6,8 @@
  * @link       https://oswaldocavalcante.com
  * @since      1.0.0
  *
- * @package    Wbr
- * @subpackage Wbr/admin
+ * @package    Udw
+ * @subpackage Udw/admin
  */
 
 /**
@@ -16,12 +16,12 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Wbr
- * @subpackage Wbr/admin
+ * @package    Udw
+ * @subpackage Udw/admin
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
 
-class Wbr_Admin {
+class Udw_Admin {
 
 	/**
 	 * The ID of this plugin.
@@ -70,8 +70,8 @@ class Wbr_Admin {
 	public function add_integration( $integrations ) {
 
 		if ( $this->is_woocommerce_active() ) {
-			include_once 'class-wbr-wc-integration.php';
-			$integrations[] = 'Wbr_Wc_Integration';
+			include_once 'class-udw-wc-integration.php';
+			$integrations[] = 'Udw_Wc_Integration';
 
 			return $integrations;
 		} else {
@@ -85,7 +85,7 @@ class Wbr_Admin {
 		<div class="error">
 			<p>
 				<?php
-				printf( esc_html__( 'Please install and activate %1$sWooCommerce%2$s to use Woober!' ), '<a href="' . esc_url( admin_url( 'plugin-install.php?tab=search&s=WooCommerce&plugin-search-input=Search+Plugins' ) ) . '">', '</a>' );
+				printf( esc_html__( 'Please install and activate %1$sWooCommerce%2$s to use Uber Direct!' ), '<a href="' . esc_url( admin_url( 'plugin-install.php?tab=search&s=WooCommerce&plugin-search-input=Search+Plugins' ) ) . '">', '</a>' );
 				?>
 			</p>
 		</div>
@@ -99,7 +99,7 @@ class Wbr_Admin {
 	 */
 	public function enqueue_styles() {
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/wbr-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/udw-admin.css', array(), $this->version, 'all' );
 
 	}
 
@@ -110,19 +110,19 @@ class Wbr_Admin {
 	 */
 	public function enqueue_scripts() {
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/wbr-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/udw-admin.js', array( 'jquery' ), $this->version, false );
 		
-		wp_localize_script( $this->plugin_name, 'wbr_delivery_params', array(
+		wp_localize_script( $this->plugin_name, 'udw_delivery_params', array(
 			'url' => admin_url('admin-ajax.php'),
-			'nonce' => wp_create_nonce('wbr_delivery_nonce'),
+			'nonce' => wp_create_nonce('udw_delivery_nonce'),
 		));
 
 	}
 
 	public function register_settings() {
-		register_setting( 'woober_settings', 'wbr-api-customer-id', 	array( 'type' => 'string', 'default' => '' ) );
-		register_setting( 'woober_settings', 'wbr-api-client-id', 		array( 'type' => 'string', 'default' => '' ) );
-		register_setting( 'woober_settings', 'wbr-api-client-secret', 	array( 'type' => 'string', 'default' => '' ) );
+		register_setting( 'uberdirect_settings', 'udw-api-customer-id', 	array( 'type' => 'string', 'default' => '' ) );
+		register_setting( 'uberdirect_settings', 'udw-api-client-id', 		array( 'type' => 'string', 'default' => '' ) );
+		register_setting( 'uberdirect_settings', 'udw-api-client-secret', 	array( 'type' => 'string', 'default' => '' ) );
 	}
 
 }

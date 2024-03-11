@@ -1,20 +1,20 @@
 <?php
 
-require_once 'class-wbr-ud-api.php';
+require_once 'class-udw-ud-api.php';
 
-if ( ! class_exists( 'Wbr_Wc_Shipping_Method' ) ) {
-	class Wbr_Wc_Shipping_Method extends WC_Shipping_Method {
+if ( ! class_exists( 'Udw_Wc_Shipping_Method' ) ) {
+	class Udw_Wc_Shipping_Method extends WC_Shipping_Method {
 
 		private $ud_api;
 
 		public function __construct( $instance_id = 0 ) {
 			$this->instance_id = absint( $instance_id );
 
-			$this->id                 = 'WOOBER_SHIPPING_METHOD';
+			$this->id                 = 'UBERDIRECT_SHIPPING_METHOD';
 			$this->method_title       = 'Uber Direct';
 			$this->title              = 'Entrega (Uber Direct)';
-			$this->method_description = __( 'Uber Direct delivery service.', 'woober' );
-			$settings                 = array( 'title' => 'Woober' );
+			$this->method_description = __( 'Uber Direct delivery service.', 'uberdirect' );
+			$settings                 = array( 'title' => 'Uber Direct' );
 			$this->instance_settings  = $settings;
 
 			$this->supports = array(
@@ -23,7 +23,7 @@ if ( ! class_exists( 'Wbr_Wc_Shipping_Method' ) ) {
 				'instance-settings-modal',
 			);
 
-			$this->ud_api = new Wbr_Ud_Api();
+			$this->ud_api = new Udw_Ud_Api();
 			$this->init();
 		}
 

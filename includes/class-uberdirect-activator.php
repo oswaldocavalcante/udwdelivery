@@ -6,8 +6,8 @@
  * @link       https://oswaldocavalcante.com
  * @since      1.0.0
  *
- * @package    Wbr
- * @subpackage Wbr/includes
+ * @package    Udw
+ * @subpackage Udw/includes
  */
 
 /**
@@ -16,11 +16,11 @@
  * This class defines all code necessary to run during the plugin's activation.
  *
  * @since      1.0.0
- * @package    Wbr
- * @subpackage Wbr/includes
+ * @package    Udw
+ * @subpackage Udw/includes
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
-class Wbr_Activator {
+class UberDirect_Activator {
 
 	/**
 	 * Short Description. (use period)
