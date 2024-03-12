@@ -37,6 +37,9 @@ if ( ! defined( 'WPINC' ) ) {
  */
 define( 'UBERDIRECT_VERSION', '1.0.0' );
 
+if (!defined('UDW_PLUGIN_FILE')) {
+	define('UDW_PLUGIN_FILE', __FILE__);
+}
 /**
  * The code that runs during plugin activation.
  */

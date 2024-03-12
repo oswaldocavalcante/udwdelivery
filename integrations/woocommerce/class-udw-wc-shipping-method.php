@@ -1,6 +1,6 @@
 <?php
 
-require_once 'class-udw-ud-api.php';
+require_once UDW_ABSPATH . 'integrations/uberdirect/class-udw-ud-api.php';
 
 if ( ! class_exists( 'Udw_Wc_Shipping_Method' ) ) {
 	class Udw_Wc_Shipping_Method extends WC_Shipping_Method {

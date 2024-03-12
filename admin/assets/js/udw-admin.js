@@ -15,7 +15,7 @@ var WCOrdersTable = function () {
 			url: udw_delivery_params.url,
             data: {
                 order_id: $order_id,
-				action: 'uberdirect_get_delivery_data',
+				action: 'udw_get_delivery',
 				security: udw_delivery_params.nonce,
             },
             type: 'POST',
@@ -52,7 +52,7 @@ var WCOrdersTable = function () {
 			type: 'POST',
 			data: {
 				order_id: $order_id,
-				action: 'uberdirect_create_delivery',
+				action: 'udw_create_delivery',
 				security: udw_delivery_params.nonce,
 			},
 			beforeSend: function() {

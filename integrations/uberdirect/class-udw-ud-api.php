@@ -21,8 +21,8 @@
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
 
-class Udw_Ud_Api {
-
+class Udw_Ud_Api
+{
 	private $access_token;
 	private $base_url;
 	private $customer_id;
@@ -32,10 +32,11 @@ class Udw_Ud_Api {
 	private $endpoint_get_delivery;
 	private $endpoint_update_delivery;
 
-	public function __construct() {
+	public function __construct()
+	{
 		$this->base_url 	= 'https://api.uber.com/v1/customers/';
-		$this->access_token = get_transient( 'udw-api-access-token' );
-		$this->customer_id 	= get_option( 'udw-api-customer-id' );
+		$this->access_token = get_transient('udw-api-access-token');
+		$this->customer_id 	= get_option('udw-api-customer-id');
 
 		$this->endpoint_create_quote 	= $this->base_url . $this->customer_id . '/delivery_quotes';
 		$this->endpoint_create_delivery = $this->base_url . $this->customer_id . '/deliveries';
@@ -43,31 +44,31 @@ class Udw_Ud_Api {
 		$this->endpoint_get_delivery 	= $this->base_url . $this->customer_id . '/deliveries/';
 	}
 
-	public function get_access_token() {
-
+	public function get_access_token()
+	{
 		// Checks if the Access Token is expired to regenate it
-		if( false === ( $this->access_token = get_transient( 'udw-api-access-token' ) ) ) {
+		if (false === ($this->access_token = get_transient('udw-api-access-token'))) {
 
-			$response = wp_remote_post( 
-				'https://auth.uber.com/oauth/v2/token', 
+			$response = wp_remote_post(
+				'https://auth.uber.com/oauth/v2/token',
 				array(
 					'headers' => array(
 						'Content-Type' => 'application/x-www-form-urlencoded',
 					),
 					'body' => array(
-						'client_id' => get_option( 'udw-api-client-id' ),
-						'client_secret' => get_option( 'udw-api-client-secret' ),
+						'client_id' => get_option('udw-api-client-id'),
+						'client_secret' => get_option('udw-api-client-secret'),
 						'grant_type' => 'client_credentials',
 						'scope' => 'eats.deliveries',
 					)
 				)
 			);
 
-			$response_body = json_decode( wp_remote_retrieve_body($response), true );
+			$response_body = json_decode(wp_remote_retrieve_body($response), true);
 
-			if(array_key_exists('access_token', $response_body)){
+			if (array_key_exists('access_token', $response_body)) {
 				$this->access_token = $response_body['access_token'];
-				set_transient( 'udw-api-access-token', $this->access_token, $response_body['expires_in'] );
+				set_transient('udw-api-access-token', $this->access_token, $response_body['expires_in']);
 			} else {
 				return false;
 			}
@@ -76,8 +77,8 @@ class Udw_Ud_Api {
 		return $this->access_token;
 	}
 
-	public function create_quote( $dropoff_address, $pickup_address = '' ) {
-
+	public function create_quote($dropoff_address, $pickup_address = '')
+	{
 		$headers = array(
 			'Content-Type' => 'application/json',
 			'Authorization' => 'Bearer ' . $this->get_access_token(),
@@ -88,20 +89,20 @@ class Udw_Ud_Api {
 			'dropoff_address' => $dropoff_address,
 		);
 
-		$response = wp_remote_post( 
-			$this->endpoint_create_quote, 
-			array (
+		$response = wp_remote_post(
+			$this->endpoint_create_quote,
+			array(
 				'headers' => $headers,
 				'body' => json_encode($body),
-			) 
+			)
 		);
 
 		$quote = json_decode(wp_remote_retrieve_body($response), true);
 		return $quote;
 	}
 
-	public function create_delivery( $order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items = array() ) {
-
+	public function create_delivery($order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items = array())
+	{
 		$headers = array(
 			'Content-Type' => 'application/json',
 			'Authorization' => 'Bearer ' . $this->get_access_token(),
@@ -121,20 +122,20 @@ class Udw_Ud_Api {
 			'idempotency_key'		=> $order_id,
 		);
 
-		$response = wp_remote_post( 
-			$this->endpoint_create_delivery, 
-			array (
+		$response = wp_remote_post(
+			$this->endpoint_create_delivery,
+			array(
 				'headers' => $headers,
 				'body' => wp_json_encode($body),
-			) 
+			)
 		);
 
 		$delivery = json_decode(wp_remote_retrieve_body($response));
 		return $delivery;
 	}
 
-	public function update_delivery( $delivery_id, $tip ) {
-
+	public function update_delivery($delivery_id, $tip)
+	{
 		$headers = array(
 			'Content-Type' => 'application/json',
 			'Authorization' => 'Bearer ' . $this->get_access_token(),
@@ -144,28 +145,28 @@ class Udw_Ud_Api {
 			'tip_by_customer' => $tip * 100, // Tip is an integer amount in cents
 		);
 
-		$response = wp_remote_post( 
-			$this->endpoint_update_delivery . $delivery_id, 
-			array (
+		$response = wp_remote_post(
+			$this->endpoint_update_delivery . $delivery_id,
+			array(
 				'headers' => $headers,
 				'body' => wp_json_encode($body),
-			) 
+			)
 		);
 
 		$delivery = json_decode(wp_remote_retrieve_body($response));
 		return $delivery;
 	}
 
-	public function get_delivery( $delivery_id ) {
-
+	public function get_delivery($delivery_id)
+	{
 		$headers = array(
 			'Content-Type' => 'application/json',
 			'Authorization' => 'Bearer ' . $this->get_access_token(),
 		);
 
-		$response = wp_remote_get( 
-			$this->endpoint_get_delivery . $delivery_id, 
-			array (
+		$response = wp_remote_get(
+			$this->endpoint_get_delivery . $delivery_id,
+			array(
 				'headers' => $headers,
 			)
 		);
