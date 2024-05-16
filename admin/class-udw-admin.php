@@ -25,7 +25,6 @@ require_once UDW_ABSPATH . 'integrations/uberdirect/class-udw-ud-api.php';
 
 class Udw_Admin
 {
-
 	/**
 	 * The ID of this plugin.
 	 *
@@ -82,7 +81,7 @@ class Udw_Admin
 			return $integrations;
 		} else {
 			wp_admin_notice(
-				esc_html(__('Please install and activate WooCommerce to use Uber Direct!', 'uberdirect')),
+				esc_html__('Please install and activate WooCommerce to use Uber Direct!', 'uberdirect'),
 				array('type' => 'error')
 			);
 		}
@@ -148,33 +147,32 @@ class Udw_Admin
 		global $post;
 		$order_id = isset($post) ? $post->ID : $wc_post->get_id();
 		$order = wc_get_order($order_id);
-		$order_address = $order->get_shipping_address_1();
-		$udw_shipping_status = __('undefined', 'uberdirect');
+		$delivery_status = 'undefined';
 
-		if ($order->meta_exists('udw_shipping_status')) {
-			$udw_shipping_status = $order->get_meta('udw_shipping_status');
-		} else {
-			$udw_shipping_status = __('undelivered', 'uberdirect');
+		if ($order->meta_exists('_udw_delivery_id')) {
+			$delivery_id = $order->get_meta('_udw_delivery_id');
+			$delivery = $this->udw_ud_api->get_delivery($delivery_id);
+			$delivery_status = $delivery->status;
 		}
 
 		?>
 		<div id="udw-metabox-container">
 			<div id="udw-metabox-status">
-				<p>
-					<? echo sprintf(__('Status da entrega: %s', 'uberdirect'), $udw_shipping_status); ?>
-				</p>
-			</div>
-			<div id="udw-metabox-quote">
-				<p>
-					<?php
-					$udw_shipping_quote = $this->udw_ud_api->create_quote($order_address);
-					$udw_shipping_price = wc_price($udw_shipping_quote['fee'] / 100);
-					echo sprintf(__('Custo da entrega: %s', 'uberdirect'), $udw_shipping_price);
-					?>
-				</p>
+				<? esc_html_e(sprintf(__('Status: %s', 'uberdirect'), $delivery_status)); ?>
 			</div>
 			<div id="udw-metabox-action">
-				<a class="button button-primary" id="udw-button-pre-send" data-order-id="<?php echo $order_id ?>" href="#">Enviar</a>
+				<?php if (in_array($delivery_status, array('undefined', 'pending', 'canceled', 'returned'))) { ?>
+				<a href="#" class="button button-primary" id="udw-button-pre-send" data-order-id="<?php esc_attr_e($order_id); ?>">
+					<?php esc_html_e('Send', 'uberdirect'); ?>
+				</a>
+				<?php } elseif ($order->meta_exists('_udw_delivery_id')) { ?>
+				<p>
+					<? esc_html_e(sprintf(__('Courier: %s', 'uberdirect'), 		$delivery->courier->name)); ?>
+					<? esc_html_e(sprintf(__('Vehicle: %s', 'uberdirect'), 		$delivery->courier->vehicle_type)); ?>
+					<? esc_html_e(sprintf(__('Phone number: %s', 'uberdirect'), $delivery->courier->phone_number)); ?>
+					<? esc_html_e(sprintf(__('Tracking URL: %s', 'uberdirect'), $delivery->courier->tracking_url)); ?>
+				</p>
+				<?php } ?>
 			</div>
 		</div>
 		<?php
@@ -182,10 +180,10 @@ class Udw_Admin
 
 	public function ajax_get_delivery()
 	{
-		if(isset($_POST['security']) && check_ajax_referer('udw_nonce_delivery', 'security')) {
+		if (isset($_POST['security']) && check_ajax_referer('udw_nonce_delivery', 'security')) {
 			$order_id = $_POST['order_id'];
 			$order = wc_get_order($order_id);
-	
+
 			if ($order->meta_exists('_udw_delivery_id')) {
 				$delivery_id = $order->get_meta('_udw_delivery_id');
 				$delivery = $this->udw_ud_api->get_delivery($delivery_id);
