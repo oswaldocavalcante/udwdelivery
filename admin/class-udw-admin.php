@@ -201,7 +201,7 @@ class Udw_Admin
 			$order = wc_get_order($order_id);
 
 			$dropoff_name 			= $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name();
-			$dropoff_address 		= $order->get_shipping_address_1() . ', ' . $order->get_shipping_postcode();
+			$dropoff_address 		= str_replace('<br/>',', ',$order->get_formatted_shipping_address());
 			$dropoff_notes 			= $order->get_shipping_address_2();
 			$dropoff_phone_number 	= $order->get_billing_phone();
 
