@@ -30,20 +30,19 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-/**
- * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
- */
-define( 'UBERDIRECT_VERSION', '1.0.0' );
-
 if (!defined('UDW_PLUGIN_FILE')) {
 	define('UDW_PLUGIN_FILE', __FILE__);
 }
+
+define('UDW_VERSION', '1.0.0');
+define('UDW_ABSPATH', dirname(UDW_PLUGIN_FILE) . '/');
+define('UDW_URL', plugins_url('/', __FILE__));
+
 /**
  * The code that runs during plugin activation.
  */
-function activate_udw() {
+function activate_udw() 
+{
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-uberdirect-activator.php';
 	UberDirect_Activator::activate();
 }
@@ -51,7 +50,8 @@ function activate_udw() {
 /**
  * The code that runs during plugin deactivation.
  */
-function deactivate_udw() {
+function deactivate_udw() 
+{
 	require_once plugin_dir_path( __FILE__ ) . 'includes/class-uberdirect-deactivator.php';
 	UberDirect_Deactivator::deactivate();
 }
@@ -74,10 +74,8 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-uberdirect.php';
  *
  * @since    1.0.0
  */
-function run_udw() {
-
+function run_udw() 
+{
 	$plugin = new UberDirect();
-	$plugin->run();
-
 }
 run_udw();

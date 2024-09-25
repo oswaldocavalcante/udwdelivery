@@ -1,4 +1,6 @@
 admin/.DS_Store
 public/.DS_Store
+vendor
+wp-content
 uberdirect.code-workspace
 .DS_Store

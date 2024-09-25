@@ -29,35 +29,6 @@
  */
 class UberDirect
 {
-
-	/**
-	 * The loader that's responsible for maintaining and registering all hooks that power
-	 * the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      Udw_Loader    $loader    Maintains and registers all hooks for the plugin.
-	 */
-	protected $loader;
-
-	/**
-	 * The unique identifier of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
-	 */
-	protected $plugin_name;
-
-	/**
-	 * The current version of the plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
-	 */
-	protected $version;
-
 	/**
 	 * Define the core functionality of the plugin.
 	 *
@@ -69,16 +40,6 @@ class UberDirect
 	 */
 	public function __construct()
 	{
-		if (defined('UBERDIRECT_VERSION')) {
-			$this->version = UBERDIRECT_VERSION;
-		} else {
-			$this->version = '1.0.0';
-		}
-
-		define('UDW_ABSPATH', dirname(UDW_PLUGIN_FILE) . '/');
-
-		$this->plugin_name = 'uberdirect';
-
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
@@ -102,11 +63,9 @@ class UberDirect
 	 */
 	private function load_dependencies()
 	{
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-uberdirect-loader.php';
-		require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-uberdirect-i18n.php';
-		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-udw-admin.php';
-
-		$this->loader = new UberDirect_Loader();
+		require_once UDW_ABSPATH . 'includes/class-uberdirect-loader.php';
+		require_once UDW_ABSPATH . 'includes/class-uberdirect-i18n.php';
+		require_once UDW_ABSPATH . 'admin/class-udw-admin.php';
 	}
 
 	/**
@@ -121,8 +80,7 @@ class UberDirect
 	private function set_locale()
 	{
 		$plugin_i18n = new UberDirect_i18n();
-
-		$this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
+		add_action('plugins_loaded', array($plugin_i18n, 'load_plugin_textdomain'));
 	}
 
 	/**
@@ -134,52 +92,17 @@ class UberDirect
 	 */
 	private function define_admin_hooks()
 	{
-		$plugin_admin = new Udw_Admin($this->get_plugin_name(), $this->get_version());
+		$plugin_admin = new Udw_Admin();
 
-		$this->loader->add_action('admin_enqueue_scripts', 		$plugin_admin, 'enqueue_styles');
-		$this->loader->add_action('admin_enqueue_scripts', 		$plugin_admin, 'enqueue_scripts');
-		$this->loader->add_action('admin_init', 				$plugin_admin, 'register_settings');
-		$this->loader->add_filter('woocommerce_integrations', 	$plugin_admin, 'add_integration');
-		$this->loader->add_action('add_meta_boxes', 			$plugin_admin, 'add_meta_box');
-		$this->loader->add_action('wp_ajax_udw_get_delivery', 	$plugin_admin, 'ajax_get_delivery');
-		$this->loader->add_action('wp_ajax_udw_create_delivery',$plugin_admin, 'ajax_create_delivery');
-		$this->loader->add_action('admin_footer', 				$plugin_admin, 'add_modal_templates');
-	}
+		add_action('admin_enqueue_scripts', 	array($plugin_admin, 'enqueue_styles'));
+		add_action('admin_enqueue_scripts', 	array($plugin_admin, 'enqueue_scripts'));
 
-	/**
-	 * Run the loader to execute all of the hooks with WordPress.
-	 *
-	 * @since    1.0.0
-	 */
-	public function run()
-	{
-		$this->loader->run();
-	}
+		add_action('admin_init', 				array($plugin_admin, 'register_settings'));
+		add_filter('woocommerce_integrations', 	array($plugin_admin, 'add_integration'));
+		add_action('add_meta_boxes', 			array($plugin_admin, 'add_meta_box'));
 
-	/**
-	 * @since     1.0.0
-	 * @return    string    The name of the plugin.
-	 */
-	public function get_plugin_name()
-	{
-		return $this->plugin_name;
-	}
-
-	/**
-	 * @since     1.0.0
-	 * @return    Udw_Loader    Orchestrates the hooks of the plugin.
-	 */
-	public function get_loader()
-	{
-		return $this->loader;
-	}
-
-	/**
-	 * @since     1.0.0
-	 * @return    string    The version number of the plugin.
-	 */
-	public function get_version()
-	{
-		return $this->version;
+		add_action('wp_ajax_udw_get_delivery', 	array($plugin_admin, 'ajax_get_delivery'));
+		add_action('wp_ajax_udw_create_delivery', array($plugin_admin, 'ajax_create_delivery'));
+		add_action('admin_footer', 				array($plugin_admin, 'add_modal_templates'));
 	}
 }

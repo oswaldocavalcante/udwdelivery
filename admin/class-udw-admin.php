@@ -25,24 +25,6 @@ require_once UDW_ABSPATH . 'integrations/uberdirect/class-udw-ud-api.php';
 
 class Udw_Admin
 {
-	/**
-	 * The ID of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
-	 */
-	private $plugin_name;
-
-	/**
-	 * The version of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $version    The current version of this plugin.
-	 */
-	private $version;
-
 	private $udw_ud_api;
 
 	/**
@@ -52,10 +34,8 @@ class Udw_Admin
 	 * @param      string    $plugin_name       The name of this plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct($plugin_name, $version)
+	public function __construct()
 	{
-		$this->plugin_name = $plugin_name;
-		$this->version = $version;
 		$this->udw_ud_api = new Udw_Ud_Api();
 	}
 
@@ -74,16 +54,15 @@ class Udw_Admin
 
 	public function add_integration($integrations)
 	{
-		if ($this->is_woocommerce_active()) {
+		if ($this->is_woocommerce_active())
+		{
 			include_once  UDW_ABSPATH . 'integrations/woocommerce/class-udw-wc-integration.php';
 			$integrations[] = 'Udw_Wc_Integration';
 
 			return $integrations;
-		} else {
-			wp_admin_notice(
-				esc_html__('Please install and activate WooCommerce to use Uber Direct!', 'uberdirect'),
-				array('type' => 'error')
-			);
+		}
+		else {
+			wp_admin_notice(__('Please install and activate WooCommerce to use Uber Direct!', 'uberdirect'), array('type' => 'error'));
 		}
 
 		return null;
@@ -96,7 +75,7 @@ class Udw_Admin
 	 */
 	public function enqueue_styles()
 	{
-		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'assets/css/udw-admin.css', array(), $this->version, 'all');
+		wp_enqueue_style('uberdirect', plugin_dir_url(__FILE__) . 'assets/css/udw-admin.css', array(), UDW_VERSION, 'all');
 	}
 
 	/**
@@ -106,10 +85,10 @@ class Udw_Admin
 	 */
 	public function enqueue_scripts()
 	{
-		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'assets/js/udw-admin.js', array('jquery'), $this->version, false);
+		wp_enqueue_script('uberdirect', plugin_dir_url(__FILE__) . 'assets/js/udw-admin.js', array('jquery'), UDW_VERSION, false);
 
 		wp_localize_script(
-			$this->plugin_name,
+			'uberdirect',
 			'udw_delivery_params',
 			array(
 				'url' => admin_url('admin-ajax.php'),
@@ -127,19 +106,7 @@ class Udw_Admin
 
 	public function add_meta_box()
 	{
-		if (!empty($_SERVER['REQUEST_URI'])) {
-			if (strstr($_SERVER['REQUEST_URI'], 'wc-orders') !== false && strstr($_SERVER['REQUEST_URI'], 'edit') !== false) {
-				$screen = class_exists('\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController') && wc_get_container()->get(CustomOrdersTableController::class)->custom_orders_table_usage_is_enabled()
-					? wc_get_page_screen_id('shop_order')
-					: 'shop_order';
-				add_meta_box('wc-udw-widget', __('Envio (Uber Direct)', 'udw-widget'), array($this, 'render_meta_box'),  $screen, 'side', 'high');
-			} else {
-				$array = explode('/', esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])));
-				if (substr(end($array), 0, strlen('Uberdirect-new.php')) !== 'post-new.php') {
-					add_meta_box('wc-udw-widget', __('Envio (Uber Direct)', 'udw-widget'), array($this, 'render_meta_box'), 'shop_order', 'side', 'high');
-				}
-			}
-		}
+		add_meta_box('wc-udw-widget', __('Uber Direct', 'udw-widget'), array($this, 'render_meta_box'), 'shop_order', 'side', 'high');
 	}
 
 	public function render_meta_box($wc_post)
@@ -149,7 +116,8 @@ class Udw_Admin
 		$order = wc_get_order($order_id);
 		$delivery_status = 'undefined';
 
-		if ($order->meta_exists('_udw_delivery_id')) {
+		if ($order->meta_exists('_udw_delivery_id'))
+		{
 			$delivery_id = $order->get_meta('_udw_delivery_id');
 			$delivery = $this->udw_ud_api->get_delivery($delivery_id);
 			$delivery_status = $delivery->status;
@@ -180,15 +148,18 @@ class Udw_Admin
 
 	public function ajax_get_delivery()
 	{
-		if (isset($_POST['security']) && check_ajax_referer('udw_nonce_delivery', 'security')) {
+		if (isset($_POST['security']) && check_ajax_referer('udw_nonce_delivery', 'security')) 
+		{
 			$order_id = $_POST['order_id'];
 			$order = wc_get_order($order_id);
 
-			if ($order->meta_exists('_udw_delivery_id')) {
+			if ($order->meta_exists('_udw_delivery_id')) 
+			{
 				$delivery_id = $order->get_meta('_udw_delivery_id');
 				$delivery = $this->udw_ud_api->get_delivery($delivery_id);
 				wp_send_json_success($delivery);
-			} else {
+			} 
+			else {
 				wp_send_json_success(json_decode($order));
 			}
 		}
@@ -196,7 +167,8 @@ class Udw_Admin
 
 	public function ajax_create_delivery()
 	{
-		if (isset($_POST['security']) && check_ajax_referer('udw_nonce_delivery', 'security')) {
+		if (isset($_POST['security']) && check_ajax_referer('udw_nonce_delivery', 'security')) 
+		{
 			$order_id = $_POST['order_id'];
 			$order = wc_get_order($order_id);
 
@@ -204,26 +176,26 @@ class Udw_Admin
 			$dropoff_address 		= str_replace('<br/>',', ',$order->get_formatted_shipping_address());
 			$dropoff_notes 			= $order->get_shipping_address_2();
 			$dropoff_phone_number 	= $order->get_billing_phone();
-
 			$manifest_items 		= array();
+
 			foreach ($order->get_items() as $item) {
 				$manifest_items[] = new ManifestItem($item->get_name(), $item->get_quantity());
 			}
 
-			$ud_delivery = $this->udw_ud_api->create_delivery($order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items);
+			$delivery = $this->udw_ud_api->create_delivery($order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items);
 
-			$tip = (float) $order->get_shipping_total() - ($ud_delivery->fee / 100); // Fee is in cents
+			$tip = (float) $order->get_shipping_total() - ($delivery->fee / 100); // Fee is in cents
 			if ($tip > 0) {
-				// Updates the delivery repassing the difference between the quote and the real delivery to Uber for tax issues
-				$ud_delivery = $this->udw_ud_api->update_delivery($ud_delivery->id, $tip);
+				$delivery = $this->udw_ud_api->update_delivery($delivery->id, $tip); // Updates the delivery repassing the difference between the quote and the real delivery to Uber for tax issues
 			}
 
-			if (!$order->meta_exists('_udw_delivery_id')) {
-				$order->add_meta_data('_udw_delivery_id', $ud_delivery->id);
+			if (!$order->meta_exists('_udw_delivery_id')) 
+			{
+				$order->add_meta_data('_udw_delivery_id', $delivery->id);
 				$order->save_meta_data();
 			}
 
-			wp_send_json_success($ud_delivery);
+			wp_send_json_success($delivery);
 		}
 	}
 

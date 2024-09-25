@@ -34,25 +34,30 @@ class Udw_Wc_Integration extends WC_Integration
 
 	public function init_form_fields()
 	{
-		$this->form_fields = array(
-			'wck-credentials-section' => array(
+		$this->form_fields = array
+		(
+			'wck-credentials-section' => array
+			(
 				'title'       => __('Access Credentials', 'uberdirect'),
 				'type'        => 'title',
 				'description' => sprintf(__('See how to create your account and get your credentials in <a href="https://developer.uber.com/docs/deliveries/get-started" target="blank">%s</a>', 'uberdirect'), 'https://developer.uber.com/docs/deliveries/get-started'),
 			),
-			'udw-api-customer-id' => array(
+			'udw-api-customer-id' => array
+			(
 				'title'       	=> __('Customer ID', 'uberdirect'),
 				'type'        	=> 'text',
 				'description' 	=> __('Your Customer (Business ID) in Uber Direct settings.', 'uberdirect'),
 				'default'     	=> '',
 			),
-			'udw-api-client-id' => array(
+			'udw-api-client-id' => array
+			(
 				'title'       	=> __('Client ID', 'uberdirect'),
 				'type'        	=> 'text',
 				'description' 	=> __('Your Client ID in Uber Direct settings.', 'uberdirect'),
 				'default'     	=> '',
 			),
-			'udw-api-client-secret' => array(
+			'udw-api-client-secret' => array
+			(
 				'title'       	=> __('Client Secret', 'uberdirect'),
 				'type'        	=> 'text',
 				'description' 	=> __('Your Client Secret in Uber Direct settings.', 'uberdirect'),
@@ -103,7 +108,7 @@ class Udw_Wc_Integration extends WC_Integration
 			$reordered_columns[$key] = $column;
 			if ($key == 'order_status') {
 				// Inserting after "Status" column
-				$reordered_columns['udw-shipping'] = __('Envio (Uber Direct)');
+				$reordered_columns['udw-shipping'] = __('Uber Direct', 'uberdirect');
 			}
 		}
 		return $reordered_columns;
@@ -118,19 +123,24 @@ class Udw_Wc_Integration extends WC_Integration
 			// Checks if the order isnt set to delivery
 			if ($order->get_shipping_total() == 0) {
 				echo $order->get_shipping_method();
-			} else {
+			} 
+			else 
+			{
 				echo '<a 
 					href="' . esc_html('#') . '" 
 					id="udw-button-pre-send"
 					data-order-id="' . $order_id . '"
 				';
 				// Checks if the order has not been sended
-				if (!$order->meta_exists('_udw_delivery_id')) {
+				if (!$order->meta_exists('_udw_delivery_id')) 
+				{
 					echo 'class="button button-primary button-large" >';
-					echo __('Enviar agora', 'uberdirect');
-				} else {
+					echo __('Send now', 'uberdirect');
+				} 
+				else 
+				{
 					echo 'class="button button-large" >';
-					echo __('Ver envio', 'uberdirect');
+					echo __('See delivery', 'uberdirect');
 				}
 				echo '</a>';
 			}

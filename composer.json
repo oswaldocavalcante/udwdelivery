@@ -1,0 +1,10 @@
+{
+    "require": {
+        "woocommerce/woocommerce": "^3.5"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
+        }
+    }
+}
