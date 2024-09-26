@@ -47,8 +47,8 @@ class Udw_Ud_Api
 	public function get_access_token()
 	{
 		// Checks if the Access Token is expired to regenate it
-		// if (false === ($this->access_token = get_transient('udw-api-access-token')))
-		// {
+		if (false === ($this->access_token = get_transient('udw-api-access-token')))
+		{
 			$response = wp_remote_post(
 				'https://auth.uber.com/oauth/v2/token',
 				array(
@@ -72,7 +72,7 @@ class Udw_Ud_Api
 			} else {
 				return false;
 			}
-		// }
+		}
 
 		return $this->access_token;
 	}
