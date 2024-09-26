@@ -133,32 +133,43 @@ class Udw_Wc_Integration extends WC_Integration
 
 	function add_order_list_column_buttons($column, $order_id)
 	{
-		if ($column === 'udw-shipping') {
-
+		if ($column === 'udw-shipping')
+		{
 			$order = wc_get_order($order_id);
+
+			if(!$order) return;
 
 			// Checks if the order isnt set to delivery
 			if ($order->get_shipping_total() == 0) {
 				echo $order->get_shipping_method();
-			} 
-			else 
+			}
+			else
 			{
-				echo '<a 
-					href="' . esc_html('#') . '" 
-					id="udw-button-pre-send"
-					data-order-id="' . $order_id . '"
-				';
-				// Checks if the order has not been sended
-				if (!$order->meta_exists('_udw_delivery_id')) 
+				$css_classes = 'button button-large ';
+				$button_label = '';
+
+				if ($order->meta_exists('_udw_delivery_id')) // Checks if the order has not been sended
 				{
-					echo 'class="button button-primary button-large" >';
-					echo __('Send now', 'uberdirect');
+					$button_label = __('See delivery', 'uberdirect');
 				} 
-				else 
+				else
 				{
-					echo 'class="button button-large" >';
-					echo __('See delivery', 'uberdirect');
+					$css_classes .= 'button-primary ';
+					$button_label = __('Send now', 'uberdirect');
+
+					if ($order->get_status() != 'processing')
+					{
+						$css_classes .= 'disabled ';
+					}
 				}
+
+				echo 
+				'<a 
+					id="udw-button-pre-send"
+					data-order-id="' . esc_attr($order_id) . '"
+					class="' . esc_attr($css_classes) . '"
+				>';
+				echo $button_label;
 				echo '</a>';
 			}
 		}
