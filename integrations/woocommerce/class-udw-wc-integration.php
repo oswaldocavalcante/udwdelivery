@@ -36,7 +36,7 @@ class Udw_Wc_Integration extends WC_Integration
 	{
 		$this->form_fields = array
 		(
-			'wck-credentials-section' => array
+			'udw-api-section' => array
 			(
 				'title'       => __('Access Credentials', 'uberdirect'),
 				'type'        => 'title',
@@ -63,6 +63,20 @@ class Udw_Wc_Integration extends WC_Integration
 				'description' 	=> __('Your Client Secret in Uber Direct settings.', 'uberdirect'),
 				'default'     	=> '',
 			),
+			'udw-extra_fee-section' => array
+			(
+				'title'       => __('Extra fee', 'uberdirect'),
+				'type'        => 'title',
+				'description' => __('Set an extra fee to compensate the variation between the quote price and the actual delivery price. This difference, if positive, will be given as a tip for the driver.', 'uberdirect')
+			),
+			'udw-extra_fee-value' => array
+			(
+				'title' => __('Extra fee', 'uberdirect'),
+				'type' => 'price',
+				'description' => __('Enter a value with one monetary decimal point (,) without thousand separators and currency symbols.', 'uberdirect'),
+				'default' => 0,
+				'placeholder' => '0,00'
+			)
 		);
 	}
 
@@ -71,6 +85,7 @@ class Udw_Wc_Integration extends WC_Integration
 		update_option('udw-api-customer-id', 	$this->get_option('udw-api-customer-id'));
 		update_option('udw-api-client-id', 		$this->get_option('udw-api-client-id'));
 		update_option('udw-api-client-secret', 	$this->get_option('udw-api-client-secret'));
+		update_option('udw-extra_fee', 			$this->get_option('udw-extra_fee-value') ? $this->get_option('udw-extra_fee-value') : 0);
 
 		echo '<div id="udw-settings">';
 		echo '<h2>' . esc_html($this->get_method_title()) . '</h2>';
@@ -93,6 +108,7 @@ class Udw_Wc_Integration extends WC_Integration
 	public function add_shipping_method($methods)
 	{
 		$methods['UBERDIRECT_SHIPPING_METHOD'] = 'Udw_Wc_Shipping_Method';
+
 		return $methods;
 	}
 
@@ -111,6 +127,7 @@ class Udw_Wc_Integration extends WC_Integration
 				$reordered_columns['udw-shipping'] = __('Uber Direct', 'uberdirect');
 			}
 		}
+
 		return $reordered_columns;
 	}
 

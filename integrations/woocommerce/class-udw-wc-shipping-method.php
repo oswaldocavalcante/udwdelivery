@@ -32,21 +32,35 @@ if ( ! class_exists( 'Udw_Wc_Shipping_Method' ) ) {
 		 */
 		public function calculate_shipping($package = array()) 
 		{
-			$destination 		= $package['destination']['address'] . ', ' . $package['destination']['postcode'];
-			
-			$delivery_quote 	= $this->ud_api->create_quote($destination);
-			$delivery_variation = 2; // Maximum variable of variation price for delivery
-			$delivery_cost 		= $delivery_quote['fee'] > 0 ? ($delivery_quote['fee'] / 100) + $delivery_variation : $delivery_quote['fee'];
+			$destination 	= $package['destination']['address'] . ', ' . $package['destination']['postcode'];
+			$delivery_quote = $this->ud_api->create_quote($destination);
 
-			$rate = array
-			(
-				'id'       => $this->id,
-				'label'    => $this->title,
-				'cost'     => $delivery_cost,
-				'calc_tax' => 'per_order'
-			);
+			if(isset($delivery_quote['fee']) && $delivery_quote['fee'])
+			{
+				$delivery_variation = floatval(get_option('udw-extra_fee')); // Maximum variable of variation price for delivery
+				$delivery_cost 		= ($delivery_quote['fee'] / 100) + $delivery_variation;
 
-			$this->add_rate( $rate );
+				// Convert delivery ETA to WooCommerce format
+				$dropoff_eta = new WC_DateTime($delivery_quote['dropoff_eta']);
+				$current_date = new WC_DateTime();
+
+				if ($dropoff_eta->format('Y-m-d') === $current_date->format('Y-m-d')) {
+					$formatted_eta = __('today, ', 'uberdirect') . $dropoff_eta->format('H:i');
+				}
+				else {
+					$formatted_eta = wc_format_datetime($dropoff_eta, 'D, d/m, H:m');
+				}
+				
+				$rate = array
+				(
+					'id'       => $this->id,
+					'label'    => $this->title . sprintf(' (%s)', $formatted_eta),
+					'cost'     => $delivery_cost,
+					'calc_tax' => 'per_order'
+				);
+				
+				$this->add_rate($rate);
+			}
 		}
 	}
 }
