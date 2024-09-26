@@ -140,3 +140,6 @@ msgstr "Ver entrega"
 
 msgid "Send now"
 msgstr "Enviar agora"
+
+msgid "today, "
+msgstr "hoje, "

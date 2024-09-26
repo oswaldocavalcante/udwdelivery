@@ -144,3 +144,6 @@ msgstr ""
 
 msgid "Send now"
 msgstr ""
+
+msgid "today, "
+msgstr ""
