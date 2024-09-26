@@ -1,0 +1,142 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.5\n"
+
+msgid "Please install and activate WooCommerce to use Uber Direct!"
+msgstr "Por favor, instale e ative o WooCommerce para usar o Uber Direct!"
+
+msgid "Status: %s"
+msgstr "Status: %s"
+
+msgid "Send"
+msgstr "Enviar"
+
+msgid "Courier: %s"
+msgstr "Entregador: %s"
+
+msgid "Vehicle: %s"
+msgstr "Veículo: %s"
+
+msgid "Phone number: %s"
+msgstr "Número de telefone: %s"
+
+msgid "Tracking URL: %s"
+msgstr "URL de rastreamento: %s"
+
+msgid "Close modal panel"
+msgstr "Fechar painel modal"
+
+msgid "Recipient Information"
+msgstr "Informações do Destinatário"
+
+msgid "Recipient Name"
+msgstr "Nome do Destinatário"
+
+msgid "Delivery Address"
+msgstr "Endereço de Entrega"
+
+msgid "Notes"
+msgstr "Observações"
+
+msgid "Driver information"
+msgstr "Informações do Motorista"
+
+msgid "Name"
+msgstr "Nome"
+
+msgid "Vehicle"
+msgstr "Veículo"
+
+msgid "Tracking URL"
+msgstr "URL de Rastreamento"
+
+msgid "Shipping cost: R$ %s"
+msgstr "Custo de envio: R$ %s"
+
+msgid "Tip: R$ %s"
+msgstr "Gorjeta: R$ %s"
+
+msgid "Shipping Information"
+msgstr "Informações de Envio"
+
+msgid "Complement"
+msgstr "Complemento"
+
+msgid "Paid Shipping"
+msgstr "Frete Pago"
+
+msgid "Sobrenome"
+msgstr "Sobrenome"
+
+msgid "Telefone"
+msgstr "Telefone"
+
+msgid "Package information"
+msgstr "Informações do Pacote"
+
+msgid "Order ID"
+msgstr "ID do Pedido"
+
+msgid "Request courier"
+msgstr "Solicitar entregador"
+
+msgid "Integrates Uber Direct delivery for Woocommerce."
+msgstr "Integra a entrega Uber Direct para WooCommerce."
+
+msgid "Access Credentials"
+msgstr "Credenciais de Acesso"
+
+msgid "See how to create your account and get your credentials in %s"
+msgstr "Veja como criar sua conta e obter suas credenciais em %s"
+
+msgid "Customer ID"
+msgstr "ID do Cliente"
+
+msgid "Your Customer (Business ID) in Uber Direct settings."
+msgstr "Seu ID de Cliente (Business ID) nas configurações do Uber Direct."
+
+msgid "Client ID"
+msgstr "ID do Cliente"
+
+msgid "Your Client ID in Uber Direct settings."
+msgstr "Seu ID de Cliente nas configurações do Uber Direct."
+
+msgid "Client Secret"
+msgstr "Segredo do Cliente"
+
+msgid "Your Client Secret in Uber Direct settings."
+msgstr "Seu Segredo do Cliente nas configurações do Uber Direct."
+
+msgid "Extra fee"
+msgstr "Taxa extra"
+
+msgid "Set an extra fee to compensate the variation between the quote price and the actual delivery price. This difference, if positive, will be given as a tip for the driver."
+msgstr "Defina uma taxa extra para compensar a variação entre o preço cotado e o preço real da entrega. Essa diferença, se positiva, será dada como gorjeta para o motorista."
+
+msgid "Enter a value with one monetary decimal point (,) without thousand separators and currency symbols."
+msgstr "Digite um valor com um ponto decimal monetário (,) sem separadores de milhar e símbolos de moeda."
+
+msgid "Connected"
+msgstr "Conectado"
+
+msgid "Uber Direct: Set your API access credentials."
+msgstr "Uber Direct: Configure suas credenciais de acesso à API."
+
+msgid "Uber Direct"
+msgstr "Uber Direct"
+
+msgid "See delivery"
+msgstr "Ver entrega"
+
+msgid "Send now"
+msgstr "Enviar agora"

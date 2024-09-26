@@ -1,0 +1,146 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Please install and activate WooCommerce to use Uber Direct!"
+msgstr ""
+
+msgid "Status: %s"
+msgstr ""
+
+msgid "Send"
+msgstr ""
+
+msgid "Courier: %s"
+msgstr ""
+
+msgid "Vehicle: %s"
+msgstr ""
+
+msgid "Phone number: %s"
+msgstr ""
+
+msgid "Tracking URL: %s"
+msgstr ""
+
+msgid "Close modal panel"
+msgstr ""
+
+msgid "Recipient Information"
+msgstr ""
+
+msgid "Recipient Name"
+msgstr ""
+
+msgid "Delivery Address"
+msgstr ""
+
+msgid "Notes"
+msgstr ""
+
+msgid "Driver information"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Vehicle"
+msgstr ""
+
+msgid "Tracking URL"
+msgstr ""
+
+msgid "Shipping cost: R$ %s"
+msgstr ""
+
+msgid "Tip: R$ %s"
+msgstr ""
+
+msgid "Shipping Information"
+msgstr ""
+
+msgid "Delivery Address"
+msgstr ""
+
+msgid "Complement"
+msgstr ""
+
+msgid "Paid Shipping"
+msgstr ""
+
+msgid "Recipient Information"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Sobrenome"
+msgstr ""
+
+msgid "Telefone"
+msgstr ""
+
+msgid "Notes"
+msgstr ""
+
+msgid "Package information"
+msgstr ""
+
+msgid "Order ID"
+msgstr ""
+
+msgid "Request courier"
+msgstr ""
+
+msgid "Integrates Uber Direct delivery for Woocommerce."
+msgstr ""
+
+msgid "Access Credentials"
+msgstr ""
+
+msgid "See how to create your account and get your credentials in %s"
+msgstr ""
+
+msgid "Customer ID"
+msgstr ""
+
+msgid "Your Customer (Business ID) in Uber Direct settings."
+msgstr ""
+
+msgid "Client ID"
+msgstr ""
+
+msgid "Your Client ID in Uber Direct settings."
+msgstr ""
+
+msgid "Client Secret"
+msgstr ""
+
+msgid "Your Client Secret in Uber Direct settings."
+msgstr ""
+
+msgid "Extra fee"
+msgstr ""
+
+msgid "Set an extra fee to compensate the variation between the quote price and the actual delivery price. This difference, if positive, will be given as a tip for the driver."
+msgstr ""
+
+msgid "Enter a value with one monetary decimal point (,) without thousand separators and currency symbols."
+msgstr ""
+
+msgid "Connected"
+msgstr ""
+
+msgid "Uber Direct: Set your API access credentials."
+msgstr ""
+
+msgid "Uber Direct"
+msgstr ""
+
+msgid "See delivery"
+msgstr ""
+
+msgid "Send now"
+msgstr ""

@@ -20,32 +20,32 @@
                     <div id="udw-delivery-container">
 
                         <div id="udw-delivery-dropoff" class="udw-delivery-block">
-                            <h2><?php esc_html_e('Informações do destinatário', 'uberdirect'); ?></h2>
+                            <h2><?php esc_html_e('Recipient Information', 'uberdirect'); ?></h2>
 
                             <# if ( data.dropoff.name ) { #>
                             <div class="udw-delivery-data-wrapper">
-                                <small><?php echo  __('Nome do destinatário', 'uberdirect') ?></small>
+                                <small><?php echo  __('Recipient Name', 'uberdirect') ?></small>
                                 <p>{{ data.dropoff.name }}</p>
                             </div>
                             <# } #>
 
                             <# if ( data.dropoff.phone_number ) { #>
                             <div class="udw-delivery-data-wrapper">
-                                <small><?php echo  __('Telefone', 'uberdirect') ?></small>
+                                <small><?php echo  __('Phone number', 'uberdirect') ?></small>
                                 <p>{{ data.dropoff.phone_number }}</p>
                             </div>
                             <# } #>
 
                             <# if ( data.dropoff.address ) { #>
                             <div class="udw-delivery-data-wrapper">
-                                <small><?php echo  __('Enderço de entrega', 'uberdirect') ?></small>
+                                <small><?php echo  __('Delivery Address', 'uberdirect') ?></small>
                                 <p>{{ data.dropoff.address }}</p>
                             </div>
                             <# } #>
 
                             <# if( data.dropoff.notes ) { #>
                             <div class="udw-delivery-data-wrapper">
-                                <small><?php echo  __('Observações', 'uberdirect') ?></small>
+                                <small><?php echo  __('Notes', 'uberdirect') ?></small>
                                 <p>{{ data.dropoff.notes }}</p>
                             </div>
                             <# } #>
@@ -53,7 +53,7 @@
 
                         <# if( data.courier ) { #>
                         <div id="udw-delivery-courier" class="udw-delivery-block">
-                            <h2><?php esc_html_e('Informações do motorista', 'uberdirect'); ?></h2>
+                            <h2><?php esc_html_e('Driver information', 'uberdirect'); ?></h2>
                             <div class="udw-delivery-courier-container">
 
                                 <# if( data.courier.img_href ) { #>
@@ -64,21 +64,21 @@
 
                                 <# if( data.courier.name ) { #>
                                 <div class="udw-delivery-data-wrapper">
-                                    <small><?php esc_html_e('Nome', 'uberdirect'); ?></small>
+                                    <small><?php esc_html_e('Name', 'uberdirect'); ?></small>
                                     <p>{{ data.courier.name }}</p>
                                 </div>
                                 <# } #>
 
                                 <# if( data.courier.vehicle_type ) { #>
                                 <div class="udw-delivery-data-wrapper">
-                                    <small><?php esc_html_e('Veículo', 'uberdirect'); ?></small>
+                                    <small><?php esc_html_e('Vehicle', 'uberdirect'); ?></small>
                                     <p>{{ data.courier.vehicle_type }}</p>
                                 </div>
                                 <# } #>
 
                                 <# if( data.courier.phone_number ) { #>
                                 <div class="udw-delivery-data-wrapper">
-                                    <small><?php esc_html_e('Telefone', 'uberdirect'); ?></small>
+                                    <small><?php esc_html_e('Phone number', 'uberdirect'); ?></small>
                                     <p>{{ data.courier.phone_number }}</p>
                                 </div>
                                 <# } #>
@@ -88,9 +88,9 @@
 
                         <# if( data.tracking_url ) { #>
                         <div id="udw-delivery-tracking_url-container" class="udw-delivery-block">
-                            <h2><?php esc_html_e('Informações do pacote', 'uberdirect'); ?></h2>
+                            <h2><?php esc_html_e('Package information', 'uberdirect'); ?></h2>
                             <div class="udw-delivery-data-wrapper">
-                                <label><?php esc_html_e('URL do acompanhamento ', 'uberdirect'); ?></label>
+                                <label><?php esc_html_e('Tracking URL ', 'uberdirect'); ?></label>
                                 <input id="udw-delivery-tracking_url" type="text" value="{{{ data.tracking_url }}}" readonly />
                                 <button id="udw-delivery-btn_coppy-tracking_url" class="button">Copiar</button>
                             </div>
@@ -105,12 +105,12 @@
                     <div class="inner">
                         <# if( data.fee ) { #>
                         <h3  id="udw-delivery-fee">
-                            <?php echo 'Custo do envio: R$ ' . '{{data.fee}}'; ?>
+                            <?php echo 'Shipping cost: R$ ' . '{{data.fee}}'; ?>
                         </h3>
                         <# } #>
                         <# if( data.tip ) { #>
                         <p id="udw-delivery-tip">
-                            <?php echo 'Gorjeta: R$ ' . '{{data.tip}}'; ?>
+                            <?php echo 'Tip: R$ ' . '{{data.tip}}'; ?>
                         </p>
                         <# } #>
                     </div>

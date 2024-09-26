@@ -62,7 +62,7 @@ var WCOrdersTable = function () {
 			success: function (response) {
 				if (response.success) {
 					document.getElementById('udw-modal-quote-container').remove();
-					$("a[data-order-id='" + $order_id + "']").text('Ver envio');
+					$("a[data-order-id='" + $order_id + "']").text('Ver envio'); //Configure translation
 					$(this).WCBackboneModal({
 						template: 'udw-modal-delivery',
 						variable: response.data
