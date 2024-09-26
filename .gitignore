@@ -4,3 +4,4 @@ vendor
 wp-content
 uberdirect.code-workspace
 .DS_Store
+.vscode
