@@ -52,6 +52,59 @@ class Udw_Admin
 		}
 	}
 
+	public function register_settings()
+	{
+		register_setting('uberdirect_settings', 'udw-api-customer-id', 		array('type' => 'string', 'default' => ''));
+		register_setting('uberdirect_settings', 'udw-api-client-id', 		array('type' => 'string', 'default' => ''));
+		register_setting('uberdirect_settings', 'udw-api-client-secret', 	array('type' => 'string', 'default' => ''));
+	}
+
+	/**
+	 * Register the admin-specific webhook endpoint.
+	 *
+	 * @since    1.0.0
+	 * @access   public
+	 */
+	public function register_webhook()
+	{
+		register_rest_route('uberdirect/v1', '/status', array
+			(
+				'methods'  => 'POST',
+				'callback' => array($this, 'handle_webhook'),
+				'permission_callback' => '__return_true',
+			)
+		);
+	}
+
+	/**
+	 * Handle the admin-specific webhook request.
+	 *
+	 * @since    1.0.0
+	 * @param    WP_REST_Request    $request    The request object.
+	 * @return   WP_REST_Response
+	 */
+	public function handle_webhook(WP_REST_Request $request)
+	{
+		$data = $request->get_json_params();
+
+		if(isset($data['status']) && $data['status'] == 'delivered'){
+			do_action('udw_change_order_status', $data['data']['external_id'], 'completed');
+		}
+
+		return new WP_REST_Response('Status Webhook received', 200);
+	}
+
+	public function change_order_status($order_id, $status)
+	{
+		$order = wc_get_order($order_id);
+
+		if($order && $status) 
+		{
+			$order->set_status($status);
+			$order->save();
+		}
+	}
+
 	public function add_integration($integrations)
 	{
 		if ($this->is_woocommerce_active())
@@ -95,13 +148,6 @@ class Udw_Admin
 				'nonce' => wp_create_nonce('udw_nonce_delivery'),
 			)
 		);
-	}
-
-	public function register_settings()
-	{
-		register_setting('uberdirect_settings', 'udw-api-customer-id', 		array('type' => 'string', 'default' => ''));
-		register_setting('uberdirect_settings', 'udw-api-client-id', 		array('type' => 'string', 'default' => ''));
-		register_setting('uberdirect_settings', 'udw-api-client-secret', 	array('type' => 'string', 'default' => ''));
 	}
 
 	public function add_meta_box()

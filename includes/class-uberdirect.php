@@ -104,5 +104,9 @@ class UberDirect
 		add_action('wp_ajax_udw_get_delivery', 	array($plugin_admin, 'ajax_get_delivery'));
 		add_action('wp_ajax_udw_create_delivery', array($plugin_admin, 'ajax_create_delivery'));
 		add_action('admin_footer', 				array($plugin_admin, 'add_modal_templates'));
+
+		// Register admin-specific webhook
+		add_action('rest_api_init', 			array($plugin_admin, 'register_webhook'));
+		add_action('udw_change_order_status', 	array($plugin_admin, 'change_order_status'), 10, 2);
 	}
 }
