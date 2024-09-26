@@ -148,8 +148,7 @@ class Udw_Wc_Integration extends WC_Integration
 				$css_classes = 'button button-large ';
 				$button_label = '';
 
-				if ($order->meta_exists('_udw_delivery_id')) // Checks if the order has not been sended
-				{
+				if ($order->meta_exists('_udw_delivery_id')) { // Checks if the order has not been sended
 					$button_label = __('See delivery', 'uberdirect');
 				} 
 				else
@@ -157,8 +156,7 @@ class Udw_Wc_Integration extends WC_Integration
 					$css_classes .= 'button-primary ';
 					$button_label = __('Send now', 'uberdirect');
 
-					if ($order->get_status() != 'processing')
-					{
+					if ($order->get_status() != 'processing') {
 						$css_classes .= 'disabled ';
 					}
 				}
