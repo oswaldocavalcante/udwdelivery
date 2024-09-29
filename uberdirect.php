@@ -23,6 +23,11 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       uberdirect
  * Domain Path:       /languages
+ * Requires Plugins:  woocommerce
+ * Tested up to: 6.6.2
+ * Requires PHP: 7.2
+ * WC requires at least: 4.0
+ * WC tested up to: 9.3.3
  */
 
 // If this file is called directly, abort.
