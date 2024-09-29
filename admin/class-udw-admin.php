@@ -39,19 +39,6 @@ class Udw_Admin
 		$this->udw_ud_api = new Udw_Ud_Api();
 	}
 
-	public function is_woocommerce_active()
-	{
-		$active_plugins = (array) get_option('active_plugins', array());
-		if (is_multisite()) {
-			$active_plugins = array_merge($active_plugins, get_site_option('active_sitewide_plugins', array()));
-		}
-		if (in_array('woocommerce/woocommerce.php', $active_plugins) || array_key_exists('woocommerce/woocommerce.php', $active_plugins)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	public function register_settings()
 	{
 		register_setting('uberdirect_settings', 'udw-api-customer-id', 		array('type' => 'string', 'default' => ''));
@@ -107,18 +94,10 @@ class Udw_Admin
 
 	public function add_integration($integrations)
 	{
-		if ($this->is_woocommerce_active())
-		{
-			include_once  UDW_ABSPATH . 'integrations/woocommerce/class-udw-wc-integration.php';
-			$integrations[] = 'Udw_Wc_Integration';
+		include_once  UDW_ABSPATH . 'integrations/woocommerce/class-udw-wc-integration.php';
+		$integrations[] = 'Udw_Wc_Integration';
 
-			return $integrations;
-		}
-		else {
-			wp_admin_notice(__('Please install and activate WooCommerce to use Uber Direct!', 'uberdirect'), array('type' => 'error'));
-		}
-
-		return null;
+		return $integrations;
 	}
 
 	/**
