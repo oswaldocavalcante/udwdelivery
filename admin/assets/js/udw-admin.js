@@ -13,22 +13,33 @@ var WCOrdersTable = function () {
 
         $.ajax({
 			url: udw_delivery_params.url,
-            data: {
+            data: 
+			{
                 order_id: $order_id,
 				action: 'udw_get_delivery',
 				security: udw_delivery_params.nonce,
             },
             type: 'POST',
-            success: function (response) {
-                if (response.success) {
-					// Selects which template to display
-					if(response.data.dropoff) {
-						$(this).WCBackboneModal({
+            success: function (response) 
+			{
+                if (response.success) 
+				{
+					// Selects the template to display
+					if(response.data.dropoff) 
+					{
+						response.data.fee = (parseFloat(response.data.fee) * 0.01).toFixed(2);
+						response.data.tip = (parseFloat(response.data.tip) * 0.01).toFixed(2);
+
+						$(this).WCBackboneModal
+						({
 							template: 'udw-modal-delivery',
 							variable: response.data
 						});
-					} else {
-						$(this).WCBackboneModal({
+					} 
+					else 
+					{
+						$(this).WCBackboneModal
+						({
 							template: 'udw-modal-quote',
 							variable: response.data
 						});

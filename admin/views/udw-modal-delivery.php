@@ -9,7 +9,7 @@
                     </mark>
                     <?php /* translators: %s: order ID */ ?>
                     <# if ( data.external_id ) { #>
-                    <h1><?php echo esc_html(sprintf(__('Envio do pedido #%s', 'uberdirect'), '{{ data.external_id }}')); ?></h1>
+                    <h1><?php esc_html_e(sprintf(__('Envio do pedido #%s', 'uberdirect'), '{{ data.external_id }}')); ?></h1>
                     <# } #>
                     <button class="modal-close modal-close-link dashicons dashicons-no-alt">
                         <span class="screen-reader-text"><?php esc_html_e('Close modal panel', 'woocommerce'); ?></span>
@@ -24,28 +24,28 @@
 
                             <# if ( data.dropoff.name ) { #>
                             <div class="udw-delivery-data-wrapper">
-                                <small><?php echo  __('Recipient Name', 'uberdirect') ?></small>
+                                <small><?php _e('Recipient Name', 'uberdirect') ?></small>
                                 <p>{{ data.dropoff.name }}</p>
                             </div>
                             <# } #>
 
                             <# if ( data.dropoff.phone_number ) { #>
                             <div class="udw-delivery-data-wrapper">
-                                <small><?php echo  __('Phone number', 'uberdirect') ?></small>
+                                <small><?php _e('Phone number', 'uberdirect') ?></small>
                                 <p>{{ data.dropoff.phone_number }}</p>
                             </div>
                             <# } #>
 
                             <# if ( data.dropoff.address ) { #>
                             <div class="udw-delivery-data-wrapper">
-                                <small><?php echo  __('Delivery Address', 'uberdirect') ?></small>
+                                <small><?php _e('Delivery Address', 'uberdirect') ?></small>
                                 <p>{{ data.dropoff.address }}</p>
                             </div>
                             <# } #>
 
                             <# if( data.dropoff.notes ) { #>
                             <div class="udw-delivery-data-wrapper">
-                                <small><?php echo  __('Notes', 'uberdirect') ?></small>
+                                <small><?php _e('Notes', 'uberdirect') ?></small>
                                 <p>{{ data.dropoff.notes }}</p>
                             </div>
                             <# } #>
@@ -103,14 +103,18 @@
 
                 <footer>
                     <div class="inner">
+                        <?php
+                            $currency           = get_woocommerce_currency();
+                            $currency_symbol    = get_woocommerce_currency_symbol($currency);
+                        ?>
                         <# if( data.fee ) { #>
                         <h3  id="udw-delivery-fee">
-                            <?php echo 'Shipping cost: R$ ' . '{{data.fee}}'; ?>
+                            <?php _e(sprintf('Shipping cost: %s %s', $currency_symbol, '{{data.fee}}')); ?>
                         </h3>
                         <# } #>
                         <# if( data.tip ) { #>
                         <p id="udw-delivery-tip">
-                            <?php echo 'Tip: R$ ' . '{{data.tip}}'; ?>
+                            <?php _e(sprintf('Tip: %s %s', $currency_symbol, '{{data.tip}}')); ?>
                         </p>
                         <# } #>
                     </div>

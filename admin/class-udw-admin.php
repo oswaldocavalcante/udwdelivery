@@ -54,8 +54,10 @@ class Udw_Admin
 	 */
 	public function register_webhook()
 	{
-		register_rest_route('uberdirect/v1', '/status', array
-			(
+		register_rest_route(
+			'uberdirect/v1',
+			'/status',
+			array(
 				'methods'  => 'POST',
 				'callback' => array($this, 'handle_webhook'),
 				'permission_callback' => '__return_true',
@@ -74,7 +76,8 @@ class Udw_Admin
 	{
 		$data = $request->get_json_params();
 
-		if(isset($data['status']) && $data['status'] == 'delivered'){
+		if (isset($data['status']) && $data['status'] == 'delivered')
+		{
 			do_action('udw_change_order_status', $data['data']['external_id'], 'completed');
 		}
 
@@ -85,7 +88,7 @@ class Udw_Admin
 	{
 		$order = wc_get_order($order_id);
 
-		if($order && $status) 
+		if ($order && $status)
 		{
 			$order->set_status($status);
 			$order->save();
@@ -154,18 +157,18 @@ class Udw_Admin
 				<? esc_html_e(sprintf(__('Status: %s', 'uberdirect'), $delivery_status)); ?>
 			</div>
 			<div id="udw-metabox-action">
-				<?php if (in_array($delivery_status, array('undefined', 'pending', 'canceled', 'returned'))) { ?>
-				<a href="#" class="button button-primary" id="udw-button-pre-send" data-order-id="<?php esc_attr_e($order_id); ?>">
-					<?php esc_html_e('Send', 'uberdirect'); ?>
-				</a>
-				<?php } elseif ($order->meta_exists('_udw_delivery_id')) { ?>
-				<p>
-					<? esc_html_e(sprintf(__('Courier: %s', 'uberdirect'), 		$delivery->courier->name)); ?>
-					<? esc_html_e(sprintf(__('Vehicle: %s', 'uberdirect'), 		$delivery->courier->vehicle_type)); ?>
-					<? esc_html_e(sprintf(__('Phone number: %s', 'uberdirect'), $delivery->courier->phone_number)); ?>
-					<? esc_html_e(sprintf(__('Tracking URL: %s', 'uberdirect'), $delivery->courier->tracking_url)); ?>
-				</p>
-				<?php } ?>
+				<?php if ($order->meta_exists('_udw_delivery_id')): ?>
+					<p>
+						<?php esc_html_e(sprintf(__('Courier: %s', 'uberdirect'), 		$delivery->courier->name)); ?>
+						<?php esc_html_e(sprintf(__('Vehicle: %s', 'uberdirect'), 		$delivery->courier->vehicle_type)); ?>
+						<?php esc_html_e(sprintf(__('Phone number: %s', 'uberdirect'), 	$delivery->courier->phone_number)); ?>
+						<?php esc_html_e(sprintf(__('Tracking URL: %s', 'uberdirect'), 	$delivery->tracking_url)); ?>
+					</p>
+				<?php else : ?>
+					<a href="#" class="button button-primary" id="udw-button-pre-send" data-order-id="<?php esc_attr_e($order_id); ?>">
+						<?php esc_html_e('Send', 'uberdirect'); ?>
+					</a>
+				<?php endif; ?>
 			</div>
 		</div>
 		<?php
@@ -173,18 +176,19 @@ class Udw_Admin
 
 	public function ajax_get_delivery()
 	{
-		if (isset($_POST['security']) && check_ajax_referer('udw_nonce_delivery', 'security')) 
+		if (isset($_POST['security']) && check_ajax_referer('udw_nonce_delivery', 'security'))
 		{
 			$order_id = $_POST['order_id'];
 			$order = wc_get_order($order_id);
 
-			if ($order->meta_exists('_udw_delivery_id')) 
+			if ($order->meta_exists('_udw_delivery_id'))
 			{
 				$delivery_id = $order->get_meta('_udw_delivery_id');
 				$delivery = $this->udw_ud_api->get_delivery($delivery_id);
 				wp_send_json_success($delivery);
-			} 
-			else {
+			}
+			else
+			{
 				wp_send_json_success(json_decode($order));
 			}
 		}
@@ -192,29 +196,31 @@ class Udw_Admin
 
 	public function ajax_create_delivery()
 	{
-		if (isset($_POST['security']) && check_ajax_referer('udw_nonce_delivery', 'security')) 
+		if (isset($_POST['security']) && check_ajax_referer('udw_nonce_delivery', 'security'))
 		{
 			$order_id = $_POST['order_id'];
 			$order = wc_get_order($order_id);
 
 			$dropoff_name 			= $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name();
-			$dropoff_address 		= str_replace('<br/>',', ',$order->get_formatted_shipping_address());
+			$dropoff_address 		= str_replace('<br/>', ', ', $order->get_formatted_shipping_address());
 			$dropoff_notes 			= $order->get_shipping_address_2();
 			$dropoff_phone_number 	= $order->get_billing_phone();
 			$manifest_items 		= array();
 
-			foreach ($order->get_items() as $item) {
+			foreach ($order->get_items() as $item)
+			{
 				$manifest_items[] = new ManifestItem($item->get_name(), $item->get_quantity());
 			}
 
 			$delivery = $this->udw_ud_api->create_delivery($order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items);
 
 			$tip = (float) $order->get_shipping_total() - ($delivery->fee / 100); // Fee is in cents
-			if ($tip > 0) {
+			if ($tip > 0)
+			{
 				$delivery = $this->udw_ud_api->update_delivery($delivery->id, $tip); // Updates the delivery repassing the difference between the quote and the real delivery to Uber for tax issues
 			}
 
-			if (!$order->meta_exists('_udw_delivery_id')) 
+			if (!$order->meta_exists('_udw_delivery_id'))
 			{
 				$order->add_meta_data('_udw_delivery_id', $delivery->id);
 				$order->save_meta_data();
