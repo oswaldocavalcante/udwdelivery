@@ -154,22 +154,30 @@ class Udw_Admin
 		?>
 		<div id="udw-metabox-container">
 			<div id="udw-metabox-status">
-				<? esc_html_e(sprintf(__('Status: %s', 'uberdirect'), $delivery_status)); ?>
+				<h4><? esc_html_e(sprintf(__('Status: %s', 'uberdirect'), $delivery_status)); ?></h4>
 			</div>
-			<div id="udw-metabox-action">
-				<?php if ($order->meta_exists('_udw_delivery_id')): ?>
-					<p>
-						<?php esc_html_e(sprintf(__('Courier: %s', 'uberdirect'), 		$delivery->courier->name)); ?>
-						<?php esc_html_e(sprintf(__('Vehicle: %s', 'uberdirect'), 		$delivery->courier->vehicle_type)); ?>
-						<?php esc_html_e(sprintf(__('Phone number: %s', 'uberdirect'), 	$delivery->courier->phone_number)); ?>
-						<?php esc_html_e(sprintf(__('Tracking URL: %s', 'uberdirect'), 	$delivery->tracking_url)); ?>
-					</p>
-				<?php else : ?>
+			<?php if ($order->meta_exists('_udw_delivery_id')): ?>
+
+				<h4><?php _e('Courier', 'uberdirect'); ?></h4>
+				<span><?php echo $delivery->courier->name ?? ''; ?></span>
+
+				<h4><?php _e('Vehicle', 'uberdirect'); ?></h4>
+				<span><?php echo $delivery->courier->vehicle_type ?? ''; ?></span>
+
+				<h4><?php _e('Phone number', 'uberdirect'); ?></h4>
+				<span><?php echo $delivery->courier->phone_number ?? ''; ?></span>
+
+				<h4><?php _e('Tracking URL', 'uberdirect'); ?></h4>
+				<input id="udw-delivery-tracking_url" type="text" value="<?php echo esc_url($delivery->tracking_url ?? ''); ?>" readonly />
+				<button id="udw-delivery-btn_coppy-tracking_url" class="button"><?php _e('Copy', 'uberdirect'); ?></button>
+
+			<?php else : ?>
+				<div id="udw-metabox-action">
 					<a href="#" class="button button-primary" id="udw-button-pre-send" data-order-id="<?php esc_attr_e($order_id); ?>">
-						<?php esc_html_e('Send', 'uberdirect'); ?>
+						<?php _e('Send', 'uberdirect'); ?>
 					</a>
-				<?php endif; ?>
-			</div>
+				</div>
+			<?php endif; ?>
 		</div>
 		<?php
 	}

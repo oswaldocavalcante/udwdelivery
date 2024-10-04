@@ -78,6 +78,11 @@
 
 /* Meta boxes */
 
+#udw-metabox-container h4
+{
+    margin-bottom: 0;
+}
+
 #udw-metabox-action {
     text-align: right;
 }
