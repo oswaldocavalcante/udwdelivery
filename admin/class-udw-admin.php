@@ -150,13 +150,15 @@ class Udw_Admin
 			$delivery = $this->udw_ud_api->get_delivery($delivery_id);
 			$delivery_status = $delivery->status;
 		}
-
 		?>
+		
 		<div id="udw-metabox-container">
+
 			<div id="udw-metabox-status">
-				<h4><? esc_html_e(sprintf(__('Status: %s', 'uberdirect'), $delivery_status)); ?></h4>
+				<h4><?php esc_html_e(sprintf(__('Status: %s', 'uberdirect'), $delivery_status)); ?></h4>
 			</div>
-			<?php if ($order->meta_exists('_udw_delivery_id')): ?>
+
+			<?php if ($order->meta_exists('_udw_delivery_id')) : ?>
 
 				<h4><?php _e('Courier', 'uberdirect'); ?></h4>
 				<span><?php echo $delivery->courier->name ?? ''; ?></span>

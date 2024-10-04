@@ -21,17 +21,11 @@ msgstr "Status: %s"
 msgid "Send"
 msgstr "Enviar"
 
-msgid "Courier: %s"
-msgstr "Entregador: %s"
+msgid "Courier"
+msgstr "Entregador"
 
-msgid "Vehicle: %s"
-msgstr "Veículo: %s"
-
-msgid "Phone number: %s"
-msgstr "Número de telefone: %s"
-
-msgid "Tracking URL: %s"
-msgstr "URL de rastreamento: %s"
+msgid "Phone number"
+msgstr "Número de telefone"
 
 msgid "Close modal panel"
 msgstr "Fechar painel modal"
@@ -60,11 +54,11 @@ msgstr "Veículo"
 msgid "Tracking URL"
 msgstr "URL de Rastreamento"
 
-msgid "Shipping cost: R$ %s"
-msgstr "Custo de envio: R$ %s"
+msgid "Shipping cost: %s %s"
+msgstr "Custo de envio: %s %s"
 
-msgid "Tip: R$ %s"
-msgstr "Gorjeta: R$ %s"
+msgid "Tip: %s %s"
+msgstr "Gorjeta: %s %s"
 
 msgid "Shipping Information"
 msgstr "Informações de Envio"

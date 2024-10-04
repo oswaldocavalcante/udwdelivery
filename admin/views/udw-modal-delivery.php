@@ -90,7 +90,7 @@
                         <div id="udw-delivery-tracking_url-container" class="udw-delivery-block">
                             <h2><?php esc_html_e('Package information', 'uberdirect'); ?></h2>
                             <div class="udw-delivery-data-wrapper">
-                                <label><?php esc_html_e('Tracking URL ', 'uberdirect'); ?></label>
+                                <label><?php esc_html_e('Tracking URL', 'uberdirect'); ?></label>
                                 <input id="udw-delivery-tracking_url" type="text" value="{{{ data.tracking_url }}}" readonly />
                                 <button id="udw-delivery-btn_coppy-tracking_url" class="button">Copiar</button>
                             </div>
@@ -109,12 +109,12 @@
                         ?>
                         <# if( data.fee ) { #>
                         <h3  id="udw-delivery-fee">
-                            <?php _e(sprintf('Shipping cost: %s %s', $currency_symbol, '{{data.fee}}')); ?>
+                            <?php esc_html_e(sprintf(__('Shipping cost: %s %s', 'uberdirect'), $currency_symbol, '{{data.fee}}')); ?>
                         </h3>
                         <# } #>
                         <# if( data.tip ) { #>
                         <p id="udw-delivery-tip">
-                            <?php _e(sprintf('Tip: %s %s', $currency_symbol, '{{data.tip}}')); ?>
+                            <?php esc_html_e(sprintf(__('Tip: %s %s', 'uberdirect'), $currency_symbol, '{{data.tip}}')); ?>
                         </p>
                         <# } #>
                     </div>
