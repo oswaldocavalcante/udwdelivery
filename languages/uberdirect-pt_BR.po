@@ -140,3 +140,24 @@ msgstr "Copiar"
 
 msgid "Open"
 msgstr "Abrir"
+
+msgid "Pending"
+msgstr "Pendente"
+
+msgid "Pickup"
+msgstr "Coleta"
+
+msgid "Pickup complete"
+msgstr "Coletado"
+
+msgid "Dropoff"
+msgstr "Entregando"
+
+msgid "Delivered"
+msgstr "Entregue"
+
+msgid "Canceled"
+msgstr "Cancelado"
+
+msgid "Returned"
+msgstr "Devolvido"

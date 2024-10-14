@@ -47,6 +47,9 @@ var WCOrdersTable = function ()
 			{
                 if (response.success) 
 				{
+					// Translates the status string
+					response.data.status = udw_delivery_params.translations[response.data.status];
+
 					// Selects the template to display
 					if(response.data.dropoff) 
 					{

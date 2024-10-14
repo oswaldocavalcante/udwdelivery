@@ -144,3 +144,24 @@ msgstr ""
 
 msgid "Open""
 msgstr ""
+
+msgid "Pending"
+msgstr ""
+
+msgid "Pickup"
+msgstr ""
+
+msgid "Pickup complete"
+msgstr ""
+
+msgid "Dropoff"
+msgstr ""
+
+msgid "Delivered"
+msgstr ""
+
+msgid "Canceled"
+msgstr ""
+
+msgid "Returned"
+msgstr ""

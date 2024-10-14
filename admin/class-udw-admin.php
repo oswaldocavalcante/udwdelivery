@@ -125,9 +125,20 @@ class Udw_Admin
 		wp_localize_script(
 			'uberdirect',
 			'udw_delivery_params',
-			array(
+			array
+			(
 				'url' => admin_url('admin-ajax.php'),
 				'nonce' => wp_create_nonce('udw_nonce_delivery'),
+				'translations' => array
+				(
+					'pending' 			=> __('Pending', 'uberdirect'),
+					'pickup' 			=> __('Pickup', 'uberdirect'),
+					'pickup_complete' 	=> __('Pickup complete', 'uberdirect'),
+					'dropoff' 			=> __('Dropoff', 'uberdirect'),
+					'delivered' 		=> __('Delivered', 'uberdirect'),
+					'canceled' 			=> __('Canceled', 'uberdirect'),
+					'returned' 			=> __('Returned', 'uberdirect')
+				)
 			)
 		);
 	}
@@ -151,7 +162,7 @@ class Udw_Admin
 			$delivery_status = $delivery->status;
 		}
 		?>
-		
+
 		<div id="udw-metabox-container">
 
 			<div id="udw-metabox-status">
@@ -172,6 +183,7 @@ class Udw_Admin
 				<h4><?php _e('Tracking URL', 'uberdirect'); ?></h4>
 				<input id="udw-delivery-tracking_url" type="text" value="<?php echo esc_url($delivery->tracking_url ?? ''); ?>" readonly />
 				<button id="udw-delivery-btn_coppy-tracking_url" class="button"><?php _e('Copy', 'uberdirect'); ?></button>
+				<a href="<?php echo esc_url($delivery->tracking_url ?? '') ?>" target="_blank" class="button button-primary dashicons-before dashicons-external"><?php _e('Open', 'uberdirect'); ?></a>
 
 			<?php else : ?>
 				<div id="udw-metabox-action">

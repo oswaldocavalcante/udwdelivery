@@ -5,7 +5,7 @@
                 
                 <header class="wc-backbone-modal-header">
                     <mark class="order-status status-{{ data.status }}" style="float: right; margin-right: 54px">
-                        <span>{{ data.status }}</span>
+                        <span><?php echo __('{{ data.status }}', 'uberdirect') ?></span>
                     </mark>
                     <?php /* translators: %s: order ID */ ?>
                     <# if ( data.external_id ) { #>

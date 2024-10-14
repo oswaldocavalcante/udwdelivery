@@ -88,7 +88,7 @@
 
 .udw-delivery-block .udw-delivery-data-wrapper input 
 {
-    width: 70%;
+    width: 40%;
 }
 
 .udw-delivery-data-wrapper .dashicons-before:before
@@ -118,11 +118,23 @@
     margin-bottom: 0;
 }
 
-#udw-metabox-action {
+#udw-metabox-container input
+{
+    width: 100%;
+}
+
+#udw-metabox-container .dashicons-before:before
+{
+    line-height: 25px;
+}
+
+#udw-metabox-action
+{
     text-align: right;
 }
 
-#udw-metabox-action button {
+#udw-metabox-action button
+{
     margin-top: 10px;
 }
 
