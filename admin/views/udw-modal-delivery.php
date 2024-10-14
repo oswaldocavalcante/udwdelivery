@@ -16,12 +16,60 @@
                     </button>
                 </header>
 
-                <form method="post">
-                    <div id="udw-delivery-container">
+                <article>
+                <div id="udw-delivery-container">
 
-                        <div id="udw-delivery-dropoff" class="udw-delivery-block">
-                            <h2><?php esc_html_e('Recipient Information', 'uberdirect'); ?></h2>
+                    <# if( data.tracking_url ) { #>
+                    <div id="udw-delivery-tracking_url-container" class="udw-delivery-block">
+                        <h2><?php esc_html_e('Package', 'uberdirect'); ?></h2>
+                        <div class="udw-delivery-data-wrapper">
+                            <label><?php esc_html_e('Tracking URL', 'uberdirect'); ?></label>
+                            <input id="udw-delivery-tracking_url" type="text" value="{{{ data.tracking_url }}}" readonly />
+                            <button id="udw-delivery-btn_coppy-tracking_url" class="button"><?php esc_html_e('Copy', 'uberdirect'); ?></button>
+                            <a href="{{{ data.tracking_url }}}" target="_blank" class="button button-primary dashicons-before dashicons-external"><?php esc_html_e('Open', 'uberdirect'); ?></a>
+                        </div>
+                    </div>
+                    <# } #>
 
+                    <# if( data.courier ) { #>
+                    <h2 id="udw-delivery-courier-title"><?php esc_html_e('Courier', 'uberdirect'); ?></h2> 
+                    <div id="udw-delivery-courier" class="udw-delivery-block">
+
+                        <# if( data.courier.img_href ) { #>
+                        <div id="udw-delivery-courier-photo">
+                            <img src="{{{data.courier.img_href}}}" />
+                        </div>
+                        <# } #>
+
+                        <div class="udw-delivery-block-container">
+
+                            <# if( data.courier.name ) { #>
+                            <div class="udw-delivery-data-wrapper">
+                                <small><?php esc_html_e('Name', 'uberdirect'); ?></small>
+                                <p>{{ data.courier.name }}</p>
+                            </div>
+                            <# } #>
+
+                            <# if( data.courier.vehicle_type ) { #>
+                            <div class="udw-delivery-data-wrapper">
+                                <small><?php esc_html_e('Vehicle', 'uberdirect'); ?></small>
+                                <p>{{ data.courier.vehicle_type }}</p>
+                            </div>
+                            <# } #>
+
+                            <# if( data.courier.phone_number ) { #>
+                            <div class="udw-delivery-data-wrapper">
+                                <small><?php esc_html_e('Phone number', 'uberdirect'); ?></small>
+                                <p>{{ data.courier.phone_number }}</p>
+                            </div>
+                            <# } #>
+                        </div>
+                    </div>
+                    <# } #>
+
+                    <div id="udw-delivery-dropoff" class="udw-delivery-block">
+                        <h2 class="udw-delivery-block-title"><?php esc_html_e('Recipient', 'uberdirect'); ?></h2>
+                        <div class="udw-delivery-block-container">
                             <# if ( data.dropoff.name ) { #>
                             <div class="udw-delivery-data-wrapper">
                                 <small><?php _e('Recipient Name', 'uberdirect') ?></small>
@@ -50,62 +98,17 @@
                             </div>
                             <# } #>
                         </div>
-
-                        <# if( data.courier ) { #>
-                        <div id="udw-delivery-courier" class="udw-delivery-block">
-                            <h2><?php esc_html_e('Driver information', 'uberdirect'); ?></h2>
-                            <div class="udw-delivery-courier-container">
-
-                                <# if( data.courier.img_href ) { #>
-                                <div class="udw-delivery-data-wrapper">
-                                    <img src="{{{data.courier.img_href}}}" />
-                                </div>
-                                <# } #>
-
-                                <# if( data.courier.name ) { #>
-                                <div class="udw-delivery-data-wrapper">
-                                    <small><?php esc_html_e('Name', 'uberdirect'); ?></small>
-                                    <p>{{ data.courier.name }}</p>
-                                </div>
-                                <# } #>
-
-                                <# if( data.courier.vehicle_type ) { #>
-                                <div class="udw-delivery-data-wrapper">
-                                    <small><?php esc_html_e('Vehicle', 'uberdirect'); ?></small>
-                                    <p>{{ data.courier.vehicle_type }}</p>
-                                </div>
-                                <# } #>
-
-                                <# if( data.courier.phone_number ) { #>
-                                <div class="udw-delivery-data-wrapper">
-                                    <small><?php esc_html_e('Phone number', 'uberdirect'); ?></small>
-                                    <p>{{ data.courier.phone_number }}</p>
-                                </div>
-                                <# } #>
-                            </div>
-                        </div>
-                        <# } #>
-
-                        <# if( data.tracking_url ) { #>
-                        <div id="udw-delivery-tracking_url-container" class="udw-delivery-block">
-                            <h2><?php esc_html_e('Package information', 'uberdirect'); ?></h2>
-                            <div class="udw-delivery-data-wrapper">
-                                <label><?php esc_html_e('Tracking URL', 'uberdirect'); ?></label>
-                                <input id="udw-delivery-tracking_url" type="text" value="{{{ data.tracking_url }}}" readonly />
-                                <button id="udw-delivery-btn_coppy-tracking_url" class="button">Copiar</button>
-                            </div>
-                        </div>
-                        <# } #>
-
                     </div>
 
-                </form>
+                </div>
+                </article>
+
 
                 <footer>
                     <div class="inner">
                         <?php
-                            $currency           = get_woocommerce_currency();
-                            $currency_symbol    = get_woocommerce_currency_symbol($currency);
+                        $currency           = get_woocommerce_currency();
+                        $currency_symbol    = get_woocommerce_currency_symbol($currency);
                         ?>
                         <# if( data.fee ) { #>
                         <h3  id="udw-delivery-fee">

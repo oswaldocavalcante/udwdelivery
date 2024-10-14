@@ -23,15 +23,16 @@
 
  /* General modals */
 
- #udw-quote-container, #udw-delivery-container {
-    padding-bottom: 40px;
-    padding-left: 20px;
+ #udw-quote-container, #udw-delivery-container 
+ {
+    padding: 0 10px 30px;
  }
 
  /* Modal shipping preview */
 
-.udw-shipping-preview-block, .udw-delivery-block {
-    margin-bottom: 50px;
+.udw-shipping-preview-block
+{
+    margin-bottom: 30px;
 }
 
 .udw-shipping-preview-input-wrapper, .udw-delivery-data-wrapper {
@@ -59,21 +60,55 @@
 
 /* Modal delivery */
 
-.udw-delivery-block .udw-delivery-data-wrapper small {
+.udw-delivery-block
+{
+    padding-bottom: 30px;
+}
+
+.udw-delivery-block:not(:last-of-type)
+{
+    border-bottom: 1px solid #ccc;
+}
+
+.udw-delivery-block .udw-delivery-data-wrapper small 
+{
     font-weight: bold;
 }
 
-.udw-delivery-block .udw-delivery-data-wrapper p {
+.udw-delivery-block .udw-delivery-data-wrapper p 
+{
     margin-top: 5px;
 }
 
-.udw-delivery-block .udw-delivery-data-wrapper label {
+.udw-delivery-block .udw-delivery-data-wrapper label 
+{
     display: block;
     margin-bottom: 10px;
 }
 
-.udw-delivery-block .udw-delivery-data-wrapper input {
-    width: 40%;
+.udw-delivery-block .udw-delivery-data-wrapper input 
+{
+    width: 70%;
+}
+
+.udw-delivery-data-wrapper .dashicons-before:before
+{
+    line-height: 26px;
+    font-weight: normal;
+}
+
+#udw-delivery-courier
+{
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+#udw-delivery-courier-photo img
+{
+    max-width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
 }
 
 /* Meta boxes */

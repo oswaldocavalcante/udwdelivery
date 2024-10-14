@@ -22,7 +22,7 @@ msgstr ""
 msgid "Close modal panel"
 msgstr ""
 
-msgid "Recipient Information"
+msgid "Recipient"
 msgstr ""
 
 msgid "Recipient Name"
@@ -32,9 +32,6 @@ msgid "Delivery Address"
 msgstr ""
 
 msgid "Notes"
-msgstr ""
-
-msgid "Driver information"
 msgstr ""
 
 msgid "Name"
@@ -64,13 +61,13 @@ msgstr ""
 msgid "Paid Shipping"
 msgstr ""
 
-msgid "Recipient Information"
+msgid "Recipient"
 msgstr ""
 
 msgid "Name"
 msgstr ""
 
-msgid "Sobrenome"
+msgid "Last Name"
 msgstr ""
 
 msgid "Telefone"
@@ -79,7 +76,7 @@ msgstr ""
 msgid "Notes"
 msgstr ""
 
-msgid "Package information"
+msgid "Package"
 msgstr ""
 
 msgid "Order ID"
@@ -140,4 +137,10 @@ msgid "Send now"
 msgstr ""
 
 msgid "today, "
+msgstr ""
+
+msgid "Copy""
+msgstr ""
+
+msgid "Open""
 msgstr ""

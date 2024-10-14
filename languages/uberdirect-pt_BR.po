@@ -30,8 +30,8 @@ msgstr "Número de telefone"
 msgid "Close modal panel"
 msgstr "Fechar painel modal"
 
-msgid "Recipient Information"
-msgstr "Informações do Destinatário"
+msgid "Recipient"
+msgstr "Destinatário"
 
 msgid "Recipient Name"
 msgstr "Nome do Destinatário"
@@ -41,9 +41,6 @@ msgstr "Endereço de Entrega"
 
 msgid "Notes"
 msgstr "Observações"
-
-msgid "Driver information"
-msgstr "Informações do Motorista"
 
 msgid "Name"
 msgstr "Nome"
@@ -75,8 +72,8 @@ msgstr "Sobrenome"
 msgid "Telefone"
 msgstr "Telefone"
 
-msgid "Package information"
-msgstr "Informações do Pacote"
+msgid "Package"
+msgstr "Pacote"
 
 msgid "Order ID"
 msgstr "ID do Pedido"
@@ -137,3 +134,9 @@ msgstr "Enviar agora"
 
 msgid "today, "
 msgstr "hoje, "
+
+msgid "Copy"
+msgstr "Copiar"
+
+msgid "Open"
+msgstr "Abrir"
