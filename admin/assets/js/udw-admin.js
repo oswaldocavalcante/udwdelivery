@@ -5,21 +5,44 @@
 		return false;
 	}
 
-var WCOrdersTable = function () {
-
-	$(document).on('click', '#udw-button-pre-send:not(.disabled)', function () {
+var WCOrdersTable = function ()
+{
+	$(document).on('click', '#udw-button-pre-send:not(.disabled)', function ()
+	{
 		var $button = $(this);
 		var $order_id = $button.data('order-id');
+		
+		var loaderContainer = $button.closest($button);
+		var loaderProperties = 
+		{
+			message: null,
+			overlayCSS:
+			{
+				background: '#fff',
+				opacity: 0.6
+			}
+		};
 
-        $.ajax({
+        $.ajax
+		({
 			url: udw_delivery_params.url,
+			type: 'POST',
             data: 
 			{
                 order_id: $order_id,
 				action: 'udw_get_delivery',
 				security: udw_delivery_params.nonce,
             },
-            type: 'POST',
+			beforeSend: function ()
+			{
+				loaderContainer.block(loaderProperties);
+				loaderContainer.addClass('disabled');
+			},
+			complete: function ()
+			{
+				loaderContainer.removeClass('disabled');
+				loaderContainer.unblock();
+			},
             success: function (response) 
 			{
                 if (response.success) 
@@ -54,11 +77,13 @@ var WCOrdersTable = function () {
         });
     });
 
-	$(document).on('click', '#udw-button-create-delivery:not(.disabled)', function () {
+	$(document).on('click', '#udw-button-create-delivery:not(.disabled)', function ()
+	{
 		var $button = $(this);
 		var $order_id = $button.data('order-id');
 
-		$.ajax({
+		$.ajax
+		({
 			url: udw_delivery_params.url,
 			type: 'POST',
 			data: {
@@ -66,11 +91,13 @@ var WCOrdersTable = function () {
 				action: 'udw_create_delivery',
 				security: udw_delivery_params.nonce,
 			},
-			beforeSend: function() {
+			beforeSend: function() 
+			{
 				document.getElementById('udw-button-create-delivery').remove();
 				document.getElementById('udw-quote-container').innerHTML = '<div>Solicitando motorista...</div>';
 			},
-			success: function (response) {
+			success: function (response) 
+			{
 				if (response.success) {
 					document.getElementById('udw-modal-quote-container').remove();
 					$("a[data-order-id='" + $order_id + "']").text('Ver envio'); //Configure translation
