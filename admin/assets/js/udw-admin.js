@@ -11,8 +11,8 @@ var WCOrdersTable = function ()
 	{
 		var $button = $(this);
 		var $order_id = $button.data('order-id');
-		
-		var loaderContainer = $button.closest($button);
+
+		var loaderContainer = $button;
 		var loaderProperties = 
 		{
 			message: null,
@@ -35,13 +35,13 @@ var WCOrdersTable = function ()
             },
 			beforeSend: function ()
 			{
-				loaderContainer.block(loaderProperties);
 				loaderContainer.addClass('disabled');
+				loaderContainer.block(loaderProperties);
 			},
 			complete: function ()
 			{
-				loaderContainer.removeClass('disabled');
 				loaderContainer.unblock();
+				loaderContainer.removeClass('disabled');
 			},
             success: function (response) 
 			{
