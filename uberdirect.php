@@ -16,7 +16,7 @@
  * Plugin Name:       Uber Direct for WooCommerce
  * Plugin URI:        https://github.com/oswaldocavalcante/uberdirect
  * Description:       Uber direct delivery service for WooCommerce.
- * Version:           1.3.4
+ * Version:           1.3.5
  * Author:            Oswaldo Cavalcante
  * Author URI:        https://oswaldocavalcante.com/
  * License:           GPL-2.0+
@@ -39,7 +39,7 @@ if (!defined('UDW_PLUGIN_FILE')) {
 	define('UDW_PLUGIN_FILE', __FILE__);
 }
 
-define('UDW_VERSION', '1.3.4');
+define('UDW_VERSION', '1.3.5');
 define('UDW_ABSPATH', dirname(UDW_PLUGIN_FILE) . '/');
 define('UDW_URL', plugins_url('/', __FILE__));
 
