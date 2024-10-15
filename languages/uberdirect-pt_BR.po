@@ -91,19 +91,19 @@ msgid "See how to create your account and get your credentials in %s"
 msgstr "Veja como criar sua conta e obter suas credenciais em %s"
 
 msgid "Customer ID"
-msgstr "ID do Cliente"
+msgstr "Customer ID"
 
 msgid "Your Customer (Business ID) in Uber Direct settings."
-msgstr "Seu ID de Cliente (Business ID) nas configurações do Uber Direct."
+msgstr "Seu Customer ID (Business ID) nas configurações do Uber Direct."
 
 msgid "Client ID"
-msgstr "ID do Cliente"
+msgstr "Client ID"
 
 msgid "Your Client ID in Uber Direct settings."
 msgstr "Seu ID de Cliente nas configurações do Uber Direct."
 
 msgid "Client Secret"
-msgstr "Segredo do Cliente"
+msgstr "Client Secret"
 
 msgid "Your Client Secret in Uber Direct settings."
 msgstr "Seu Segredo do Cliente nas configurações do Uber Direct."
@@ -132,14 +132,14 @@ msgstr "Ver entrega"
 msgid "Send now"
 msgstr "Enviar agora"
 
-msgid "today, "
-msgstr "hoje, "
-
 msgid "Copy"
 msgstr "Copiar"
 
 msgid "Open"
 msgstr "Abrir"
+
+msgid "Cancel"
+msgstr "Cancelar"
 
 msgid "Pending"
 msgstr "Pendente"

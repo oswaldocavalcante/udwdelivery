@@ -94,19 +94,20 @@ class UberDirect
 	{
 		$plugin_admin = new Udw_Admin();
 
-		add_action('admin_enqueue_scripts', 	array($plugin_admin, 'enqueue_styles'));
-		add_action('admin_enqueue_scripts', 	array($plugin_admin, 'enqueue_scripts'));
+		add_action('admin_enqueue_scripts', 		array($plugin_admin, 'enqueue_styles'));
+		add_action('admin_enqueue_scripts', 		array($plugin_admin, 'enqueue_scripts'));
 
-		add_action('admin_init', 				array($plugin_admin, 'register_settings'));
-		add_filter('woocommerce_integrations', 	array($plugin_admin, 'add_integration'));
-		add_action('add_meta_boxes', 			array($plugin_admin, 'add_meta_box'));
+		add_action('admin_init', 					array($plugin_admin, 'register_settings'));
+		add_filter('woocommerce_integrations', 		array($plugin_admin, 'add_integration'));
+		add_action('add_meta_boxes', 				array($plugin_admin, 'add_meta_box'));
 
-		add_action('wp_ajax_udw_get_delivery', 	array($plugin_admin, 'ajax_get_delivery'));
-		add_action('wp_ajax_udw_create_delivery', array($plugin_admin, 'ajax_create_delivery'));
-		add_action('admin_footer', 				array($plugin_admin, 'add_modal_templates'));
+		add_action('wp_ajax_udw_get_delivery', 		array($plugin_admin, 'ajax_get_delivery'));
+		add_action('wp_ajax_udw_create_delivery', 	array($plugin_admin, 'ajax_create_delivery'));
+		add_action('wp_ajax_udw_cancel_delivery', 	array($plugin_admin, 'ajax_cancel_delivery'));
+		add_action('admin_footer', 					array($plugin_admin, 'add_modal_templates'));
 
 		// Register admin-specific webhook
-		add_action('rest_api_init', 			array($plugin_admin, 'register_webhook'));
-		add_action('udw_change_order_status', 	array($plugin_admin, 'change_order_status'), 10, 2);
+		add_action('rest_api_init', 				array($plugin_admin, 'register_webhook'));
+		add_action('udw_change_order_status', 		array($plugin_admin, 'change_order_status'), 10, 2);
 	}
 }

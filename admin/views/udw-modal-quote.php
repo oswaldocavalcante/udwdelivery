@@ -34,7 +34,7 @@
                             </div>
 
                             <div id="udw-shipping-preview-buyer" class="udw-shipping-preview-block">
-                                <h2><?php esc_html_e('Recipient Information', 'uberdirect'); ?></h2>
+                                <h2><?php esc_html_e('Recipient', 'uberdirect'); ?></h2>
                                 <div class="udw-shipping-preview-input-names-container">
                                     <div class="udw-shipping-preview-input-wrapper name">
                                         <label><?php esc_html_e('Name', 'uberdirect'); ?></label>
@@ -63,7 +63,7 @@
                             </div>
 
                             <div id="udw-shipping-preview-package" class="udw-shipping-preview-block">
-                                <h2><?php esc_html_e('Package information', 'uberdirect'); ?></h2>
+                                <h2><?php esc_html_e('Package', 'uberdirect'); ?></h2>
                                 <div class="udw-shipping-preview-input-wrapper">
                                     <label><?php esc_html_e('Order ID', 'uberdirect'); ?></label>
                                     <input type="text" class="udw-shipping-order-id" value="{{{ data.number }}}" disabled />

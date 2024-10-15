@@ -136,13 +136,13 @@ msgstr ""
 msgid "Send now"
 msgstr ""
 
-msgid "today, "
-msgstr ""
-
 msgid "Copy""
 msgstr ""
 
 msgid "Open""
+msgstr ""
+
+msgid "Cancel""
 msgstr ""
 
 msgid "Pending"

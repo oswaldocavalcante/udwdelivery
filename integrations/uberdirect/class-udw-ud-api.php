@@ -29,8 +29,9 @@ class Udw_Ud_Api
 
 	private $endpoint_create_quote;
 	private $endpoint_create_delivery;
-	private $endpoint_get_delivery;
 	private $endpoint_update_delivery;
+	private $endpoint_cancel_delivery;
+	private $endpoint_get_delivery;
 
 	public function __construct()
 	{
@@ -41,6 +42,7 @@ class Udw_Ud_Api
 		$this->endpoint_create_quote 	= $this->base_url . $this->customer_id . '/delivery_quotes';
 		$this->endpoint_create_delivery = $this->base_url . $this->customer_id . '/deliveries';
 		$this->endpoint_update_delivery = $this->base_url . $this->customer_id . '/deliveries/';
+		$this->endpoint_cancel_delivery = $this->base_url . $this->customer_id . '/deliveries/';
 		$this->endpoint_get_delivery 	= $this->base_url . $this->customer_id . '/deliveries/';
 	}
 
@@ -79,19 +81,23 @@ class Udw_Ud_Api
 
 	public function create_quote($dropoff_address, $pickup_address = '')
 	{
-		$headers = array(
+		$headers = array
+		(
 			'Content-Type' => 'application/json',
 			'Authorization' => 'Bearer ' . $this->get_access_token(),
 		);
 
-		$body = array(
+		$body = array
+		(
 			'pickup_address' => ($pickup_address == '') ? get_option('woocommerce_store_address') : $pickup_address,
 			'dropoff_address' => $dropoff_address,
 		);
 
-		$response = wp_remote_post(
+		$response = wp_remote_post
+		(
 			$this->endpoint_create_quote,
-			array(
+			array
+			(
 				'headers' => $headers,
 				'body' => json_encode($body),
 			)
@@ -103,12 +109,14 @@ class Udw_Ud_Api
 
 	public function create_delivery($order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items = array())
 	{
-		$headers = array(
+		$headers = array
+		(
 			'Content-Type' => 'application/json',
 			'Authorization' => 'Bearer ' . $this->get_access_token(),
 		);
 
-		$body = array(
+		$body = array
+		(
 			'pickup_name' 			=> get_bloginfo('name'),
 			'pickup_business_name'	=> get_bloginfo('name'),
 			'pickup_address' 		=> get_option('woocommerce_store_address'),
@@ -122,11 +130,13 @@ class Udw_Ud_Api
 			'idempotency_key'		=> $order_id,
 		);
 
-		$response = wp_remote_post(
+		$response = wp_remote_post
+		(
 			$this->endpoint_create_delivery,
-			array(
-				'headers' => $headers,
-				'body' => wp_json_encode($body),
+			array
+			(
+				'headers' 	=> $headers,
+				'body' 		=> wp_json_encode($body),
 			)
 		);
 
@@ -136,20 +146,24 @@ class Udw_Ud_Api
 
 	public function update_delivery($delivery_id, $tip)
 	{
-		$headers = array(
-			'Content-Type' => 'application/json',
+		$headers = array
+		(
+			'Content-Type' 	=> 'application/json',
 			'Authorization' => 'Bearer ' . $this->get_access_token(),
 		);
 
-		$body = array(
+		$body = array
+		(
 			'tip_by_customer' => $tip * 100, // Tip is an integer amount in cents
 		);
 
-		$response = wp_remote_post(
+		$response = wp_remote_post
+		(
 			$this->endpoint_update_delivery . $delivery_id,
-			array(
-				'headers' => $headers,
-				'body' => wp_json_encode($body),
+			array
+			(
+				'headers' 	=> $headers,
+				'body' 		=> wp_json_encode($body),
 			)
 		);
 
@@ -159,19 +173,38 @@ class Udw_Ud_Api
 
 	public function get_delivery($delivery_id)
 	{
-		$headers = array(
-			'Content-Type' => 'application/json',
+		$headers = array
+		(
+			'Content-Type' 	=> 'application/json',
 			'Authorization' => 'Bearer ' . $this->get_access_token(),
 		);
 
-		$response = wp_remote_get(
-			$this->endpoint_get_delivery . $delivery_id,
-			array(
-				'headers' => $headers,
-			)
+		$response = wp_remote_get
+		(
+			$this->endpoint_get_delivery . $delivery_id, 
+			array('headers' => $headers)
 		);
 
 		$delivery = json_decode(wp_remote_retrieve_body($response));
+		return $delivery;
+	}
+
+	public function cancel_delivery($delivery_id)
+	{
+		$headers = array
+		(
+			'Content-Type' 	=> 'application/json',
+			'Authorization' => 'Bearer ' . $this->get_access_token(),
+		);
+
+		$response = wp_remote_post
+		(
+			$this->endpoint_cancel_delivery . $delivery_id . '/cancel', 
+			array('headers' => $headers)
+		);
+
+		$delivery = json_decode(wp_remote_retrieve_body($response));
+
 		return $delivery;
 	}
 }

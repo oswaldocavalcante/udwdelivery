@@ -51,7 +51,7 @@ var WCOrdersTable = function ()
 					response.data.status_translated = udw_delivery_params.translations[response.data.status];
 
 					// Selects the template to display
-					if(response.data.dropoff) 
+					if(response.data.dropoff)
 					{
 						response.data.fee = (parseFloat(response.data.fee) * 0.01).toFixed(2);
 						response.data.tip = (parseFloat(response.data.tip) * 0.01).toFixed(2);
@@ -101,7 +101,8 @@ var WCOrdersTable = function ()
 			},
 			success: function (response) 
 			{
-				if (response.success) {
+				if (response.success) 
+				{
 					document.getElementById('udw-modal-quote-container').remove();
 					$("a[data-order-id='" + $order_id + "']").text('Ver envio'); //Configure translation
 					$(this).WCBackboneModal({
@@ -118,8 +119,8 @@ var WCOrdersTable = function ()
 		});
 	});
 
-	$(document).on('click', '#udw-delivery-btn_coppy-tracking_url', function () {
-
+	$(document).on('click', '#udw-delivery-btn_coppy-tracking_url', function () 
+	{
 		var $url = document.getElementById('udw-delivery-tracking_url');
 
 		$url.select();
@@ -128,6 +129,59 @@ var WCOrdersTable = function ()
 		navigator.clipboard.writeText($url.value);
 	});
 
+	$(document).on('click', '#udw-button-cancel-delivery:not(.disabled)', function () 
+	{
+		var $button = $(this);
+		var $order_id = $button.data('order-id');
+
+		var loaderContainer = $(this).closest('.wc-backbone-modal-content');
+		var loaderProperties =
+		{
+			message: null,
+			overlayCSS:
+			{
+				background: '#fff',
+				opacity: 0.6
+			}
+		};
+		
+		$.ajax
+		({
+			url: udw_delivery_params.url,
+			type: 'POST',
+			data: {
+				order_id: $order_id,
+				action: 'udw_cancel_delivery',
+				security: udw_delivery_params.nonce,
+			},
+			beforeSend: function () 
+			{
+				loaderContainer.block(loaderProperties);
+			},
+			complete: function () 
+			{
+				loaderContainer.unblock();
+			},
+			success: function (response) 
+			{
+				if (response.success) 
+				{
+					console.log(response.data);
+					var status_translated = udw_delivery_params.translations[response.data.status];
+					$('#delivery-status').html(status_translated);
+					$('#udw-delivery-fee').html(status_translated);
+					$('#udw-delivery-tip').remove();
+					$button.addClass('disabled');
+				} 
+				else {
+					console.error(response.data);
+				}
+			},
+			error: function (xhr, status, error) {
+				console.error(error);
+			}
+		});
+	});
 };
 
 new WCOrdersTable();

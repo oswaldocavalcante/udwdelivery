@@ -111,6 +111,11 @@
     border-radius: 10px;
 }
 
+#udw-button-cancel-delivery
+{
+    float: left;
+}
+
 /* Meta boxes */
 
 #udw-metabox-container h4

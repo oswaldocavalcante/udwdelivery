@@ -42,19 +42,11 @@ if ( ! class_exists( 'Udw_Wc_Shipping_Method' ) ) {
 
 				// Convert delivery ETA to WooCommerce format
 				$dropoff_eta = new WC_DateTime($delivery_quote['dropoff_eta']);
-				$current_date = new WC_DateTime();
-
-				if ($dropoff_eta->format('Y-m-d') === $current_date->format('Y-m-d')) {
-					$formatted_eta = __('today, ', 'uberdirect') . $dropoff_eta->format('H:i');
-				}
-				else {
-					$formatted_eta = wc_format_datetime($dropoff_eta, 'D, d/m, H:m');
-				}
 				
 				$rate = array
 				(
 					'id'       => $this->id,
-					'label'    => $this->title . sprintf(' (%s)', $formatted_eta),
+					'label'    => $this->title . sprintf(' (%s)', $dropoff_eta->format('d/m, H:i')),
 					'cost'     => $delivery_cost,
 					'calc_tax' => 'per_order'
 				);

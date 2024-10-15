@@ -209,8 +209,7 @@ class Udw_Admin
 				$delivery = $this->udw_ud_api->get_delivery($delivery_id);
 				wp_send_json_success($delivery);
 			}
-			else
-			{
+			else {
 				wp_send_json_success(json_decode($order));
 			}
 		}
@@ -249,6 +248,25 @@ class Udw_Admin
 			}
 
 			wp_send_json_success($delivery);
+		}
+	}
+
+	public function ajax_cancel_delivery()
+	{
+		if (isset($_POST['security']) && check_ajax_referer('udw_nonce_delivery', 'security'))
+		{
+			$order_id = $_POST['order_id'];
+			$order = wc_get_order($order_id);
+
+			if ($order->meta_exists('_udw_delivery_id'))
+			{
+				$delivery_id = $order->get_meta('_udw_delivery_id');
+				$delivery = $this->udw_ud_api->cancel_delivery($delivery_id);
+				wp_send_json_success($delivery);
+			}
+			else {
+				wp_send_json_success(json_decode($order));
+			}
 		}
 	}
 
