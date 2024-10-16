@@ -13,9 +13,9 @@ Uber Direct is a delivery service integration for WooCommerce that allows you to
 
 ## Installation
 
-1. Upload `uberdirect.php` to the `/wp-content/plugins/` directory.
+1. Upload `uberdirect` folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Go to WooCommerce settings and configure your Uber Direct API credentials.
+3. Go to WooCommerce settings/integrations and configure your Uber Direct API credentials.
 
 ## Frequently Asked Questions
 
