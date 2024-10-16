@@ -138,8 +138,8 @@ msgstr "Copiar"
 msgid "Open"
 msgstr "Abrir"
 
-msgid "Cancel"
-msgstr "Cancelar"
+msgid "Cancel delivery"
+msgstr "Cancelar entrega"
 
 msgid "Pending"
 msgstr "Pendente"
