@@ -1,13 +1,5 @@
 # Uber Direct for WooCommerce
 
-- Plugin Name: Uber Direct for WooCommerce
-- Author: Oswaldo Cavalcante
-- Author URI: https://oswaldocavalcante.com/
-- Donate link: https://oswaldocavalcante.com/
-- Version: 1.0.0
-- License: GPLv2 or later
-- License URI: http://www.gnu.org/licenses/gpl-2.0.html
-
 ## Description
 
 Uber Direct is a delivery service integration for WooCommerce that allows you to manage deliveries directly from your WooCommerce store. This plugin provides a seamless experience for both store owners and customers, enabling efficient order fulfillment through Uber's delivery network.
