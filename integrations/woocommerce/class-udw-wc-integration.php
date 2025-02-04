@@ -14,7 +14,7 @@ class Udw_Wc_Integration extends WC_Integration
 	{
 		$this->id = 'uberdirect';
 		$this->method_title = __('Uber Direct');
-		$this->method_description = __('Integrates Uber Direct delivery for Woocommerce.', 'uberdirect');
+		$this->method_description = __('Uber Direct delivery service for Woocommerce.', 'uberdirect');
 
 		$this->init_form_fields();
 		$this->init_settings();
@@ -36,6 +36,7 @@ class Udw_Wc_Integration extends WC_Integration
 	{
 		$this->form_fields = array
 		(
+			// Access Credentials settings
 			'udw-api-section' => array
 			(
 				'title'       => __('Access Credentials', 'uberdirect'),
@@ -63,20 +64,49 @@ class Udw_Wc_Integration extends WC_Integration
 				'description' 	=> __('Your Client Secret in Uber Direct settings.', 'uberdirect'),
 				'default'     	=> '',
 			),
+			
+			// Delivery deadlines settings
+			'udw-pickup_time-section' => array
+			(
+				'title'       	=> __('Pickup daily time', 'uberdirect'),
+				'type'        	=> 'title',
+				'description' 	=> __('Set the daily time for the delivery service. This will be used to show to the clients the delivery deadlines.', 'uberdirect')
+			),
+			'udw-pickup_time-start' => array
+			(
+				'title' 		=> __('Starting pickups', 'uberdirect'),
+				'type' 			=> 'time',
+				'description' 	=> __('Enter the starting time that couriers can pickup orders at your store to delivery.', 'uberdirect'),
+			),
+			'udw-pickup_time-end' => array
+			(
+				'title' 		=> __('Ending pickups', 'uberdirect'),
+				'type' 			=> 'time',
+				'description' 	=> __('Enter the ending time that couriers can pickup orders at your store to delivery. After this time, the delivery deadline shown will consider the next avaliable day.', 'uberdirect'),
+			),
+			'udw-pickup_time-weekend' => array
+			(
+				'title' 		=> __('Weekend pickups', 'uberdirect'),
+				'type' 			=> 'checkbox',
+				'default' 		=> 'no',
+				'description' 	=> __('Select if couriers can pickup orders at your store in the weekends.', 'uberdirect'),
+			),
+			
+			// Fee settings
 			'udw-extra_fee-section' => array
 			(
-				'title'       => __('Extra fee', 'uberdirect'),
-				'type'        => 'title',
-				'description' => __('Set an extra fee to compensate the variation between the quote price and the actual delivery price. This difference, if positive, will be given as a tip for the driver.', 'uberdirect')
+				'title'       	=> __('Extra fee', 'uberdirect'),
+				'type'        	=> 'title',
+				'description' 	=> __('Set an extra fee to compensate the variation between the quote price and the actual delivery price. This difference, if positive, will be given as a tip for the driver.', 'uberdirect')
 			),
 			'udw-extra_fee-value' => array
 			(
-				'title' => __('Extra fee', 'uberdirect'),
-				'type' => 'price',
-				'description' => __('Enter a value with one monetary decimal point (,) without thousand separators and currency symbols.', 'uberdirect'),
-				'default' => 0,
-				'placeholder' => '0,00'
-			)
+				'title' 		=> __('Extra fee', 'uberdirect'),
+				'type' 			=> 'price',
+				'description' 	=> __('Enter a value with one monetary decimal point (,) without thousand separators and currency symbols.', 'uberdirect'),
+				'default' 		=> 0,
+				'placeholder' 	=> '0,00'
+			),
 		);
 	}
 
@@ -85,6 +115,9 @@ class Udw_Wc_Integration extends WC_Integration
 		update_option('udw-api-customer-id', 	$this->get_option('udw-api-customer-id'));
 		update_option('udw-api-client-id', 		$this->get_option('udw-api-client-id'));
 		update_option('udw-api-client-secret', 	$this->get_option('udw-api-client-secret'));
+		update_option('udw-pickup_time-start', 	$this->get_option('udw-pickup_time-start'));
+		update_option('udw-pickup_time-end', 	$this->get_option('udw-pickup_time-end'));
+		update_option('udw-pickup_time-weekend',$this->get_option('udw-pickup_time-weekend'));
 		update_option('udw-extra_fee', 			$this->get_option('udw-extra_fee-value') ? $this->get_option('udw-extra_fee-value') : 0);
 
 		echo '<div id="udw-settings">';
@@ -156,7 +189,7 @@ class Udw_Wc_Integration extends WC_Integration
 					$css_classes .= 'button-primary ';
 					$button_label = __('Send now', 'uberdirect');
 
-					if ($order->get_status() != 'processing') {
+					if (!$order->is_paid()) {
 						$css_classes .= 'disabled ';
 					}
 				}

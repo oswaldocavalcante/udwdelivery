@@ -79,7 +79,7 @@ class Udw_Ud_Api
 		return $this->access_token;
 	}
 
-	public function create_quote($dropoff_address, $pickup_address = '')
+	public function create_quote($dropoff_address, $pickup_ready_dt = '', $pickup_address = '')
 	{
 		$headers = array
 		(
@@ -90,6 +90,7 @@ class Udw_Ud_Api
 		$body = array
 		(
 			'pickup_address' => ($pickup_address == '') ? get_option('woocommerce_store_address') : $pickup_address,
+			'pickup_ready_dt' => $pickup_ready_dt,
 			'dropoff_address' => $dropoff_address,
 		);
 
