@@ -34,7 +34,6 @@ if ( ! class_exists( 'Udw_Wc_Shipping_Method' ) ) {
 		{
 			$destination 	= $package['destination']['address'] . ', ' . $package['destination']['postcode'];
 
-			// Delivery deadline
 			$current_time 		= current_datetime();
 			$pickup_time_start 	= DateTime::createFromFormat('H:i', get_option('udw-pickup_time-start'), wp_timezone());
 			$pickup_time_end 	= DateTime::createFromFormat('H:i', get_option('udw-pickup_time-end'), wp_timezone());
@@ -46,20 +45,19 @@ if ( ! class_exists( 'Udw_Wc_Shipping_Method' ) ) {
 				// Clones the pickup start time to avoid modifying the original object
 				$pickup_time = clone $pickup_time_start;
 
-				// Calculates how many days until next Monday
-				// If it's Saturday (6): 8 - 6 = 2 days; if it's Sunday (7): 8 - 7 = 1 day.
+				// Calculates how many days until next Monday. If it's Saturday (6): 8 - 6 = 2 days; if it's Sunday (7): 8 - 7 = 1 day.
 				$days_to_add = 8 - $current_time->format('N');
 				$pickup_time->modify("+{$days_to_add} days");
 			}
-			elseif ($current_time > $pickup_time_end)
+			elseif ($current_time->format('H:i') > $pickup_time_end->format('H:i'))
 			{
 				$pickup_time = clone $pickup_time_start;
 
 				// If current day is friday
 				if($current_time->format('N') == 5 && get_option('udw-pickup_time-weekend') == 'no')
 				{
-					$days_to_add = 8 - $current_time->format('N');
-					$pickup_time->modify("+{$days_to_add} days");
+					// If it's Friday and the current time exceeds the defined limit, schedules for the next Monday
+					$pickup_time->modify("+3 days");
 				}
 				else
 				{
