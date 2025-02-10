@@ -77,12 +77,14 @@ class Udw_Wc_Integration extends WC_Integration
 				'title' 		=> __('Starting pickups', 'uberdirect'),
 				'type' 			=> 'time',
 				'description' 	=> __('Enter the starting time that couriers can pickup orders at your store to delivery.', 'uberdirect'),
+				'default' 		=> '08:00',
 			),
 			'udw-pickup_time-end' => array
 			(
 				'title' 		=> __('Ending pickups', 'uberdirect'),
 				'type' 			=> 'time',
 				'description' 	=> __('Enter the ending time that couriers can pickup orders at your store to delivery. After this time, the delivery deadline shown will consider the next avaliable day.', 'uberdirect'),
+				'default' 		=> '16:00',
 			),
 			'udw-pickup_time-weekend' => array
 			(
@@ -90,6 +92,12 @@ class Udw_Wc_Integration extends WC_Integration
 				'type' 			=> 'checkbox',
 				'default' 		=> 'no',
 				'description' 	=> __('Select if couriers can pickup orders at your store in the weekends.', 'uberdirect'),
+			),
+			'udw-pickup_time-processing' => array(
+				'title' 		=> __('Processing time', 'uberdirect'),
+				'type' 			=> 'number',
+				'description' 	=> __('The average time needed to prepare the package to be ready for pickup.', 'uberdirect'),
+				'default' 		=> 40,
 			),
 			
 			// Fee settings
@@ -112,13 +120,14 @@ class Udw_Wc_Integration extends WC_Integration
 
 	public function admin_options()
 	{
-		update_option('udw-api-customer-id', 	$this->get_option('udw-api-customer-id'));
-		update_option('udw-api-client-id', 		$this->get_option('udw-api-client-id'));
-		update_option('udw-api-client-secret', 	$this->get_option('udw-api-client-secret'));
-		update_option('udw-pickup_time-start', 	$this->get_option('udw-pickup_time-start'));
-		update_option('udw-pickup_time-end', 	$this->get_option('udw-pickup_time-end'));
-		update_option('udw-pickup_time-weekend',$this->get_option('udw-pickup_time-weekend'));
-		update_option('udw-extra_fee', 			$this->get_option('udw-extra_fee-value') ? $this->get_option('udw-extra_fee-value') : 0);
+		update_option('udw-api-customer-id', 		$this->get_option('udw-api-customer-id'));
+		update_option('udw-api-client-id', 			$this->get_option('udw-api-client-id'));
+		update_option('udw-api-client-secret', 		$this->get_option('udw-api-client-secret'));
+		update_option('udw-pickup_time-start', 		$this->get_option('udw-pickup_time-start'));
+		update_option('udw-pickup_time-end', 		$this->get_option('udw-pickup_time-end'));
+		update_option('udw-pickup_time-weekend',	$this->get_option('udw-pickup_time-weekend'));
+		update_option('udw-pickup_time-processing', $this->get_option('udw-pickup_time-processing'));
+		update_option('udw-extra_fee', 				$this->get_option('udw-extra_fee-value') ? $this->get_option('udw-extra_fee-value') : 0);
 
 		echo '<div id="udw-settings">';
 		echo '<h2>' . esc_html($this->get_method_title()) . '</h2>';
@@ -189,7 +198,7 @@ class Udw_Wc_Integration extends WC_Integration
 					$css_classes .= 'button-primary ';
 					$button_label = __('Send now', 'uberdirect');
 
-					if (!$order->is_paid()) {
+					if (!$order->is_paid() | $order->get_status() == 'completed') {
 						$css_classes .= 'disabled ';
 					}
 				}

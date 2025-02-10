@@ -43,6 +43,7 @@ class UberDirect
 		$this->load_dependencies();
 		$this->set_locale();
 		$this->define_admin_hooks();
+		$this->define_public_hooks();
 	}
 
 	/**
@@ -66,6 +67,7 @@ class UberDirect
 		require_once UDW_ABSPATH . 'includes/class-uberdirect-loader.php';
 		require_once UDW_ABSPATH . 'includes/class-uberdirect-i18n.php';
 		require_once UDW_ABSPATH . 'admin/class-udw-admin.php';
+		require_once UDW_ABSPATH . 'public/class-udw-public.php';
 	}
 
 	/**
@@ -109,5 +111,12 @@ class UberDirect
 		// Register admin-specific webhook
 		add_action('rest_api_init', 				array($plugin_admin, 'register_webhook'));
 		add_action('udw_change_order_status', 		array($plugin_admin, 'change_order_status'), 10, 2);
+	}
+
+	private function define_public_hooks()
+	{
+		$plugin_public = new Udw_Public();
+
+		add_filter('woocommerce_cart_shipping_method_full_label', array($plugin_public, 'display_deadline_on_label'), 10, 2);
 	}
 }

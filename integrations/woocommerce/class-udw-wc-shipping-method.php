@@ -34,10 +34,11 @@ if ( ! class_exists( 'Udw_Wc_Shipping_Method' ) ) {
 		{
 			$destination 	= $package['destination']['address'] . ', ' . $package['destination']['postcode'];
 
-			$current_time 		= current_datetime();
-			$pickup_time_start 	= DateTime::createFromFormat('H:i', get_option('udw-pickup_time-start'), wp_timezone());
-			$pickup_time_end 	= DateTime::createFromFormat('H:i', get_option('udw-pickup_time-end'), wp_timezone());
-			$pickup_time 		= '';
+			$current_time 				= current_datetime();
+			$pickup_time_start 			= DateTime::createFromFormat('H:i', get_option('udw-pickup_time-start'), wp_timezone());
+			$pickup_time_end 			= DateTime::createFromFormat('H:i', get_option('udw-pickup_time-end'), wp_timezone());
+			$pickup_time_processing		= get_option('udw-pickup_time-processing');
+			$pickup_time 				= '';
 
 			// Checks if the shop doesn't delivers at weekends ant the current day is Saturday (6) or Sunday (7) using ISO-8601 format (Monday = 1, ... Sunday = 7)
 			if(in_array($current_time->format('N'), array(6, 7)) && get_option('udw-pickup_time-weekend') == 'no')
@@ -71,6 +72,7 @@ if ( ! class_exists( 'Udw_Wc_Shipping_Method' ) ) {
 				$pickup_time = $current_time;
 			}
 
+			$pickup_time = $pickup_time->modify("+{$pickup_time_processing} minutes"); // Add the time for processing the package
 			$delivery_quote = $this->ud_api->create_quote($destination, $pickup_time->format(DateTimeInterface::RFC3339));
 
 			if(isset($delivery_quote['fee']) && $delivery_quote['fee'])
