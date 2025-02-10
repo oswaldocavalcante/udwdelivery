@@ -7,6 +7,9 @@ msgstr ""
 msgid "Please install and activate WooCommerce to use Uber Direct!"
 msgstr ""
 
+msgid "Uber Direct delivery service for Woocommerce."
+msgstr ""
+
 msgid "Status: %s"
 msgstr ""
 
@@ -85,13 +88,10 @@ msgstr ""
 msgid "Request courier"
 msgstr ""
 
-msgid "Integrates Uber Direct delivery for Woocommerce."
-msgstr ""
-
 msgid "Access Credentials"
 msgstr ""
 
-msgid "See how to create your account and get your credentials in %s"
+msgid "See how to create your account and get your credentials in <a href="%s" target="blank">%s</a>"
 msgstr ""
 
 msgid "Customer ID"
@@ -164,4 +164,46 @@ msgid "Canceled"
 msgstr ""
 
 msgid "Returned"
+msgstr ""
+
+msgid "The average time needed to prepare the package to be ready for pickup."
+msgstr ""
+
+msgid "today"
+msgstr ""
+
+msgid "tomorrow"
+msgstr ""
+
+msgid "(arrives %s, %s)"
+msgstr ""
+
+msgid "Pickup daily time""
+msgstr ""
+
+msgid "Set the daily time for the delivery service. This will be used to show to the clients the delivery deadlines."
+msgstr ""
+
+msgid "Starting pickups"
+msgstr ""
+
+msgid "Enter the starting time that couriers can pickup orders at your store to delivery."
+msgstr ""
+
+msgid "Ending pickups"
+msgstr ""
+
+msgid "Enter the ending time that couriers can pickup orders at your store to delivery. After this time, the delivery deadline shown will consider the next avaliable day."
+msgstr ""
+
+msgid "Weekend pickups"
+msgstr ""
+
+msgid "Select if couriers can pickup orders at your store in the weekends."
+msgstr ""
+
+msgid "Processing time"
+msgstr ""
+
+msgid "The average time needed to prepare the package to be ready for pickup."
 msgstr ""

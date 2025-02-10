@@ -81,14 +81,14 @@ msgstr "ID do Pedido"
 msgid "Request courier"
 msgstr "Solicitar entregador"
 
-msgid "Integrates Uber Direct delivery for Woocommerce."
-msgstr "Integra a entrega Uber Direct para WooCommerce."
+msgid "Uber Direct delivery service for Woocommerce."
+msgstr "Serviço de entrega Uber Direct para WooCommerce."
 
 msgid "Access Credentials"
 msgstr "Credenciais de Acesso"
 
-msgid "See how to create your account and get your credentials in %s"
-msgstr "Veja como criar sua conta e obter suas credenciais em %s"
+msgid "See how to create your account and get your credentials in <a href=\"%s\" target=\"blank\">%s</a>"
+msgstr "See how to create your account and get your credentials in <a href=“%s” target=“blank”>%s</a>"
 
 msgid "Customer ID"
 msgstr "Customer ID"
@@ -161,3 +161,42 @@ msgstr "Cancelado"
 
 msgid "Returned"
 msgstr "Devolvido"
+
+msgid "today"
+msgstr "hoje"
+
+msgid "tomorrow"
+msgstr "amanhã"
+
+msgid "(arrives %s, %s)"
+msgstr "(chegará %s, %s)"
+
+msgid "Pickup daily time"
+msgstr "Horário diário de coleta"
+
+msgid "Set the daily time for the delivery service. This will be used to show to the clients the delivery deadlines."
+msgstr "Defina o horário diário para o serviço de entrega. Isso será usado para mostrar aos clientes os prazos de entrega."
+
+msgid "Starting pickups"
+msgstr "Início das coletas"
+
+msgid "Enter the starting time that couriers can pickup orders at your store to delivery."
+msgstr "Insira o horário de início em que os entregadores podem retirar os pedidos em sua loja para a entrega."
+
+msgid "Ending pickups"
+msgstr "Encerramento das coletas"
+
+msgid "Enter the ending time that couriers can pickup orders at your store to delivery. After this time, the delivery deadline shown will consider the next avaliable day."
+msgstr "Insira o horário de término em que os entregadores podem retirar os pedidos em sua loja para a entrega. Após esse período, o prazo de entrega mostrado considerará o próximo dia disponível."
+
+msgid "Weekend pickups"
+msgstr "Coletas em finais de semana"
+
+msgid "Select if couriers can pickup orders at your store in the weekends."
+msgstr "Selecione se os entregadores podem retirar pedidos em sua loja aos finais de semana."
+
+msgid "Processing time"
+msgstr "Tempo de preparação"
+
+msgid "The average time needed to prepare the package to be ready for pickup."
+msgstr "O tempo médio necessário para preparar o pacote para ser recolhido."
