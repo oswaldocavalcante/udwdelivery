@@ -31,11 +31,11 @@ In WooCommerce -> Settings -> Shipping tab -> Shipping settings, is recommended 
 
 ### What is Uber Direct?
 
-Uber Direct is a delivery service that allows businesses to send packages directly to customers using Uber's network of drivers.
+Uber Direct is a delivery service from Uber that allows businesses to send packages directly to customers using Uber's network of drivers.
 
-### How do I set up my API credentials?
+### Where do I get my API credentials?
 
-You can set up your API credentials in the WooCommerce settings under the "Uber Direct" section. You will need your Customer ID, Client ID, and Client Secret from your Uber Direct account.
+You can set up your API credentials in the WooCommerce settings under the "Uber Direct" section. You will need your Customer ID, Client ID, and Client Secret from your Uber Direct account, as explained [here](https://developer.uber.com/docs/deliveries/get-started).
 
 ## License
 
