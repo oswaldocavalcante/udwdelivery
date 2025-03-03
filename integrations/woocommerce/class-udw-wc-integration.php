@@ -41,7 +41,7 @@ class Udw_Wc_Integration extends WC_Integration
 			(
 				'title'       => __('Access Credentials', 'uberdirect'),
 				'type'        => 'title',
-				'description' => sprintf(__('See how to create your account and get your credentials in <a href="%s" target="blank">%s</a>', 'uberdirect'), 'https://developer.uber.com/docs/deliveries/get-started', 'https://developer.uber.com/docs/deliveries/get-started'),
+				'description' => sprintf(__('See how to create your account and get your credentials in <a href="%s" target="blank">%s</a>.', 'uberdirect'), 'https://developer.uber.com/docs/deliveries/get-started', 'https://developer.uber.com/docs/deliveries/get-started'),
 			),
 			'udw-api-customer-id' => array
 			(

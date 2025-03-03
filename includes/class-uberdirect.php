@@ -96,6 +96,7 @@ class UberDirect
 	{
 		$plugin_admin = new Udw_Admin();
 
+		add_action('before_woocommerce_init',       array($plugin_admin, 'declare_wc_compatibility'));
 		add_action('admin_enqueue_scripts', 		array($plugin_admin, 'enqueue_styles'));
 		add_action('admin_enqueue_scripts', 		array($plugin_admin, 'enqueue_scripts'));
 

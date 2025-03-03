@@ -31,7 +31,7 @@ class Udw_Public
 		{
 			$dropoff_deadline = $method->meta_data['dropoff_deadline'];
 			$delivery_message = $this->get_deadline_message($dropoff_deadline);
-			$label .= '<br><small>' . esc_html($delivery_message) . '</small>';
+			$label .= '<br><small class="udw-deadline">' . esc_html($delivery_message) . '</small>';
 		}
 
 		return $label;
