@@ -96,8 +96,8 @@ msgstr "Serviço de entrega Uber Direct para WooCommerce."
 msgid "Access Credentials"
 msgstr "Credenciais de Acesso"
 
-msgid "See how to create your account and get your credentials in <a href=\"%s\" target=\"blank\">%s</a>"
-msgstr "See how to create your account and get your credentials in <a href=“%s” target=“blank”>%s</a>"
+msgid "See how to create your account and get your credentials in <a href=\"%1$s\" target=\"blank\">%2$s</a>."
+msgstr "Veja como criar sua conta e obter suas credenciais em <a href=\"%1$s\" target=\"blank\">%2$s</a>."
 
 msgid "Customer ID"
 msgstr "Customer ID"
@@ -177,8 +177,8 @@ msgstr "hoje"
 msgid "tomorrow"
 msgstr "amanhã"
 
-msgid "(arrives %s, %s)"
-msgstr "(chegará %s, %s)"
+msgid "(arrives %1$s, %2$s)"
+msgstr "(chegará %1$s, %2$s)"
 
 msgid "Pickup daily time"
 msgstr "Horário diário de coleta"

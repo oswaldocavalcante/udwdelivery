@@ -1,7 +1,7 @@
 <?php
 
-class ManifestItem {
-
+class ManifestItem 
+{
     public $name;
     public $quantity;
     public $size;
@@ -11,7 +11,8 @@ class ManifestItem {
     public $wight;
     public $var_percentage;
 
-    public function __construct( $name, $quantity ) {
+    public function __construct( $name, $quantity )
+    {
         $this->name = $name;
         $this->quantity = $quantity;
     }

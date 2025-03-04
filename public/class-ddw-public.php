@@ -21,9 +21,9 @@
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
 
-require_once UDW_ABSPATH . 'integrations/uberdirect/class-udw-ud-api.php';
+require_once DDW_ABSPATH . 'integrations/uberdirect/class-ddw-ud-api.php';
 
-class Udw_Public
+class Ddw_Public
 {
 	public function display_deadline_on_label($label, $method)
 	{
@@ -31,7 +31,7 @@ class Udw_Public
 		{
 			$dropoff_deadline = $method->meta_data['dropoff_deadline'];
 			$delivery_message = $this->get_deadline_message($dropoff_deadline);
-			$label .= '<br><small class="udw-deadline">' . esc_html($delivery_message) . '</small>';
+			$label .= '<br><small class="ddw-deadline">' . esc_html($delivery_message) . '</small>';
 		}
 
 		return $label;
@@ -43,11 +43,11 @@ class Udw_Public
 
 		if ($deadline->format('Y-m-d') == current_datetime()->format('Y-m-d'))
 		{
-			$deadline_day = __('today', 'uberdirect');
+			$deadline_day = __('today', 'directdelivery');
 		}
 		else if ($deadline->format('Y-m-d') == current_datetime()->modify('+1 day')->format('Y-m-d'))
 		{
-			$deadline_day = __('tomorrow', 'uberdirect');
+			$deadline_day = __('tomorrow', 'directdelivery');
 		}
 		else
 		{
@@ -55,6 +55,7 @@ class Udw_Public
 			$deadline_day = $formatter->format($deadline);
 		}
 
-		return sprintf(__('(arrives %s, %s)', 'uberdirect'), $deadline_day, $deadline->format('H:i'));
+		/* translators: 1: day of the week 2: time */
+		return sprintf(__('(arrives %1$s, %2$s)', 'directdelivery'), $deadline_day, $deadline->format('H:i'));
 	}
 }

@@ -24,22 +24,21 @@
  * @subpackage Udw/includes
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
-class UberDirect_i18n {
-
-
+class DirectDelivery_i18n 
+{
 	/**
 	 * Load the plugin text domain for translation.
 	 *
 	 * @since    1.0.0
 	 */
-	public function load_plugin_textdomain() {
-
-		load_plugin_textdomain(
-			'uberdirect',
+	public function load_plugin_textdomain() 
+	{
+		load_plugin_textdomain
+		(
+			'directdelivery',
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);
-
 	}
 
 

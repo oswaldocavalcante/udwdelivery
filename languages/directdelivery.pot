@@ -100,7 +100,7 @@ msgstr ""
 msgid "Access Credentials"
 msgstr ""
 
-msgid "See how to create your account and get your credentials in <a href="%s" target="blank">%s</a>"
+msgid "See how to create your account and get your credentials in <a href="%1$s" target="blank">%2$s</a>."
 msgstr ""
 
 msgid "Customer ID"
@@ -184,7 +184,7 @@ msgstr ""
 msgid "tomorrow"
 msgstr ""
 
-msgid "(arrives %s, %s)"
+msgid "(arrives %1$s, %2$s)"
 msgstr ""
 
 msgid "Pickup daily time""

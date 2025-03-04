@@ -21,7 +21,7 @@
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
 
-class Udw_Ud_Api
+class Ddw_Ud_Api
 {
 	private $access_token;
 	private $base_url;
@@ -36,8 +36,8 @@ class Udw_Ud_Api
 	public function __construct()
 	{
 		$this->base_url 	= 'https://api.uber.com/v1/customers/';
-		$this->access_token = get_transient('udw-api-access-token');
-		$this->customer_id 	= get_option('udw-api-customer-id');
+		$this->access_token = get_transient('ddw-api-access-token');
+		$this->customer_id 	= get_option('ddw-api-customer-id');
 
 		$this->endpoint_create_quote 	= $this->base_url . $this->customer_id . '/delivery_quotes';
 		$this->endpoint_create_delivery = $this->base_url . $this->customer_id . '/deliveries';
@@ -49,7 +49,7 @@ class Udw_Ud_Api
 	public function get_access_token()
 	{
 		// Checks if the Access Token is expired to regenate it
-		if (false === ($this->access_token = get_transient('udw-api-access-token')))
+		if (false === ($this->access_token = get_transient('ddw-api-access-token')))
 		{
 			$response = wp_remote_post(
 				'https://auth.uber.com/oauth/v2/token',
@@ -58,8 +58,8 @@ class Udw_Ud_Api
 						'Content-Type' => 'application/x-www-form-urlencoded',
 					),
 					'body' => array(
-						'client_id' => get_option('udw-api-client-id'),
-						'client_secret' => get_option('udw-api-client-secret'),
+						'client_id' => get_option('ddw-api-client-id'),
+						'client_secret' => get_option('ddw-api-client-secret'),
 						'grant_type' => 'client_credentials',
 						'scope' => 'eats.deliveries',
 					)
@@ -70,7 +70,7 @@ class Udw_Ud_Api
 
 			if (array_key_exists('access_token', $response_body)) {
 				$this->access_token = $response_body['access_token'];
-				set_transient('udw-api-access-token', $this->access_token, $response_body['expires_in']);
+				set_transient('ddw-api-access-token', $this->access_token, $response_body['expires_in']);
 			} else {
 				return false;
 			}
