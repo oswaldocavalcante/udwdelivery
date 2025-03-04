@@ -1,9 +1,9 @@
 # Direct Delivery for WooCommerce
 
-- Tested up to: 6.7
+- Author: [Oswaldo Cavalcante](https://oswaldocavalcante.com/)
 - License: GPL-2.0+
 - Stable tag: 2.0.0
-- Author: [Oswaldo Cavalcante](https://oswaldocavalcante.com/)
+- Tested up to: 6.7
 - Delivery service for WooCommerce integrating with Uber Direct API.
 
 ## Features
