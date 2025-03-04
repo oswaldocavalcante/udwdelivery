@@ -3,9 +3,8 @@
 require_once DDW_ABSPATH . 'integrations/uberdirect/class-ddw-ud-api.php';
 require_once DDW_ABSPATH . 'integrations/uberdirect/class-ddw-ud-manifest-item.php';
 
-class Udw_Wc_Integration extends WC_Integration
+class Ddw_Wc_Integration extends WC_Integration
 {
-
 	private $ddw_ud_api;
 
 	public function __construct()
@@ -150,7 +149,7 @@ class Udw_Wc_Integration extends WC_Integration
 
 	public function add_shipping_method($methods)
 	{
-		$methods['UBERDIRECT_SHIPPING_METHOD'] = 'Udw_Wc_Shipping_Method';
+		$methods['UBERDIRECT_SHIPPING_METHOD'] = 'Ddw_Wc_Shipping_Method';
 
 		return $methods;
 	}

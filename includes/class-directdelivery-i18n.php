@@ -9,8 +9,8 @@
  * @link       https://oswaldocavalcante.com
  * @since      1.0.0
  *
- * @package    Udw
- * @subpackage Udw/includes
+ * @package    DirectDelivery
+ * @subpackage DirectDelivery/includes
  */
 
 /**
@@ -20,8 +20,8 @@
  * so that it is ready for translation.
  *
  * @since      1.0.0
- * @package    Udw
- * @subpackage Udw/includes
+ * @package    DirectDelivery
+ * @subpackage DirectDelivery/includes
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
 class DirectDelivery_i18n 

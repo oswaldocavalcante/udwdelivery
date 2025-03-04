@@ -2,7 +2,7 @@
 
 - Tested up to: 6.7
 - License: GPL-2.0+
-- Stable tag: 1.6.4
+- Stable tag: 2.0.0
 - Author: [Oswaldo Cavalcante](https://oswaldocavalcante.com/)
 - Delivery service for WooCommerce integrating with Uber Direct API.
 

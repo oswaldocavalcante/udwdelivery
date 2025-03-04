@@ -6,8 +6,8 @@
  * @link       https://oswaldocavalcante.com
  * @since      1.0.0
  *
- * @package    Udw
- * @subpackage Udw/public
+ * @package    DirectDelivery
+ * @subpackage DirectDelivery/public
  */
 
 /**
@@ -16,8 +16,8 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the public-specific stylesheet and JavaScript.
  *
- * @package    Udw
- * @subpackage Udw/public
+ * @package    DirectDelivery
+ * @subpackage DirectDelivery/public
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
 

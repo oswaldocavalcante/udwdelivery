@@ -9,8 +9,8 @@
  * @link       https://oswaldocavalcante.com
  * @since      1.0.0
  *
- * @package    Udw
- * @subpackage Udw/includes
+ * @package    DirectDelivery
+ * @subpackage DirectDelivery/includes
  */
 
 /**
@@ -23,8 +23,8 @@
  * version of the plugin.
  *
  * @since      1.0.0
- * @package    Udw
- * @subpackage Udw/includes
+ * @package    DirectDelivery
+ * @subpackage DirectDelivery/includes
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
 class DirectDelivery
@@ -51,10 +51,9 @@ class DirectDelivery
 	 *
 	 * Include the following files that make up the plugin:
 	 *
-	 * - Udw_Loader. Orchestrates the hooks of the plugin.
-	 * - Udw_i18n. Defines internationalization functionality.
-	 * - Udw_Admin. Defines all hooks for the admin area.
-	 * - Udw_Public. Defines all hooks for the public side of the site.
+	 * - Ddw_i18n. Defines internationalization functionality.
+	 * - Ddw_Admin. Defines all hooks for the admin area.
+	 * - Ddw_Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -72,7 +71,7 @@ class DirectDelivery
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the Udw_i18n class in order to set the domain and to register the hook
+	 * Uses the Ddw_i18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
@@ -106,6 +105,7 @@ class DirectDelivery
 		add_action('wp_ajax_ddw_create_delivery', 	array($plugin_admin, 'ajax_create_delivery'));
 		add_action('wp_ajax_ddw_cancel_delivery', 	array($plugin_admin, 'ajax_cancel_delivery'));
 		add_action('admin_footer', 					array($plugin_admin, 'add_modal_templates'));
+		add_filter('plugin_action_links_' . DDW_BASENAME, array($plugin_admin, 'plugin_action_links'));
 
 		// Register admin-specific webhook
 		add_action('rest_api_init', 				array($plugin_admin, 'register_webhook'));

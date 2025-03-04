@@ -6,8 +6,8 @@
  * @link       https://oswaldocavalcante.com
  * @since      1.0.0
  *
- * @package    Udw
- * @subpackage Udw/admin
+ * @package    DirectDelivery
+ * @subpackage DirectDelivery/admin
  */
 
 /**
@@ -16,8 +16,8 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Udw
- * @subpackage Udw/admin
+ * @package    DirectDelivery
+ * @subpackage DirectDelivery/admin
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
 
@@ -96,9 +96,19 @@ class Ddw_Admin
 	public function add_integration($integrations)
 	{
 		include_once  DDW_ABSPATH . 'integrations/woocommerce/class-ddw-wc-integration.php';
-		$integrations[] = 'Udw_Wc_Integration';
+		$integrations[] = 'Ddw_Wc_Integration';
 
 		return $integrations;
+	}
+
+	public function plugin_action_links($links)
+	{
+		$action_links = array
+		(
+			'settings' => '<a href="' . esc_url(get_admin_url(null, 'admin.php?page=wc-settings&tab=integration&section=directdelivery')) . '">' . __('Settings', 'directdelivery') . '</a>',
+		);
+
+		return array_merge($action_links, $links);
 	}
 
 	/**

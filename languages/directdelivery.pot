@@ -4,10 +4,13 @@ msgstr ""
 "Language: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid "Please install and activate WooCommerce to use Uber Direct!"
+msgid "Please install and activate WooCommerce to use Direct Delivery."
 msgstr ""
 
 msgid "Uber Direct delivery service for Woocommerce."
+msgstr ""
+
+msgid "Settings"
 msgstr ""
 
 msgid "Status: %s"

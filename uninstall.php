@@ -22,7 +22,7 @@
  * @link       https://oswaldocavalcante.com
  * @since      1.0.0
  *
- * @package    Udw
+ * @package    DirectDelivery
  */
 
 // If uninstall not called from WordPress, then exit.

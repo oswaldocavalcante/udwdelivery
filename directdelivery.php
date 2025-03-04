@@ -25,8 +25,9 @@ if (!defined( 'WPINC' )) { die; }
 
 if (!defined('DDW_PLUGIN_FILE')) { define('DDW_PLUGIN_FILE', __FILE__); }
 define('DDW_ABSPATH', dirname(DDW_PLUGIN_FILE) . '/');
-define('DDW_VERSION', '2.0.0');
+define('DDW_BASENAME', plugin_basename(__FILE__));
 define('DDW_URL', plugins_url('/', __FILE__));
+define('DDW_VERSION', '2.0.0');
 
 require plugin_dir_path( __FILE__ ) . 'includes/class-directdelivery.php';
 

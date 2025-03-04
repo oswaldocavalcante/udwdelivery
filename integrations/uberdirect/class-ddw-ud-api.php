@@ -6,8 +6,8 @@
  * @link       https://oswaldocavalcante.com
  * @since      1.0.0
  *
- * @package    Udw
- * @subpackage Udw/admin
+ * @package    DirectDelivery
+ * @subpackage DirectDelivery/admin
  */
 
 /**
@@ -16,8 +16,8 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    Udw
- * @subpackage Udw/admin
+ * @package    DirectDelivery
+ * @subpackage DirectDelivery/admin
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
 
