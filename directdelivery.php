@@ -5,7 +5,7 @@
  *
  * @wordpress-plugin
  * Plugin Name:       Direct Delivery for WooCommerce
- * Plugin URI:        https://github.com/oswaldocavalcante/uberdirect
+ * Plugin URI:        https://github.com/oswaldocavalcante/directdelivery
  * Description:       Delivery service for WooCommerce integrating with Uber Direct API.
  * Version:           2.0.0
  * Author:            Oswaldo Cavalcante
