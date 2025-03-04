@@ -9,7 +9,7 @@
                         <?php /* translators: %s: order ID */ ?>
                         <h1><?php echo esc_html(sprintf(__('Envio do pedido #%s', 'uberdirect'), '{{ data.number }}')); ?></h1>
                         <button class="modal-close modal-close-link dashicons dashicons-no-alt">
-                            <span class="screen-reader-text"><?php esc_html_e('Close modal panel', 'woocommerce'); ?></span>
+                            <span class="screen-reader-text"><?php esc_html_e('Close modal panel', 'uberdirect'); ?></span>
                         </button>
                     </header>
 

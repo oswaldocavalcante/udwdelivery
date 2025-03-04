@@ -22,6 +22,9 @@ msgstr ""
 msgid "Phone number"
 msgstr ""
 
+msgid "Order shipment #%s"
+msgstr ""
+
 msgid "Close modal panel"
 msgstr ""
 

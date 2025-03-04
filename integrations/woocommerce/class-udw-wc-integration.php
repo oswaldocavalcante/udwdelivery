@@ -25,11 +25,13 @@ class Udw_Wc_Integration extends WC_Integration
 
 	private function define_woocommerce_hooks()
 	{
-		add_action('woocommerce_update_options_integration_' . $this->id, array($this, 'process_admin_options'));
-		add_action('woocommerce_shipping_init', 			array($this, 'create_shipping_method'));
-		add_filter('woocommerce_shipping_methods', 			array($this, 'add_shipping_method'));
-		add_filter('manage_edit-shop_order_columns', 		array($this, 'add_order_list_column'), 20);
-		add_action('manage_shop_order_posts_custom_column',	array($this, 'add_order_list_column_buttons'), 20, 2);
+		add_action('woocommerce_update_options_integration_'.$this->id, array($this, 'process_admin_options'));
+		add_action('woocommerce_shipping_init', 						array($this, 'create_shipping_method'));
+		add_filter('woocommerce_shipping_methods', 						array($this, 'add_shipping_method'));
+		add_filter('manage_edit-shop_order_columns', 					array($this, 'add_order_list_column'), 20); 					// Legacy orders page.
+		add_action('manage_shop_order_posts_custom_column',				array($this, 'add_order_list_column_buttons_legacy'), 20, 2); 	// Legacy orders page.
+		add_filter('woocommerce_shop_order_list_table_columns', 		array($this, 'add_order_list_column'));							// HPOS orders page.
+		add_action('woocommerce_shop_order_list_table_custom_column', 	array($this, 'add_order_list_column_buttons_hpos'),  10, 2);	// HPOS orders page.
 	}
 
 	public function init_form_fields()
@@ -173,16 +175,15 @@ class Udw_Wc_Integration extends WC_Integration
 		return $reordered_columns;
 	}
 
-	function add_order_list_column_buttons($column, $order_id)
+	function add_order_list_column_buttons_legacy($column, $order_id)
 	{
 		if ($column === 'udw-shipping')
 		{
 			$order = wc_get_order($order_id);
-
 			if(!$order) return;
 
-			// Checks if the order isnt set to delivery
-			if ($order->get_shipping_total() == 0) {
+			if ($order->get_shipping_total() == 0) // Checks if the order isnt set to delivery
+			{
 				echo $order->get_shipping_method();
 			}
 			else
@@ -190,7 +191,8 @@ class Udw_Wc_Integration extends WC_Integration
 				$css_classes = 'button button-large ';
 				$button_label = '';
 
-				if ($order->meta_exists('_udw_delivery_id')) { // Checks if the order has not been sended
+				if ($order->meta_exists('_udw_delivery_id')) // Checks if the order has not been sended
+				{ 
 					$button_label = __('See delivery', 'uberdirect');
 				} 
 				else
@@ -207,6 +209,50 @@ class Udw_Wc_Integration extends WC_Integration
 				'<a 
 					id="udw-button-pre-send"
 					data-order-id="' . esc_attr($order_id) . '"
+					class="' . esc_attr($css_classes) . '"
+				>';
+				echo $button_label;
+				echo '</a>';
+			}
+		}
+	}
+
+	function add_order_list_column_buttons_hpos($column, $post_or_order_object)
+	{
+		if ($column === 'udw-shipping')
+		{
+			$order = ($post_or_order_object instanceof WP_Post) ? wc_get_order($post_or_order_object->ID) : $post_or_order_object;
+			// Note: $post_or_order_object should not be used directly below this point.
+			if (!$order) return;
+
+			if ($order->get_shipping_total() == 0) // Checks if the order isnt set to delivery
+			{
+				echo $order->get_shipping_method();
+			}
+			else
+			{
+				$css_classes = 'button button-large ';
+				$button_label = '';
+
+				if ($order->meta_exists('_udw_delivery_id')) // Checks if the order has not been sended
+				{ 
+					$button_label = __('See delivery', 'uberdirect');
+				}
+				else
+				{
+					$css_classes .= 'button-primary ';
+					$button_label = __('Send now', 'uberdirect');
+
+					if (!$order->is_paid() | $order->get_status() == 'completed')
+					{
+						$css_classes .= 'disabled ';
+					}
+				}
+
+				echo
+				'<a 
+					id="udw-button-pre-send"
+					data-order-id="' . esc_attr($order->get_id()) . '"
 					class="' . esc_attr($css_classes) . '"
 				>';
 				echo $button_label;

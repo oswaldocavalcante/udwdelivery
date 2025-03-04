@@ -30,6 +30,9 @@ msgstr "Número de telefone"
 msgid "Close modal panel"
 msgstr "Fechar painel modal"
 
+msgid "Order shipment #%s"
+msgtr "Envio do pedido"
+
 msgid "Recipient"
 msgstr "Destinatário"
 

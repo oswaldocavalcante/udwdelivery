@@ -9,10 +9,11 @@
                     </mark>
                     <?php /* translators: %s: order ID */ ?>
                     <# if ( data.external_id ) { #>
-                    <h1><?php esc_html_e(sprintf(__('Envio do pedido #%s', 'uberdirect'), '{{ data.external_id }}')); ?></h1>
+                    <?php /* translators: %s: order ID */ ?>
+                    <h1><?php echo esc_html(sprintf(__('Order shipment #%s', 'uberdirect'), '{{ data.external_id }}')); ?></h1>
                     <# } #>
                     <button class="modal-close modal-close-link dashicons dashicons-no-alt">
-                        <span class="screen-reader-text"><?php esc_html_e('Close modal panel', 'woocommerce'); ?></span>
+                        <span class="screen-reader-text"><?php esc_html_e('Close modal panel', 'uberdirect'); ?></span>
                     </button>
                 </header>
 
@@ -117,13 +118,15 @@
                         
                         <# if( data.fee ) { #>
                         <h3  id="udw-delivery-fee">
-                            <?php esc_html_e(sprintf(__('Shipping cost: %s %s', 'uberdirect'), $currency_symbol, '{{data.fee}}')); ?>
+                            <?php /* translators: 1: currency symbol 2: user ID 3: fee */ ?>
+                            <?php echo esc_html(sprintf(__('Shipping cost: %1$s %2$s', 'uberdirect'), $currency_symbol, '{{data.fee}}')); ?>
                         </h3>
                         <# } #>
 
                         <# if( data.tip ) { #>
                         <p id="udw-delivery-tip">
-                            <?php esc_html_e(sprintf(__('Tip: %s %s', 'uberdirect'), $currency_symbol, '{{data.tip}}')); ?>
+                            <?php /* translators: 1: currency symbol 2: user ID 3: tip */ ?>
+                            <?php echo esc_html(sprintf(__('Tip: %1$s %2$s', 'uberdirect'), $currency_symbol, '{{data.tip}}')); ?>
                         </p>
                         <# } #>
 
