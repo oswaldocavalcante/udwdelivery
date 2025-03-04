@@ -21,6 +21,8 @@
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
 
+use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
+
 require_once UDW_ABSPATH . 'integrations/uberdirect/class-udw-ud-api.php';
 
 class Udw_Admin
@@ -133,12 +135,10 @@ class Udw_Admin
 		wp_localize_script(
 			'uberdirect',
 			'udw_delivery_params',
-			array
-			(
+			array(
 				'url' => admin_url('admin-ajax.php'),
 				'nonce' => wp_create_nonce('udw_nonce_delivery'),
-				'translations' => array
-				(
+				'translations' => array(
 					'pending' 			=> __('Pending', 'uberdirect'),
 					'pickup' 			=> __('Pickup', 'uberdirect'),
 					'pickup_complete' 	=> __('Pickup complete', 'uberdirect'),
@@ -153,15 +153,23 @@ class Udw_Admin
 
 	public function add_meta_box()
 	{
-		add_meta_box('wc-udw-widget', __('Uber Direct', 'udw-widget'), array($this, 'render_meta_box'), 'shop_order', 'side', 'high');
+		$screen = class_exists('\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController') && wc_get_container()->get(CustomOrdersTableController::class)->custom_orders_table_usage_is_enabled()
+			? wc_get_page_screen_id('shop-order')
+			: 'shop_order';
+
+		add_meta_box('wc-udw-widget', 'Uber Direct', array($this, 'render_meta_box'), $screen, 'side', 'high');
 	}
 
-	public function render_meta_box($wc_post)
+	public function render_meta_box($post_or_order_object)
 	{
-		global $post;
-		$order_id = isset($post) ? $post->ID : $wc_post->get_id();
-		$order = wc_get_order($order_id);
-		$delivery_status = 'undefined';
+		// Get order or legacy post.
+		/**
+		 * @var WC_Order $order
+		 */
+		$order = ($post_or_order_object instanceof WP_Post) ? wc_get_order($post_or_order_object->ID) : $post_or_order_object;
+		// Note: $post_or_order_object should not be used directly below this point.
+
+		$delivery_status = false;
 
 		if ($order->meta_exists('_udw_delivery_id'))
 		{
@@ -174,7 +182,9 @@ class Udw_Admin
 		<div id="udw-metabox-container">
 
 			<div id="udw-metabox-status">
-				<h4><?php esc_html_e(sprintf(__('Status: %s', 'uberdirect'), $delivery_status)); ?></h4>
+				<?php if ($order->meta_exists('_udw_delivery_id')) : ?>
+					<h4><?php echo esc_html(sprintf(__('Status: %s', 'uberdirect'), $delivery_status)); ?></h4>
+				<?php endif; ?>
 			</div>
 
 			<?php if ($order->meta_exists('_udw_delivery_id')) : ?>
@@ -194,11 +204,24 @@ class Udw_Admin
 				<a href="<?php echo esc_url($delivery->tracking_url ?? '') ?>" target="_blank" class="button button-primary dashicons-before dashicons-external"><?php _e('Open', 'uberdirect'); ?></a>
 
 			<?php else : ?>
+
+				<?php
+				$delivery_quote = $this->udw_ud_api->create_quote($order->get_shipping_address_1() . ', ' . $order->get_shipping_postcode());
+				$delivery_variation = floatval(get_option('udw-extra_fee')); // Maximum variable of variation price for delivery
+				$delivery_cost = ($delivery_quote['fee'] / 100) + $delivery_variation;
+				?>
+				<h4><?php echo esc_html(__('Shipping cost', 'uberdirect')); ?></h4>
+				<span><?php echo $delivery_quote['fee'] ? wc_price($delivery_cost) : ''; ?></span>
+
+				<h4><?php echo esc_html(__('Delivery time', 'uberdirect')); ?></h4>
+				<span><?php echo $delivery_quote['duration'] ? $delivery_quote['duration'] . ' ' . __('minutes', 'uberdirect') : ''; ?></span>
+
 				<div id="udw-metabox-action">
-					<a href="#" class="button button-primary" id="udw-button-pre-send" data-order-id="<?php esc_attr_e($order_id); ?>">
-						<?php _e('Send', 'uberdirect'); ?>
+					<a href="#" class="button button-primary" id="udw-button-pre-send" data-order-id="<?php esc_attr_e($order->ID); ?>">
+						<?php _e('Send now', 'uberdirect'); ?>
 					</a>
 				</div>
+
 			<?php endif; ?>
 		</div>
 		<?php
@@ -217,7 +240,8 @@ class Udw_Admin
 				$delivery = $this->udw_ud_api->get_delivery($delivery_id);
 				wp_send_json_success($delivery);
 			}
-			else {
+			else
+			{
 				wp_send_json_success(json_decode($order));
 			}
 		}
@@ -272,7 +296,8 @@ class Udw_Admin
 				$delivery = $this->udw_ud_api->cancel_delivery($delivery_id);
 				wp_send_json_success($delivery);
 			}
-			else {
+			else
+			{
 				wp_send_json_success(json_decode($order));
 			}
 		}

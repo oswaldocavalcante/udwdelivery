@@ -28,10 +28,7 @@ msgid "Phone number"
 msgstr "Número de telefone"
 
 msgid "Close modal panel"
-msgstr "Fechar painel modal"
-
-msgid "Order shipment #%s"
-msgtr "Envio do pedido"
+msgstr "Fechar janela"
 
 msgid "Recipient"
 msgstr "Destinatário"
@@ -41,6 +38,12 @@ msgstr "Nome do Destinatário"
 
 msgid "Delivery Address"
 msgstr "Endereço de Entrega"
+
+msgid "Delivery time"
+msgstr "Tempo de entrega"
+
+msgid "minutes"
+msgstr "minutos"
 
 msgid "Notes"
 msgstr "Observações"
@@ -54,8 +57,11 @@ msgstr "Veículo"
 msgid "Tracking URL"
 msgstr "URL de Rastreamento"
 
-msgid "Shipping cost: %s %s"
-msgstr "Custo de envio: %s %s"
+msgid "Shipping cost: %1$s %2$s"
+msgstr "Custo de envio: %1$s %2$s"
+
+msgid "Shipping cost"
+msgstr "Custo de envio"
 
 msgid "Tip: %s %s"
 msgstr "Gorjeta: %s %s"

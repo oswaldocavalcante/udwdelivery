@@ -90,7 +90,7 @@ class Udw_Ud_Api
 		$body = array
 		(
 			'pickup_address' => ($pickup_address == '') ? get_option('woocommerce_store_address') : $pickup_address,
-			'pickup_ready_dt' => $pickup_ready_dt,
+			'pickup_ready_dt' => ($pickup_ready_dt == '') ? current_datetime()->format(DateTimeInterface::RFC3339) : $pickup_ready_dt,
 			'dropoff_address' => $dropoff_address,
 		);
 

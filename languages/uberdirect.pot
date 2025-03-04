@@ -49,7 +49,10 @@ msgstr ""
 msgid "Tracking URL"
 msgstr ""
 
-msgid "Shipping cost: %s %s"
+msgid "Shipping cost: %1$s %2$s"
+msgstr ""
+
+msgid "Shipping cost"
 msgstr ""
 
 msgid "Tip: %s %s"
@@ -58,8 +61,11 @@ msgstr ""
 msgid "Shipping Information"
 msgstr ""
 
-msgid "Delivery Address"
+msgid "Delivery time"
 msgstr ""
+
+msgid "minutes"
+msgstr
 
 msgid "Complement"
 msgstr ""
