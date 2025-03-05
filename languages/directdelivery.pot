@@ -19,6 +19,9 @@ msgstr ""
 msgid "Send"
 msgstr ""
 
+msgid "Order shipment "
+msgstr ""
+
 msgid "Courier"
 msgstr ""
 

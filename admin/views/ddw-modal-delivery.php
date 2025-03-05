@@ -7,11 +7,12 @@
                     <mark class="order-status status-{{ data.status }}" style="float: right; margin-right: 54px">
                         <span id="delivery-status"><?php esc_html_e('{{ data.status_translated }}', 'directdelivery') ?></span>
                     </mark>
-                    <?php /* translators: %s: order ID */ ?>
+                    <h1>
+                    <?php esc_html_e('Order shipment ', 'directdelivery'); ?>
                     <# if ( data.external_id ) { #>
-                    <?php /* translators: %s: order ID */ ?>
-                    <h1><?php echo esc_html(sprintf(__('Order shipment #%s', 'directdelivery'), '{{ data.external_id }}')); ?></h1>
+                        <?php echo esc_html('{{ data.external_id }}'); ?>
                     <# } #>
+                    </h1>
                     <button class="modal-close modal-close-link dashicons dashicons-no-alt">
                         <span class="screen-reader-text"><?php esc_html_e('Close modal panel', 'directdelivery'); ?></span>
                     </button>
@@ -38,7 +39,7 @@
 
                             <# if( data.courier.img_href ) { #>
                             <div id="ddw-delivery-courier-photo">
-                                <img src="<?php echo esc_url('{{ data.courier.img_href }}'); ?>" />
+                                <img src="{{{ data.courier.img_href }}}" />
                             </div>
                             <# } #>
 

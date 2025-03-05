@@ -24,6 +24,9 @@ msgstr "Status: %s"
 msgid "Send"
 msgstr "Enviar"
 
+msgid "Order shipment "
+msgstr "Envio do pedido "
+
 msgid "Courier"
 msgstr "Entregador"
 
