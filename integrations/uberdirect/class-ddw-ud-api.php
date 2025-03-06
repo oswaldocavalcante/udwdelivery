@@ -3,16 +3,6 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       https://oswaldocavalcante.com
- * @since      1.0.0
- *
- * @package    DirectDelivery
- * @subpackage DirectDelivery/admin
- */
-
-/**
- * The admin-specific functionality of the plugin.
- *
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
@@ -68,10 +58,14 @@ class Ddw_Ud_Api
 
 			$response_body = json_decode(wp_remote_retrieve_body($response), true);
 
-			if (array_key_exists('access_token', $response_body)) {
+			if (array_key_exists('access_token', $response_body)) 
+			{
 				$this->access_token = $response_body['access_token'];
 				set_transient('ddw-api-access-token', $this->access_token, $response_body['expires_in']);
-			} else {
+			} 
+			else 
+			{
+				$this->log('Get access token', $response);
 				return false;
 			}
 		}
@@ -104,7 +98,13 @@ class Ddw_Ud_Api
 			)
 		);
 
+		if (is_wp_error($response) || isset($response['response']['code']) && $response['response']['code'] != 200)
+		{
+			return $this->log('Create quote', $response);
+		}
+
 		$quote = json_decode(wp_remote_retrieve_body($response), true);
+
 		return $quote;
 	}
 
@@ -121,11 +121,11 @@ class Ddw_Ud_Api
 			'pickup_name' 			=> get_bloginfo('name'),
 			'pickup_business_name'	=> get_bloginfo('name'),
 			'pickup_address' 		=> get_option('woocommerce_store_address'),
-			'pickup_phone_number' 	=> '+558232355224',
+			'pickup_phone_number' 	=> get_option('ddw-phone_number'),
 			'dropoff_name' 			=> $dropoff_name,
 			'dropoff_address' 		=> $dropoff_address,
 			'dropoff_notes'			=> $dropoff_notes,
-			'dropoff_phone_number' 	=> '+55' . $dropoff_phone_number,
+			'dropoff_phone_number' 	=> $dropoff_phone_number,
 			'manifest_items' 		=> $manifest_items,
 			'external_id' 			=> $order_id,
 			'idempotency_key'		=> $order_id,
@@ -141,7 +141,13 @@ class Ddw_Ud_Api
 			)
 		);
 
+		if (is_wp_error($response) || isset($response['response']['code']) && $response['response']['code'] != 200)
+		{
+			return $this->log('Create delivery', $response);
+		}
+		
 		$delivery = json_decode(wp_remote_retrieve_body($response));
+
 		return $delivery;
 	}
 
@@ -168,7 +174,13 @@ class Ddw_Ud_Api
 			)
 		);
 
+		if (is_wp_error($response) || isset($response['response']['code']) && $response['response']['code'] != 200)
+		{
+			return $this->log('Update delivery', $response);
+		}
+
 		$delivery = json_decode(wp_remote_retrieve_body($response));
+
 		return $delivery;
 	}
 
@@ -186,7 +198,13 @@ class Ddw_Ud_Api
 			array('headers' => $headers)
 		);
 
+		if (is_wp_error($response) || isset($response['response']['code']) && $response['response']['code'] != 200)
+		{
+			return $this->log('Get delivery', $response);
+		}
+
 		$delivery = json_decode(wp_remote_retrieve_body($response));
+
 		return $delivery;
 	}
 
@@ -204,8 +222,41 @@ class Ddw_Ud_Api
 			array('headers' => $headers)
 		);
 
+		if (is_wp_error($response) || isset($response['response']['code']) && $response['response']['code'] != 200)
+		{
+			return $this->log('Cancel delivery', $response);
+		}
+
 		$delivery = json_decode(wp_remote_retrieve_body($response));
 
 		return $delivery;
+	}
+
+	/**
+	 * Checks the response from the UberDirect API for a given delivery ID.
+	 *
+	 * @param string $request_name The request name sent to the UberDirect API.
+	 * @param array | WP_Error $response The response data received from the UberDirect API.
+	 *
+	 * @return void
+	 */
+	private function log($request_name, $response)
+	{
+		$logger = function_exists('wc_get_logger') ? wc_get_logger() : new WC_Logger();
+		$logger_context = array('source' => 'directdelivery');
+		$message = '';
+		
+		if(isset($response['response']['code']) && $response['response']['code'] != 200)
+		{
+			$message = $response['response']['code'] . ' - ' . $request_name . ': ' . $response['response']['message'];
+			$logger->error($message, $logger_context);
+		}
+		elseif(is_wp_error($response))
+		{
+			$message = $request_name . ': ' . $response->get_error_message();
+			$logger->error($message, $logger_context);
+		}
+
+		return $message;
 	}
 }

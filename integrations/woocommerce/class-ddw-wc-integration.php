@@ -101,13 +101,20 @@ class Ddw_Wc_Integration extends WC_Integration
 			),
 			
 			// Fee settings
-			'ddw-extra_fee-section' => array
+			'ddw-general-section' => array
 			(
-				'title'       	=> __('Extra fee', 'directdelivery'),
+				'title'       	=> __('General settings', 'directdelivery'),
 				'type'        	=> 'title',
-				'description' 	=> __('Set an extra fee to compensate the variation between the quote price and the actual delivery price. This difference, if positive, will be given as a tip for the driver.', 'directdelivery')
+				'description' 	=> __('Set the store\'s phone number and an extra fee to compensate the variation between the quote price and the actual delivery price. This difference, if positive, will be given as a tip for the driver.', 'directdelivery')
 			),
-			'ddw-extra_fee-value' => array
+			'ddw-phone_number' => array(
+				'title' 		=> __('Phone number', 'directdelivery'),
+				'type' 			=> 'tel',
+				'description' 	=> __('Enter the complete store\'s phone number, including the country\'s calling code with (+) symbol.', 'directdelivery'),
+				'default' 		=> '',
+				'placeholder' 	=> '+55 11 1234-5678'
+			),
+			'ddw-extra_fee' => array
 			(
 				'title' 		=> __('Extra fee', 'directdelivery'),
 				'type' 			=> 'price',
@@ -127,7 +134,8 @@ class Ddw_Wc_Integration extends WC_Integration
 		update_option('ddw-pickup_time-end', 		$this->get_option('ddw-pickup_time-end'));
 		update_option('ddw-pickup_time-weekend',	$this->get_option('ddw-pickup_time-weekend'));
 		update_option('ddw-pickup_time-processing', $this->get_option('ddw-pickup_time-processing'));
-		update_option('ddw-extra_fee', 				$this->get_option('ddw-extra_fee-value') ? $this->get_option('ddw-extra_fee-value') : 0);
+		update_option('ddw-extra_fee', 				$this->get_option('ddw-extra_fee') ? $this->get_option('ddw-extra_fee') : 0);
+		update_option('ddw-phone_number', 			$this->get_option('ddw-phone_number'));
 
 		echo '<div id="ddw-settings">';
 		echo '<h2>' . esc_html($this->get_method_title()) . '</h2>';

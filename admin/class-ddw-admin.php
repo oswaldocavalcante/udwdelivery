@@ -254,10 +254,13 @@ class Ddw_Admin
 			$order_id = absint(wp_unslash($_POST['order_id']));
 			$order = wc_get_order($order_id);
 
+			$country_code = $order->get_billing_country();
+			$calling_code = WC()->countries->get_country_calling_code($country_code);
+			$dropoff_phone_number 	= $calling_code . $order->get_billing_phone();
+
 			$dropoff_name 			= $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name();
 			$dropoff_address 		= str_replace('<br/>', ', ', $order->get_formatted_shipping_address());
 			$dropoff_notes 			= $order->get_shipping_address_2();
-			$dropoff_phone_number 	= $order->get_billing_phone();
 			$manifest_items 		= array();
 
 			foreach ($order->get_items() as $item)

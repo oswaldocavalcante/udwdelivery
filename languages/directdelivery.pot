@@ -130,8 +130,11 @@ msgstr ""
 msgid "Extra fee"
 msgstr ""
 
-msgid "Set an extra fee to compensate the variation between the quote price and the actual delivery price. This difference, if positive, will be given as a tip for the driver."
+msgid "Set the store\'s phone number and an extra fee to compensate the variation between the quote price and the actual delivery price. This difference, if positive, will be given as a tip for the driver."
 msgstr ""
+
+msgid "Enter the complete store's phone number, including the country's calling code with (+) symbol."
+msgstr
 
 msgid "Enter a value with one monetary decimal point (,) without thousand separators and currency symbols."
 msgstr ""

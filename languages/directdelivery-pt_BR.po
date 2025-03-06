@@ -126,8 +126,11 @@ msgstr "Seu Segredo do Cliente nas configurações do Uber Direct."
 msgid "Extra fee"
 msgstr "Taxa extra"
 
-msgid "Set an extra fee to compensate the variation between the quote price and the actual delivery price. This difference, if positive, will be given as a tip for the driver."
-msgstr "Defina uma taxa extra para compensar a variação entre o preço cotado e o preço real da entrega. Essa diferença, se positiva, será dada como gorjeta para o motorista."
+msgid "Set the store's phone number and an extra fee to compensate the variation between the quote price and the actual delivery price. This difference, if positive, will be given as a tip for the driver."
+msgstr "Insira o telefone da loja e uma taxa extra para compensar a variação entre o preço cotado e o preço real da entrega. Essa diferença, se positiva, será dada como gorjeta para o motorista."
+
+msgid "Enter the complete store's phone number, including the country's calling code with (+) symbol."
+msgstr "Insira o número de telefone completo da loja, incluindo o código de chamada do país com o símbolo (+)."
 
 msgid "Enter a value with one monetary decimal point (,) without thousand separators and currency symbols."
 msgstr "Digite um valor com um ponto decimal monetário (,) sem separadores de milhar e símbolos de moeda."

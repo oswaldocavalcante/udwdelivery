@@ -7,7 +7,7 @@
  * Plugin Name:       Direct Delivery for WooCommerce
  * Plugin URI:        https://github.com/oswaldocavalcante/directdelivery
  * Description:       Delivery service for WooCommerce integrating with Uber Direct API.
- * Version:           2.0.1
+ * Version:           2.1.0
  * Author:            Oswaldo Cavalcante
  * Author URI:        https://oswaldocavalcante.com/
  * License:           GPL-2.0+
@@ -27,7 +27,7 @@ if (!defined('DDW_PLUGIN_FILE')) { define('DDW_PLUGIN_FILE', __FILE__); }
 define('DDW_ABSPATH', dirname(DDW_PLUGIN_FILE) . '/');
 define('DDW_BASENAME', plugin_basename(__FILE__));
 define('DDW_URL', plugins_url('/', __FILE__));
-define('DDW_VERSION', '2.0.1');
+define('DDW_VERSION', '2.1.0');
 
 require plugin_dir_path( __FILE__ ) . 'includes/class-directdelivery.php';
 
