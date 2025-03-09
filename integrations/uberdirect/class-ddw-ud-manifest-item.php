@@ -7,9 +7,8 @@ class ManifestItem
     public $size;
     public $dimensions;
     public $price;
-    public $must_be_upright;
-    public $wight;
-    public $var_percentage;
+    public $weight;
+    public $vat_percentage;
 
     public function __construct( $name, $quantity )
     {

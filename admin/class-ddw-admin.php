@@ -130,13 +130,16 @@ class Ddw_Admin
 	{
 		wp_enqueue_script('directdelivery', plugin_dir_url(__FILE__) . 'assets/js/ddw-admin.js', array('jquery'), DDW_VERSION, false);
 
-		wp_localize_script(
+		wp_localize_script
+		(
 			'directdelivery',
 			'ddw_delivery_params',
-			array(
+			array
+			(
 				'url' => admin_url('admin-ajax.php'),
 				'nonce' => wp_create_nonce('ddw_nonce_delivery'),
-				'translations' => array(
+				'translations' => array
+				(
 					'pending' 			=> __('Pending', 'directdelivery'),
 					'pickup' 			=> __('Pickup', 'directdelivery'),
 					'pickup_complete' 	=> __('Pickup complete', 'directdelivery'),
@@ -160,8 +163,8 @@ class Ddw_Admin
 
 	public function render_meta_box($post_or_order_object)
 	{
-		// Get order or legacy post.
 		/**
+		 * Get order or legacy post.
 		 * @var WC_Order $order
 		 */
 		$order = ($post_or_order_object instanceof WP_Post) ? wc_get_order($post_or_order_object->ID) : $post_or_order_object;
@@ -207,14 +210,14 @@ class Ddw_Admin
 				<?php
 				$delivery_quote = $this->ddw_ud_api->create_quote($order->get_shipping_address_1() . ', ' . $order->get_shipping_postcode());
 				$delivery_variation = floatval(get_option('ddw-extra_fee')); // Maximum variable of variation price for delivery
-				$delivery_cost = wc_price(($delivery_quote['fee'] / 100) + $delivery_variation);
+				$delivery_cost = isset($delivery_quote['fee']) ? wc_price(($delivery_quote['fee'] / 100) + $delivery_variation) : '';
 				?>
 
 				<h4><?php echo esc_html(__('Shipping cost', 'directdelivery')); ?></h4>
-				<span><?php echo $delivery_quote['fee'] ? wp_kses_post($delivery_cost) : ''; ?></span>
+				<span><?php echo isset($delivery_quote['fee']) ? wp_kses_post($delivery_cost) : ''; ?></span>
 
 				<h4><?php echo esc_html(__('Delivery time', 'directdelivery')); ?></h4>
-				<span><?php echo $delivery_quote['duration'] ? esc_attr($delivery_quote['duration']) . ' ' . esc_attr__('minutes', 'directdelivery') : ''; ?></span>
+				<span><?php echo isset($delivery_quote['duration']) ? esc_attr($delivery_quote['duration']) . ' ' . esc_attr__('minutes', 'directdelivery') : ''; ?></span>
 
 				<div id="ddw-metabox-action">
 					<a href="#" class="button button-primary" id="ddw-button-pre-send" data-order-id="<?php echo esc_attr($order->ID); ?>">
@@ -256,12 +259,21 @@ class Ddw_Admin
 
 			$country_code = $order->get_billing_country();
 			$calling_code = WC()->countries->get_country_calling_code($country_code);
-			$dropoff_phone_number 	= $calling_code . $order->get_billing_phone();
+			$dropoff_phone_number = $calling_code . $order->get_billing_phone();
 
-			$dropoff_name 			= $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name();
-			$dropoff_address 		= str_replace('<br/>', ', ', $order->get_formatted_shipping_address());
-			$dropoff_notes 			= $order->get_shipping_address_2();
-			$manifest_items 		= array();
+			$shipping_address = $order->get_address('shipping');
+			$dropoff_address = 
+				$shipping_address['address_1'] . ', ' . 
+				$shipping_address['number'] . ', ' . 
+				$shipping_address['neighborhood'] . ', ' .
+				$shipping_address['city'] . ', ' . 
+				$shipping_address['state'] . ', ' . 
+				$shipping_address['postcode']
+			;
+
+			$dropoff_name 	= $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name();
+			$dropoff_notes 	= $order->get_shipping_address_2() . '. ' . $order->get_customer_order_notes();
+			$manifest_items = array();
 
 			foreach ($order->get_items() as $item)
 			{

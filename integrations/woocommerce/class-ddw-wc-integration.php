@@ -127,15 +127,22 @@ class Ddw_Wc_Integration extends WC_Integration
 
 	public function admin_options()
 	{
-		update_option('ddw-api-customer-id', 		$this->get_option('ddw-api-customer-id'));
-		update_option('ddw-api-client-id', 			$this->get_option('ddw-api-client-id'));
-		update_option('ddw-api-client-secret', 		$this->get_option('ddw-api-client-secret'));
+		$changed_customer_id 	= update_option('ddw-api-customer-id', 		$this->get_option('ddw-api-customer-id'));
+		$changed_client_id 		= update_option('ddw-api-client-id', 		$this->get_option('ddw-api-client-id'));
+		$changed_client_secret 	= update_option('ddw-api-client-secret', 	$this->get_option('ddw-api-client-secret'));
+
 		update_option('ddw-pickup_time-start', 		$this->get_option('ddw-pickup_time-start'));
 		update_option('ddw-pickup_time-end', 		$this->get_option('ddw-pickup_time-end'));
 		update_option('ddw-pickup_time-weekend',	$this->get_option('ddw-pickup_time-weekend'));
 		update_option('ddw-pickup_time-processing', $this->get_option('ddw-pickup_time-processing'));
 		update_option('ddw-extra_fee', 				$this->get_option('ddw-extra_fee') ? $this->get_option('ddw-extra_fee') : 0);
 		update_option('ddw-phone_number', 			$this->get_option('ddw-phone_number'));
+
+		if($changed_customer_id | $changed_client_id | $changed_client_secret)
+		{
+			set_transient('ddw-api-access-token', false);
+			$this->ddw_ud_api->get_access_token();
+		}
 
 		echo '<div id="ddw-settings">';
 		echo '<h2>' . esc_html($this->get_method_title()) . '</h2>';
@@ -164,15 +171,18 @@ class Ddw_Wc_Integration extends WC_Integration
 
 	function add_order_list_column($columns)
 	{
-		if (!$this->ddw_ud_api->get_access_token()) {
+		if (!$this->ddw_ud_api->get_access_token()) 
+		{
 			wp_admin_notice(__('Uber Direct: Set your API access credentials.', 'directdelivery'), array('type' => 'error'));
 		}
 
 		$reordered_columns = array();
 
-		foreach ($columns as $key => $column) {
+		foreach ($columns as $key => $column)
+		{
 			$reordered_columns[$key] = $column;
-			if ($key == 'order_status') {
+			if ($key == 'order_status') 
+			{
 				// Inserting after "Status" column
 				$reordered_columns['ddw-shipping'] = __('Direct Delivery', 'directdelivery');
 			}
@@ -188,7 +198,7 @@ class Ddw_Wc_Integration extends WC_Integration
 			$order = wc_get_order($order_id);
 			if(!$order) return;
 
-			if ($order->get_shipping_total() == 0) // Checks if the order isnt set to delivery
+			if ($order->get_shipping_total() == 0 || !$order->meta_exists('_udw_delivery_id')) // Checks if the order isnt set to delivery
 			{
 				echo esc_html($order->get_shipping_method());
 			}
@@ -230,8 +240,10 @@ class Ddw_Wc_Integration extends WC_Integration
 			$order = ($post_or_order_object instanceof WP_Post) ? wc_get_order($post_or_order_object->ID) : $post_or_order_object;
 			// Note: $post_or_order_object should not be used directly below this point.
 			if (!$order) return;
+			$order_existis = $order->meta_exists('_udw_delivery_id');
+			$shipping_total = $order->get_shipping_total();
 
-			if ($order->get_shipping_total() == 0) // Checks if the order isnt set to delivery
+			if (!$order->meta_exists('_udw_delivery_id')) // Checks if the order isnt set to delivery
 			{
 				echo esc_html($order->get_shipping_method());
 			}

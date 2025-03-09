@@ -39,19 +39,23 @@ class Ddw_Ud_Api
 	public function get_access_token()
 	{
 		// Checks if the Access Token is expired to regenate it
-		if (false === ($this->access_token = get_transient('ddw-api-access-token')))
+		if (false == get_transient('ddw-api-access-token'))
 		{
-			$response = wp_remote_post(
+			$response = wp_remote_post
+			(
 				'https://auth.uber.com/oauth/v2/token',
-				array(
-					'headers' => array(
+				array
+				(
+					'headers' => array
+					(
 						'Content-Type' => 'application/x-www-form-urlencoded',
 					),
-					'body' => array(
-						'client_id' => get_option('ddw-api-client-id'),
+					'body' => array
+					(
+						'client_id' 	=> get_option('ddw-api-client-id'),
 						'client_secret' => get_option('ddw-api-client-secret'),
-						'grant_type' => 'client_credentials',
-						'scope' => 'eats.deliveries',
+						'grant_type' 	=> 'client_credentials',
+						'scope' 		=> 'eats.deliveries',
 					)
 				)
 			);
@@ -118,17 +122,16 @@ class Ddw_Ud_Api
 
 		$body = array
 		(
-			'pickup_name' 			=> get_bloginfo('name'),
 			'pickup_business_name'	=> get_bloginfo('name'),
+			'pickup_name' 			=> get_bloginfo('name'),
 			'pickup_address' 		=> get_option('woocommerce_store_address'),
 			'pickup_phone_number' 	=> get_option('ddw-phone_number'),
 			'dropoff_name' 			=> $dropoff_name,
 			'dropoff_address' 		=> $dropoff_address,
-			'dropoff_notes'			=> $dropoff_notes,
 			'dropoff_phone_number' 	=> $dropoff_phone_number,
+			'dropoff_notes'			=> $dropoff_notes,
 			'manifest_items' 		=> $manifest_items,
-			'external_id' 			=> $order_id,
-			'idempotency_key'		=> $order_id,
+			'external_id' 			=> (string) $order_id,
 		);
 
 		$response = wp_remote_post
@@ -137,7 +140,7 @@ class Ddw_Ud_Api
 			array
 			(
 				'headers' 	=> $headers,
-				'body' 		=> wp_json_encode($body),
+				'body' 		=> json_encode($body),
 			)
 		);
 
