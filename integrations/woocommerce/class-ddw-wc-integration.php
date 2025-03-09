@@ -240,8 +240,6 @@ class Ddw_Wc_Integration extends WC_Integration
 			$order = ($post_or_order_object instanceof WP_Post) ? wc_get_order($post_or_order_object->ID) : $post_or_order_object;
 			// Note: $post_or_order_object should not be used directly below this point.
 			if (!$order) return;
-			$order_existis = $order->meta_exists('_udw_delivery_id');
-			$shipping_total = $order->get_shipping_total();
 
 			if (!$order->meta_exists('_udw_delivery_id')) // Checks if the order isnt set to delivery
 			{
