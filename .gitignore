@@ -1,3 +1,5 @@
-directdelivery.code-workspace
+*.code-workspace
 *.DS_Store
+*.zip
 .vscode
+vendor/

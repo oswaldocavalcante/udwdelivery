@@ -198,7 +198,7 @@ class Ddw_Wc_Integration extends WC_Integration
 			$order = wc_get_order($order_id);
 			if(!$order) return;
 
-			if ($order->get_shipping_total() == 0 || !$order->meta_exists('_udw_delivery_id')) // Checks if the order isnt set to delivery
+			if ($order->get_shipping_total() == 0) // Checks if the order isnt set to delivery
 			{
 				echo esc_html($order->get_shipping_method());
 			}
@@ -237,11 +237,12 @@ class Ddw_Wc_Integration extends WC_Integration
 	{
 		if ($column === 'ddw-shipping')
 		{
+
 			$order = ($post_or_order_object instanceof WP_Post) ? wc_get_order($post_or_order_object->ID) : $post_or_order_object;
 			// Note: $post_or_order_object should not be used directly below this point.
 			if (!$order) return;
-
-			if (!$order->meta_exists('_udw_delivery_id')) // Checks if the order isnt set to delivery
+			
+			if ($order->get_shipping_total() == 0) // Checks if the order isnt set to delivery
 			{
 				echo esc_html($order->get_shipping_method());
 			}
