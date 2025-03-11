@@ -272,7 +272,7 @@ class Ddw_Admin
 			;
 
 			$dropoff_name 	= $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name();
-			$dropoff_notes 	= $order->get_shipping_address_2() . '. ' . $order->get_customer_order_notes();
+			$dropoff_notes 	= $order->get_shipping_address_2() . '; ' . $order->get_customer_note();
 			$manifest_items = array();
 
 			foreach ($order->get_items() as $item)
