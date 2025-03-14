@@ -12,7 +12,7 @@
       "build": 
       [
         "rm -f udwdelivery.zip",
-        "zip -r udwdelivery.zip . -x \"*.git*\" -x \".vscode/*\" -x \".DS_Store\" -x \"*.code-workspace\" -x \"composer.json\" -x \"composer.lock\" "
+        "zip -r udwdelivery.zip . -x \"*.git*\" -x \".vscode/*\" -x \"*.DS_Store\" -x \"*.code-workspace\" -x \"composer.json\" -x \"composer.lock\" "
       ]
     }
 }

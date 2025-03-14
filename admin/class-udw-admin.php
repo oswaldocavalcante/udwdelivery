@@ -118,7 +118,7 @@ class UDW_Admin
 	 */
 	public function enqueue_styles()
 	{
-		wp_enqueue_style('udwdelivery', plugin_dir_url(__FILE__) . 'assets/css/udw-admin.css');
+		wp_enqueue_style('udwdelivery', plugin_dir_url(__FILE__) . 'assets/css/udw-admin.css', array(), UDW_VERSION);
 	}
 
 	/**
@@ -128,7 +128,7 @@ class UDW_Admin
 	 */
 	public function enqueue_scripts()
 	{
-		wp_enqueue_script('udwdelivery', plugin_dir_url(__FILE__) . 'assets/js/udw-admin.js', array('jquery'));
+		wp_enqueue_script('udwdelivery', plugin_dir_url(__FILE__) . 'assets/js/udw-admin.js', array('jquery'), UDW_VERSION, false);
 
 		wp_localize_script
 		(
