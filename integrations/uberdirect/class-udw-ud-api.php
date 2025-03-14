@@ -6,12 +6,12 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
- * @package    DirectDelivery
- * @subpackage DirectDelivery/admin
+ * @package    UDWDelivery
+ * @subpackage UDWDelivery/admin
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
 
-class Ddw_Ud_Api
+class UDW_UD_API
 {
 	private $access_token;
 	private $base_url;
@@ -26,8 +26,8 @@ class Ddw_Ud_Api
 	public function __construct()
 	{
 		$this->base_url 	= 'https://api.uber.com/v1/customers/';
-		$this->access_token = get_transient('ddw-api-access-token');
-		$this->customer_id 	= get_option('ddw-api-customer-id');
+		$this->access_token = get_transient('udw-api-access-token');
+		$this->customer_id 	= get_option('udw-api-customer-id');
 
 		$this->endpoint_create_quote 	= $this->base_url . $this->customer_id . '/delivery_quotes';
 		$this->endpoint_create_delivery = $this->base_url . $this->customer_id . '/deliveries';
@@ -39,7 +39,7 @@ class Ddw_Ud_Api
 	public function get_access_token()
 	{
 		// Checks if the Access Token is expired to regenate it
-		if (false == get_transient('ddw-api-access-token'))
+		if (false == get_transient('udw-api-access-token'))
 		{
 			$response = wp_remote_post
 			(
@@ -52,8 +52,8 @@ class Ddw_Ud_Api
 					),
 					'body' => array
 					(
-						'client_id' 	=> get_option('ddw-api-client-id'),
-						'client_secret' => get_option('ddw-api-client-secret'),
+						'client_id' 	=> get_option('udw-api-client-id'),
+						'client_secret' => get_option('udw-api-client-secret'),
 						'grant_type' 	=> 'client_credentials',
 						'scope' 		=> 'eats.deliveries',
 					)
@@ -65,7 +65,7 @@ class Ddw_Ud_Api
 			if (array_key_exists('access_token', $response_body)) 
 			{
 				$this->access_token = $response_body['access_token'];
-				set_transient('ddw-api-access-token', $this->access_token, $response_body['expires_in']);
+				set_transient('udw-api-access-token', $this->access_token, $response_body['expires_in']);
 			} 
 			else 
 			{
@@ -125,7 +125,7 @@ class Ddw_Ud_Api
 			'pickup_business_name'	=> get_bloginfo('name'),
 			'pickup_name' 			=> get_bloginfo('name'),
 			'pickup_address' 		=> get_option('woocommerce_store_address'),
-			'pickup_phone_number' 	=> get_option('ddw-phone_number'),
+			'pickup_phone_number' 	=> get_option('udw-phone_number'),
 			'dropoff_name' 			=> $dropoff_name,
 			'dropoff_address' 		=> $dropoff_address,
 			'dropoff_phone_number' 	=> $dropoff_phone_number,
@@ -246,7 +246,7 @@ class Ddw_Ud_Api
 	private function log($request_name, $response)
 	{
 		$logger = function_exists('wc_get_logger') ? wc_get_logger() : new WC_Logger();
-		$logger_context = array('source' => 'directdelivery');
+		$logger_context = array('source' => 'udwdelivery');
 		$message = '';
 		
 		if(isset($response['response']['code']) && $response['response']['code'] != 200)

@@ -9,8 +9,8 @@
  * @link       https://oswaldocavalcante.com
  * @since      1.0.0
  *
- * @package    DirectDelivery
- * @subpackage DirectDelivery/includes
+ * @package    UDWDelivery
+ * @subpackage UDWDelivery/includes
  */
 
 /**
@@ -20,11 +20,11 @@
  * so that it is ready for translation.
  *
  * @since      1.0.0
- * @package    DirectDelivery
- * @subpackage DirectDelivery/includes
+ * @package    UDWDelivery
+ * @subpackage UDWDelivery/includes
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
-class DirectDelivery_i18n 
+class UDW_i18n 
 {
 	/**
 	 * Load the plugin text domain for translation.
@@ -35,9 +35,9 @@ class DirectDelivery_i18n
 	{
 		load_plugin_textdomain
 		(
-			'directdelivery',
+			'udwdelivery',
 			false,
-			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
+			dirname(dirname(plugin_basename( __FILE__ ))) . '/languages/'
 		);
 	}
 

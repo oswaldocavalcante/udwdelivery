@@ -12,8 +12,8 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.5\n"
 
-msgid "Please install and activate WooCommerce to use Direct Delivery."
-msgstr "Por favor, instale e ative o WooCommerce para usar o Direct Delivery."
+msgid "Please install and activate WooCommerce to use UDW Delivery."
+msgstr "Por favor, instale e ative o WooCommerce para usar o UDW Delivery."
 
 msgid "Settings"
 msgstr "Configurações"

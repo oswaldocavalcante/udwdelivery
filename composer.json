@@ -1,5 +1,5 @@
 {
-    "name": "oswaldocavalcante/directdelivery",
+    "name": "oswaldocavalcante/udwdelivery",
     "authors": 
     [
         {
@@ -11,8 +11,8 @@
     {
       "build": 
       [
-        "rm -f directdelivery.zip",
-        "zip -r directdelivery.zip . -x \"*.git*\" -x \".vscode/*\" -x \".DS_Store\" -x \"*.code-workspace\" -x \"composer.json\" -x \"composer.lock\" "
+        "rm -f udwdelivery.zip",
+        "zip -r udwdelivery.zip . -x \"*.git*\" -x \".vscode/*\" -x \".DS_Store\" -x \"*.code-workspace\" -x \"composer.json\" -x \"composer.lock\" "
       ]
     }
 }
