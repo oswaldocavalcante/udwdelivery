@@ -13,12 +13,6 @@
 - Automatic handling of delivery requests and status updates.
 - Supports multiple languages, including Portuguese (pt_BR).
 
-## Installation
-
-1. Upload `udwdelivery` folder to the `/wp-content/plugins/` directory.
-2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Go to WooCommerce settings/integrations and configure your Uber Direct API credentials.
-
 ## Setup
 
 1. Make sure that your's store Address is already setted up in WooCommerce -> Settings -> General - this will be use by Uber Direct as the Pickup Location.
