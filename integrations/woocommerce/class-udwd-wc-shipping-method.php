@@ -1,10 +1,12 @@
 <?php
 
-require_once UDW_ABSPATH . 'integrations/uberdirect/class-udw-ud-api.php';
+if(!defined('ABSPATH')) exit; // Exit if accessed directly
 
-if (!class_exists('UDW_WC_Shipping_Method')) 
+require_once UDWD_ABSPATH . 'integrations/uberdirect/class-udwd-ud-api.php';
+
+if (!class_exists('UDWD_WC_Shipping_Method')) 
 {
-	class UDW_WC_Shipping_Method extends WC_Shipping_Method
+	class UDWD_WC_Shipping_Method extends WC_Shipping_Method
 	{
 		private $ud_api;
 
@@ -18,7 +20,7 @@ if (!class_exists('UDW_WC_Shipping_Method'))
 			$this->instance_settings  	= array('title' => 'Uber Direct');
 			$this->supports 			= array('shipping-zones', 'instance-settings', 'instance-settings-modal');
 
-			$this->ud_api = new UDW_UD_API();
+			$this->ud_api = new UDWD_UD_API();
 			$this->init();
 		}
 
@@ -33,16 +35,22 @@ if (!class_exists('UDW_WC_Shipping_Method'))
 		 */
 		public function calculate_shipping($package = array()) 
 		{
-			$destination 	= $package['destination']['address'] . ', ' . $package['destination']['postcode'];
+			$destination = 
+				$package['destination']['address'] . ', ' . 
+				$package['destination']['postcode'] . ', ' .
+				$package['destination']['city'] . ', ' .
+				$package['destination']['state'] . ', ' .
+				$package['destination']['country']
+			;
 
 			$current_time 				= current_datetime();
-			$pickup_time_start 			= DateTime::createFromFormat('H:i', get_option('udw-pickup_time-start'), wp_timezone());
-			$pickup_time_end 			= DateTime::createFromFormat('H:i', get_option('udw-pickup_time-end'), wp_timezone());
-			$pickup_time_processing		= get_option('udw-pickup_time-processing');
+			$pickup_time_start 			= DateTime::createFromFormat('H:i', get_option('udwd-pickup_time-start'), wp_timezone());
+			$pickup_time_end 			= DateTime::createFromFormat('H:i', get_option('udwd-pickup_time-end'), wp_timezone());
+			$pickup_time_processing		= get_option('udwd-pickup_time-processing');
 			$pickup_time 				= '';
 
 			// Checks if the shop doesn't delivers at weekends ant the current day is Saturday (6) or Sunday (7) using ISO-8601 format (Monday = 1, ... Sunday = 7)
-			if(in_array($current_time->format('N'), array(6, 7)) && get_option('udw-pickup_time-weekend') == 'no')
+			if(in_array($current_time->format('N'), array(6, 7)) && get_option('udwd-pickup_time-weekend') == 'no')
 			{
 				// Clones the pickup start time to avoid modifying the original object
 				$pickup_time = clone $pickup_time_start;
@@ -56,7 +64,7 @@ if (!class_exists('UDW_WC_Shipping_Method'))
 				$pickup_time = clone $pickup_time_start;
 
 				// If current day is friday
-				if($current_time->format('N') == 5 && get_option('udw-pickup_time-weekend') == 'no')
+				if($current_time->format('N') == 5 && get_option('udwd-pickup_time-weekend') == 'no')
 				{
 					// If it's Friday and the current time exceeds the defined limit, schedules for the next Monday
 					$pickup_time->modify("+3 days");
@@ -78,7 +86,7 @@ if (!class_exists('UDW_WC_Shipping_Method'))
 
 			if(isset($delivery_quote['fee']) && $delivery_quote['fee'])
 			{
-				$delivery_variation = floatval(get_option('udw-extra_fee')); // Maximum variable of variation price for delivery
+				$delivery_variation = floatval(get_option('udwd-extra_fee')); // Maximum variable of variation price for delivery
 				$delivery_cost 		= ($delivery_quote['fee'] / 100) + $delivery_variation;
 
 				// Convert delivery ETA to WooCommerce format

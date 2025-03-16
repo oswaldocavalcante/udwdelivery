@@ -11,7 +11,9 @@
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
 
-class UDW_UD_API
+if(!defined('ABSPATH')) exit; // Exit if accessed directly
+
+class UDWD_UD_API
 {
 	private $access_token;
 	private $base_url;
@@ -26,8 +28,8 @@ class UDW_UD_API
 	public function __construct()
 	{
 		$this->base_url 	= 'https://api.uber.com/v1/customers/';
-		$this->access_token = get_transient('udw-api-access-token');
-		$this->customer_id 	= get_option('udw-api-customer-id');
+		$this->access_token = get_transient('udwd-api-access-token');
+		$this->customer_id 	= get_option('udwd-api-customer-id');
 
 		$this->endpoint_create_quote 	= $this->base_url . $this->customer_id . '/delivery_quotes';
 		$this->endpoint_create_delivery = $this->base_url . $this->customer_id . '/deliveries';
@@ -39,7 +41,7 @@ class UDW_UD_API
 	public function get_access_token()
 	{
 		// Checks if the Access Token is expired to regenate it
-		if (false == get_transient('udw-api-access-token'))
+		if (false == get_transient('udwd-api-access-token'))
 		{
 			$response = wp_remote_post
 			(
@@ -52,8 +54,8 @@ class UDW_UD_API
 					),
 					'body' => array
 					(
-						'client_id' 	=> get_option('udw-api-client-id'),
-						'client_secret' => get_option('udw-api-client-secret'),
+						'client_id' 	=> get_option('udwd-api-client-id'),
+						'client_secret' => get_option('udwd-api-client-secret'),
 						'grant_type' 	=> 'client_credentials',
 						'scope' 		=> 'eats.deliveries',
 					)
@@ -62,14 +64,17 @@ class UDW_UD_API
 
 			$response_body = json_decode(wp_remote_retrieve_body($response), true);
 
-			if (array_key_exists('access_token', $response_body)) 
+			if (is_array($response_body) && array_key_exists('access_token', $response_body)) 
 			{
 				$this->access_token = $response_body['access_token'];
-				set_transient('udw-api-access-token', $this->access_token, $response_body['expires_in']);
+				set_transient('udwd-api-access-token', $this->access_token, $response_body['expires_in']);
+
+				return true;
 			} 
 			else 
 			{
 				$this->log('Get access token', $response);
+
 				return false;
 			}
 		}
@@ -79,6 +84,18 @@ class UDW_UD_API
 
 	public function create_quote($dropoff_address, $pickup_ready_dt = '', $pickup_address = '')
 	{
+		if($pickup_address == '')
+		{
+			$default = wc_get_base_location();
+			$pickup_address = 
+				get_option('woocommerce_store_address') . ', ' . 
+				get_option('woocommerce_store_postcode') . ', ' . 
+				get_option('woocommerce_store_city') . ', ' .
+				$default['state'] . ', ' .
+				$default['country']
+			;
+		}
+
 		$headers = array
 		(
 			'Content-Type' => 'application/json',
@@ -87,9 +104,9 @@ class UDW_UD_API
 
 		$body = array
 		(
-			'pickup_address' => ($pickup_address == '') ? get_option('woocommerce_store_address') : $pickup_address,
-			'pickup_ready_dt' => ($pickup_ready_dt == '') ? current_datetime()->format(DateTimeInterface::RFC3339) : $pickup_ready_dt,
+			'pickup_address' => $pickup_address,
 			'dropoff_address' => $dropoff_address,
+			'pickup_ready_dt' => ($pickup_ready_dt == '') ? current_datetime()->format(DateTimeInterface::RFC3339) : $pickup_ready_dt,
 		);
 
 		$response = wp_remote_post
@@ -125,7 +142,7 @@ class UDW_UD_API
 			'pickup_business_name'	=> get_bloginfo('name'),
 			'pickup_name' 			=> get_bloginfo('name'),
 			'pickup_address' 		=> get_option('woocommerce_store_address'),
-			'pickup_phone_number' 	=> get_option('udw-phone_number'),
+			'pickup_phone_number' 	=> get_option('udwd-phone_number'),
 			'dropoff_name' 			=> $dropoff_name,
 			'dropoff_address' 		=> $dropoff_address,
 			'dropoff_phone_number' 	=> $dropoff_phone_number,

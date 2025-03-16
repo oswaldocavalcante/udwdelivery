@@ -1,13 +1,13 @@
 (function( $ ) {
 	'use strict';
 
-	if ( typeof udw_delivery_params === 'undefined' ) {
+	if ( typeof udwdelivery_params === 'undefined' ) {
 		return false;
 	}
 
 var WCOrdersTable = function ()
 {
-	$(document).on('click', '#udw-button-pre-send:not(.disabled)', function ()
+	$(document).on('click', '#udwd-button-pre-send:not(.disabled)', function ()
 	{
 		var $button = $(this);
 		var $order_id = $button.data('order-id');
@@ -25,13 +25,13 @@ var WCOrdersTable = function ()
 
         $.ajax
 		({
-			url: udw_delivery_params.url,
+			url: udwdelivery_params.url,
 			type: 'POST',
             data: 
 			{
                 order_id: $order_id,
-				action: 'udw_get_delivery',
-				security: udw_delivery_params.nonce,
+				action: 'udwd_get_delivery',
+				security: udwdelivery_params.nonce,
             },
 			beforeSend: function ()
 			{
@@ -48,7 +48,7 @@ var WCOrdersTable = function ()
                 if (response.success) 
 				{
 					// Translates the status string
-					response.data.status_translated = udw_delivery_params.translations[response.data.status];
+					response.data.status_translated = udwdelivery_params.translations[response.data.status];
 
 					// Selects the template to display
 					if(response.data.dropoff)
@@ -58,7 +58,7 @@ var WCOrdersTable = function ()
 
 						$(this).WCBackboneModal
 						({
-							template: 'udw-modal-delivery',
+							template: 'udwd-modal-delivery',
 							variable: response.data
 						});
 					} 
@@ -66,7 +66,7 @@ var WCOrdersTable = function ()
 					{
 						$(this).WCBackboneModal
 						({
-							template: 'udw-modal-quote',
+							template: 'udwd-modal-quote',
 							variable: response.data
 						});
 					}
@@ -75,7 +75,7 @@ var WCOrdersTable = function ()
 				{
 					$(this).WCBackboneModal
 					({
-						template: 'udw-modal-error',
+						template: 'udwd-modal-error',
 						variable: response.data
 					});
                 }
@@ -87,34 +87,34 @@ var WCOrdersTable = function ()
         });
     });
 
-	$(document).on('click', '#udw-button-create-delivery:not(.disabled)', function ()
+	$(document).on('click', '#udwd-button-create-delivery:not(.disabled)', function ()
 	{
 		var $button = $(this);
 		var $order_id = $button.data('order-id');
 
 		$.ajax
 		({
-			url: udw_delivery_params.url,
+			url: udwdelivery_params.url,
 			type: 'POST',
 			data: {
 				order_id: $order_id,
-				action: 'udw_create_delivery',
-				security: udw_delivery_params.nonce,
+				action: 'udwd_create_delivery',
+				security: udwdelivery_params.nonce,
 			},
 			beforeSend: function() 
 			{
-				document.getElementById('udw-button-create-delivery').remove();
-				document.getElementById('udw-quote-container').innerHTML = '<div>Solicitando motorista...</div>';
+				document.getElementById('udwd-button-create-delivery').remove();
+				document.getElementById('udwd-quote-container').innerHTML = '<div>Solicitando motorista...</div>';
 			},
 			success: function (response) 
 			{
 				if (response.success) 
 				{
-					document.getElementById('udw-modal-quote-container').remove();
+					document.getElementById('udwd-modal-quote-container').remove();
 					$("a[data-order-id='" + $order_id + "']").text('Ver envio'); //Configure translation
 					$(this).WCBackboneModal
 					({
-						template: 'udw-modal-delivery',
+						template: 'udwd-modal-delivery',
 						variable: response.data
 					});
 				}
@@ -122,7 +122,7 @@ var WCOrdersTable = function ()
 				{
 					$(this).WCBackboneModal
 					({
-						template: 'udw-modal-error',
+						template: 'udwd-modal-error',
 						variable: response.data
 					});
 				}
@@ -134,9 +134,9 @@ var WCOrdersTable = function ()
 		});
 	});
 
-	$(document).on('click', '#udw-delivery-btn_coppy-tracking_url', function () 
+	$(document).on('click', '#udwd-delivery-btn_coppy-tracking_url', function () 
 	{
-		var $url = document.getElementById('udw-delivery-tracking_url');
+		var $url = document.getElementById('udwd-delivery-tracking_url');
 
 		$url.select();
 		$url.setSelectionRange(0, 99999);
@@ -144,7 +144,7 @@ var WCOrdersTable = function ()
 		navigator.clipboard.writeText($url.value);
 	});
 
-	$(document).on('click', '#udw-button-cancel-delivery:not(.disabled)', function () 
+	$(document).on('click', '#udwd-button-cancel-delivery:not(.disabled)', function () 
 	{
 		var $button = $(this);
 		var $order_id = $button.data('order-id');
@@ -162,12 +162,12 @@ var WCOrdersTable = function ()
 		
 		$.ajax
 		({
-			url: udw_delivery_params.url,
+			url: udwdelivery_params.url,
 			type: 'POST',
 			data: {
 				order_id: $order_id,
-				action: 'udw_cancel_delivery',
-				security: udw_delivery_params.nonce,
+				action: 'udwd_cancel_delivery',
+				security: udwdelivery_params.nonce,
 			},
 			beforeSend: function () 
 			{
@@ -182,17 +182,17 @@ var WCOrdersTable = function ()
 				if (response.success) 
 				{
 					console.log(response.data);
-					var status_translated = udw_delivery_params.translations[response.data.status];
+					var status_translated = udwdelivery_params.translations[response.data.status];
 					$('#delivery-status').html(status_translated);
-					$('#udw-delivery-fee').html(status_translated);
-					$('#udw-delivery-tip').remove();
+					$('#udwd-delivery-fee').html(status_translated);
+					$('#udwd-delivery-tip').remove();
 					$button.addClass('disabled');
 				} 
 				else
 				{
 					$(this).WCBackboneModal
 					({
-						template: 'udw-modal-error',
+						template: 'udwd-modal-error',
 						variable: response.data
 					});
 				}

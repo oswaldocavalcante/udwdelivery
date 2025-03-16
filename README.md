@@ -1,8 +1,9 @@
 # UDW Delivery - Uber Direct for WooCommerce
 
 - Author: [Oswaldo Cavalcante](https://oswaldocavalcante.com/)
+- Contributors: oswaldocavalcante
 - License: GPL-2.0+
-- Stable tag: 2.2.2
+- Stable tag: 2.2.3
 - Tested up to: 6.7
 - Delivery service for WooCommerce integrating with Uber Direct API.
 
@@ -11,7 +12,7 @@
 - Integrates Uber Direct delivery service for WooCommerce.
 - Easy setup and configuration through the WooCommerce settings.
 - Automatic handling of delivery requests and status updates.
-- Supports multiple languages, including Portuguese (pt_BR).
+- Supports multiple languages.
 
 ## Setup
 
@@ -22,6 +23,15 @@
 ## Reccomendations
 
 In WooCommerce -> Settings -> Shipping -> Shipping settings, is recommended that your shop hides the shipping costs until the client inserts his address for delivery.
+
+## External services
+
+This plugin connects to Uber Direct API to obtain delivery information. It's needed to show the delivery information in the WooCommerce admin orders page, meta box in admin single order page, customer cart and customer checkout.
+
+It sends your Uber API Credentials and the stores's address every time that a request is made. To get delivery quotes and create deliveries, this plugin also sends the customers address and order informations.
+
+This service is provided by "Uber Technologies Inc.": (terms of use)[https://www.uber.com/legal/terms], (privacy policy)[https://privacy.uber.com/policy].
+
 
 ## Frequently Asked Questions
 

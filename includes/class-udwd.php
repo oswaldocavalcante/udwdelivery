@@ -13,6 +13,8 @@
  * @subpackage UDWDelivery/includes
  */
 
+if(!defined('ABSPATH')) exit; // Exit if accessed directly
+
 /**
  * The core plugin class.
  *
@@ -27,7 +29,7 @@
  * @subpackage UDWDelivery/includes
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
-class UDW
+class UDWD
 {
 	/**
 	 * Define the core functionality of the plugin.
@@ -51,9 +53,9 @@ class UDW
 	 *
 	 * Include the following files that make up the plugin:
 	 *
-	 * - UDW_i18n. Defines internationalization functionality.
-	 * - UDW_Admin. Defines all hooks for the admin area.
-	 * - UDW_Public. Defines all hooks for the public side of the site.
+	 * - UDWD_i18n. Defines internationalization functionality.
+	 * - UDWD_Admin. Defines all hooks for the admin area.
+	 * - UDWD_Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -63,15 +65,15 @@ class UDW
 	 */
 	private function load_dependencies()
 	{
-		require_once UDW_ABSPATH . 'includes/class-udw-i18n.php';
-		require_once UDW_ABSPATH . 'admin/class-udw-admin.php';
-		require_once UDW_ABSPATH . 'public/class-udw-public.php';
+		require_once UDWD_ABSPATH . 'includes/class-udwd-i18n.php';
+		require_once UDWD_ABSPATH . 'admin/class-udwd-admin.php';
+		require_once UDWD_ABSPATH . 'public/class-udwd-public.php';
 	}
 
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the UDW_i18n class in order to set the domain and to register the hook
+	 * Uses the UDWD_i18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
@@ -79,7 +81,7 @@ class UDW
 	 */
 	private function set_locale()
 	{
-		$plugin_i18n = new UDW_i18n();
+		$plugin_i18n = new UDWD_i18n();
 		add_action('plugins_loaded', array($plugin_i18n, 'load_plugin_textdomain'));
 	}
 
@@ -92,7 +94,7 @@ class UDW
 	 */
 	private function define_admin_hooks()
 	{
-		$plugin_admin = new UDW_Admin();
+		$plugin_admin = new UDWD_Admin();
 
 		add_action('before_woocommerce_init',       array($plugin_admin, 'declare_wc_compatibility'));
 		add_action('admin_enqueue_scripts', 		array($plugin_admin, 'enqueue_styles'));
@@ -101,20 +103,20 @@ class UDW
 		add_filter('woocommerce_integrations', 		array($plugin_admin, 'add_integration'));
 		add_action('add_meta_boxes', 				array($plugin_admin, 'add_meta_box'));
 
-		add_action('wp_ajax_udw_get_delivery', 		array($plugin_admin, 'ajax_get_delivery'));
-		add_action('wp_ajax_udw_create_delivery', 	array($plugin_admin, 'ajax_create_delivery'));
-		add_action('wp_ajax_udw_cancel_delivery', 	array($plugin_admin, 'ajax_cancel_delivery'));
+		add_action('wp_ajax_udwd_get_delivery', 		array($plugin_admin, 'ajax_get_delivery'));
+		add_action('wp_ajax_udwd_create_delivery', 	array($plugin_admin, 'ajax_create_delivery'));
+		add_action('wp_ajax_udwd_cancel_delivery', 	array($plugin_admin, 'ajax_cancel_delivery'));
 		add_action('admin_footer', 					array($plugin_admin, 'add_modal_templates'));
-		add_filter('plugin_action_links_' . UDW_BASENAME, array($plugin_admin, 'plugin_action_links'));
+		add_filter('plugin_action_links_' . UDWD_BASENAME, array($plugin_admin, 'plugin_action_links'));
 
 		// Register admin-specific webhook
 		add_action('rest_api_init', 				array($plugin_admin, 'register_webhook'));
-		add_action('udw_change_order_status', 		array($plugin_admin, 'change_order_status'), 10, 2);
+		add_action('udwd_change_order_status', 		array($plugin_admin, 'change_order_status'), 10, 2);
 	}
 
 	private function define_public_hooks()
 	{
-		$plugin_public = new UDW_Public();
+		$plugin_public = new UDWD_Public();
 
 		add_filter('woocommerce_cart_shipping_method_full_label', array($plugin_public, 'display_deadline_on_label'), 10, 2);
 	}

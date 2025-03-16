@@ -13,6 +13,8 @@
  * @subpackage UDWDelivery/includes
  */
 
+if(!defined('ABSPATH')) exit; // Exit if accessed directly
+
 /**
  * Define the internationalization functionality.
  *
@@ -24,7 +26,7 @@
  * @subpackage UDWDelivery/includes
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
-class UDW_i18n 
+class UDWD_i18n 
 {
 	/**
 	 * Load the plugin text domain for translation.
@@ -40,7 +42,4 @@ class UDW_i18n
 			dirname(dirname(plugin_basename( __FILE__ ))) . '/languages/'
 		);
 	}
-
-
-
 }

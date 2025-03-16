@@ -21,9 +21,11 @@
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
 
-require_once UDW_ABSPATH . 'integrations/uberdirect/class-udw-ud-api.php';
+if(!defined('ABSPATH')) exit; // Exit if accessed directly
 
-class UDW_Public
+require_once UDWD_ABSPATH . 'integrations/uberdirect/class-udwd-ud-api.php';
+
+class UDWD_Public
 {
 	public function display_deadline_on_label($label, $method)
 	{
@@ -31,7 +33,7 @@ class UDW_Public
 		{
 			$dropoff_deadline = $method->meta_data['dropoff_deadline'];
 			$delivery_message = $this->get_deadline_message($dropoff_deadline);
-			$label .= '<br><small class="udw-deadline">' . esc_html($delivery_message) . '</small>';
+			$label .= '<br><small class="udwd-deadline">' . esc_html($delivery_message) . '</small>';
 		}
 
 		return $label;

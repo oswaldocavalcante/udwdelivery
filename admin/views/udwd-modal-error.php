@@ -1,5 +1,5 @@
-<script type="text/template" id="tmpl-udw-modal-error">
-    <div id="udw-modal-quote-container">
+<script type="text/template" id="tmpl-udwd-modal-error">
+    <div id="udwd-modal-quote-container">
         <div class="wc-backbone-modal">
             <div class="wc-backbone-modal-content">
                 <section class="wc-backbone-modal-main" role="main">

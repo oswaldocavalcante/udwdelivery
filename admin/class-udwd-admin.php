@@ -10,6 +10,12 @@
  * @subpackage UDWDelivery/admin
  */
 
+if(!defined('ABSPATH')) exit; // Exit if accessed directly
+
+use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
+
+require_once UDWD_ABSPATH . 'integrations/uberdirect/class-udwd-ud-api.php';
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -20,25 +26,20 @@
  * @subpackage UDWDelivery/admin
  * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
-
-use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
-
-require_once UDW_ABSPATH . 'integrations/uberdirect/class-udw-ud-api.php';
-
-class UDW_Admin
+class UDWD_Admin
 {
-	private $udw_ud_api;
+	private $udwd_ud_api;
 
 	public function __construct()
 	{
-		$this->udw_ud_api = new UDW_UD_API();
+		$this->udwd_ud_api = new UDWD_UD_API();
 	}
 
 	public function declare_wc_compatibility()
 	{
 		if (class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class))
 		{
-			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', UDW_PLUGIN_FILE, true);
+			\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', UDWD_PLUGIN_FILE, true);
 		}
 	}
 
@@ -58,7 +59,10 @@ class UDW_Admin
 			(
 				'methods'  => 'POST',
 				'callback' => array($this, 'handle_webhook'),
-				'permission_callback' => '__return_true',
+				'permission_callback' => function ()
+				{
+					return current_user_can('manage_options');
+				}
 			)
 		);
 	}
@@ -76,7 +80,7 @@ class UDW_Admin
 
 		if (isset($data['status']) && $data['status'] == 'delivered')
 		{
-			do_action('udw_change_order_status', $data['data']['external_id'], 'completed');
+			do_action('udwd_change_order_status', $data['data']['external_id'], 'completed');
 		}
 
 		return new WP_REST_Response('Status Webhook received', 200);
@@ -95,8 +99,8 @@ class UDW_Admin
 
 	public function add_integration($integrations)
 	{
-		include_once  UDW_ABSPATH . 'integrations/woocommerce/class-udw-wc-integration.php';
-		$integrations[] = 'UDW_WC_Integration';
+		include_once UDWD_ABSPATH . 'integrations/woocommerce/class-udwd-wc-integration.php';
+		$integrations[] = 'UDWD_WC_Integration';
 
 		return $integrations;
 	}
@@ -118,7 +122,7 @@ class UDW_Admin
 	 */
 	public function enqueue_styles()
 	{
-		wp_enqueue_style('udwdelivery', plugin_dir_url(__FILE__) . 'assets/css/udw-admin.css', array(), UDW_VERSION);
+		wp_enqueue_style('udwdelivery', plugin_dir_url(__FILE__) . 'assets/css/udwd-admin.css', array(), UDWD_VERSION);
 	}
 
 	/**
@@ -128,16 +132,16 @@ class UDW_Admin
 	 */
 	public function enqueue_scripts()
 	{
-		wp_enqueue_script('udwdelivery', plugin_dir_url(__FILE__) . 'assets/js/udw-admin.js', array('jquery'), UDW_VERSION, false);
+		wp_enqueue_script('udwdelivery', plugin_dir_url(__FILE__) . 'assets/js/udwd-admin.js', array('jquery'), UDWD_VERSION, false);
 
 		wp_localize_script
 		(
 			'udwdelivery',
-			'udw_delivery_params',
+			'udwdelivery_params',
 			array
 			(
 				'url' => admin_url('admin-ajax.php'),
-				'nonce' => wp_create_nonce('udw_nonce_delivery'),
+				'nonce' => wp_create_nonce('udwd_nonce_delivery'),
 				'translations' => array
 				(
 					'pending' 			=> __('Pending', 'udwdelivery'),
@@ -158,7 +162,7 @@ class UDW_Admin
 			? wc_get_page_screen_id('shop-order')
 			: 'shop_order';
 
-		add_meta_box('wc-udw-widget', 'Uber Direct', array($this, 'render_meta_box'), $screen, 'side', 'high');
+		add_meta_box('wc-udwd-widget', 'Uber Direct', array($this, 'render_meta_box'), $screen, 'side', 'high');
 	}
 
 	public function render_meta_box($post_or_order_object)
@@ -170,18 +174,19 @@ class UDW_Admin
 		$order = ($post_or_order_object instanceof WP_Post) ? wc_get_order($post_or_order_object->ID) : $post_or_order_object;
 		// Note: $post_or_order_object should not be used directly below this point.
 
-		$delivery_status = null;
+		$delivery = '';
+		$delivery_status = '';
 
 		if ($order->meta_exists('_udw_delivery_id'))
 		{
 			$delivery_id = $order->get_meta('_udw_delivery_id');
-			$delivery = $this->udw_ud_api->get_delivery($delivery_id);
+			$delivery = $this->udwd_ud_api->get_delivery($delivery_id);
 
 			if(!is_wp_error($delivery)) $delivery_status = $delivery->status;
 		}
 		?>
 
-		<div id="udw-metabox-container">
+		<div id="udwd-metabox-container">
 				
 			<?php if($order->meta_exists('_udw_delivery_id') && !is_wp_error($delivery)) : ?>
 					
@@ -198,16 +203,25 @@ class UDW_Admin
 				<span><?php echo esc_html($delivery->courier->phone_number ?? ''); ?></span>
 
 				<h4><?php esc_html_e('Tracking URL', 'udwdelivery'); ?></h4>
-				<input id="udw-delivery-tracking_url" type="text" value="<?php echo esc_url($delivery->tracking_url ?? ''); ?>" readonly />
-				<button id="udw-delivery-btn_coppy-tracking_url" class="button"><?php esc_html_e('Copy', 'udwdelivery'); ?></button>
+				<input id="udwd-delivery-tracking_url" type="text" value="<?php echo esc_url($delivery->tracking_url ?? ''); ?>" readonly />
+				<button id="udwd-delivery-btn_coppy-tracking_url" class="button"><?php esc_html_e('Copy', 'udwdelivery'); ?></button>
 				<a href="<?php echo esc_url($delivery->tracking_url ?? '') ?>" target="_blank" class="button button-primary dashicons-before dashicons-external"><?php esc_html_e('Open', 'udwdelivery'); ?></a>
 
 			<?php elseif(!is_wp_error($delivery)) : ?>
 
 				<?php
-				$delivery_quote = $this->udw_ud_api->create_quote($order->get_shipping_address_1() . ', ' . $order->get_shipping_postcode());
-				$delivery_variation = floatval(get_option('udw-extra_fee')); // Maximum variable of variation price for delivery
-				$delivery_cost = isset($delivery_quote['fee']) ? wc_price(($delivery_quote['fee'] / 100) + $delivery_variation) : '';
+				$shipping_address = $order->get_address('shipping');
+				$delivery_address =
+					$shipping_address['address_1'] . ', ' .
+					$shipping_address['number'] . ', ' .
+					$shipping_address['postcode'] . ', ' .
+					$shipping_address['city'] . ', ' .
+					$shipping_address['state'] . ', ' .
+					$shipping_address['country']
+				;
+				$delivery_quote 	= $this->udwd_ud_api->create_quote($delivery_address);
+				$delivery_variation = floatval(get_option('udwd-extra_fee')); // Maximum variable of variation price for delivery
+				$delivery_cost 		= isset($delivery_quote['fee']) ? wc_price(($delivery_quote['fee'] / 100) + $delivery_variation) : '';
 				?>
 
 				<h4><?php echo esc_html(__('Shipping cost', 'udwdelivery')); ?></h4>
@@ -216,8 +230,8 @@ class UDW_Admin
 				<h4><?php echo esc_html(__('Delivery time', 'udwdelivery')); ?></h4>
 				<span><?php echo isset($delivery_quote['duration']) ? esc_attr($delivery_quote['duration']) . ' ' . esc_attr__('minutes', 'udwdelivery') : ''; ?></span>
 
-				<div id="udw-metabox-action">
-					<a href="#" class="button button-primary" id="udw-button-pre-send" data-order-id="<?php echo esc_attr($order->ID); ?>">
+				<div id="udwd-metabox-action">
+					<a href="#" class="button button-primary" id="udwd-button-pre-send" data-order-id="<?php echo esc_attr($order->ID); ?>">
 						<?php esc_html_e('Send now', 'udwdelivery'); ?>
 					</a>
 				</div>
@@ -234,7 +248,7 @@ class UDW_Admin
 
 	public function ajax_get_delivery()
 	{
-		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udw_nonce_delivery', 'security'))
+		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udwd_nonce_delivery', 'security'))
 		{
 			$order_id = absint(wp_unslash($_POST['order_id']));
 			$order = wc_get_order($order_id);
@@ -242,7 +256,7 @@ class UDW_Admin
 			if ($order->meta_exists('_udw_delivery_id'))
 			{
 				$delivery_id = $order->get_meta('_udw_delivery_id');
-				$delivery = $this->udw_ud_api->get_delivery($delivery_id);
+				$delivery = $this->udwd_ud_api->get_delivery($delivery_id);
 
 				if (is_wp_error($delivery)) wp_send_json_error($delivery);
 				else wp_send_json_success($delivery);
@@ -253,7 +267,7 @@ class UDW_Admin
 
 	public function ajax_create_delivery()
 	{
-		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udw_nonce_delivery', 'security'))
+		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udwd_nonce_delivery', 'security'))
 		{
 			$order_id = absint(wp_unslash($_POST['order_id']));
 			$order = wc_get_order($order_id);
@@ -265,11 +279,11 @@ class UDW_Admin
 			$shipping_address = $order->get_address('shipping');
 			$dropoff_address = 
 				$shipping_address['address_1'] . ', ' . 
-				$shipping_address['number'] . ', ' . 
-				$shipping_address['neighborhood'] . ', ' .
+				$shipping_address['number'] . ', ' .
+				$shipping_address['postcode'] . ', ' .
 				$shipping_address['city'] . ', ' . 
-				$shipping_address['state'] . ', ' . 
-				$shipping_address['postcode']
+				$shipping_address['state'] . ', ' .
+				$shipping_address['country']
 			;
 
 			$dropoff_name 	= $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name();
@@ -278,10 +292,11 @@ class UDW_Admin
 
 			foreach ($order->get_items() as $item)
 			{
+				// ManifestItem needs to be named like this to be recognized by Uber Direct API
 				$manifest_items[] = new ManifestItem($item->get_name(), $item->get_quantity());
 			}
 
-			$delivery = $this->udw_ud_api->create_delivery($order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items);
+			$delivery = $this->udwd_ud_api->create_delivery($order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items);
 
 			if (is_wp_error($delivery)) wp_send_json_error($delivery);
 			else
@@ -289,7 +304,7 @@ class UDW_Admin
 				$tip = (float) $order->get_shipping_total() - ($delivery->fee / 100); // Fee is in cents
 				if ($tip > 0)
 				{
-					$delivery = $this->udw_ud_api->update_delivery($delivery->id, $tip); // Updates the delivery repassing the difference between the quote and the real delivery to Uber for tax issues
+					$delivery = $this->udwd_ud_api->update_delivery($delivery->id, $tip); // Updates the delivery repassing the difference between the quote and the real delivery to Uber for tax issues
 				}
 	
 				if (!$order->meta_exists('_udw_delivery_id'))
@@ -305,7 +320,7 @@ class UDW_Admin
 
 	public function ajax_cancel_delivery()
 	{
-		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udw_nonce_delivery', 'security'))
+		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udwd_nonce_delivery', 'security'))
 		{
 			$order_id = absint(wp_unslash($_POST['order_id']));
 			$order = wc_get_order($order_id);
@@ -313,7 +328,7 @@ class UDW_Admin
 			if ($order->meta_exists('_udw_delivery_id'))
 			{
 				$delivery_id = $order->get_meta('_udw_delivery_id');
-				$delivery = $this->udw_ud_api->cancel_delivery($delivery_id);
+				$delivery = $this->udwd_ud_api->cancel_delivery($delivery_id);
 
 				if (is_wp_error($delivery)) wp_send_json_error($delivery); 
 				else wp_send_json_success($delivery);
@@ -324,8 +339,8 @@ class UDW_Admin
 
 	public function add_modal_templates(): void
 	{
-		include_once 'views/udw-modal-quote.php';
-		include_once 'views/udw-modal-delivery.php';
-		include_once 'views/udw-modal-error.php';
+		include_once 'views/udwd-modal-quote.php';
+		include_once 'views/udwd-modal-delivery.php';
+		include_once 'views/udwd-modal-error.php';
 	}
 }

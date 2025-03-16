@@ -1,5 +1,5 @@
-<script type="text/template" id="tmpl-udw-modal-quote">
-    <div id="udw-modal-quote-container">
+<script type="text/template" id="tmpl-udwd-modal-quote">
+    <div id="udwd-modal-quote-container">
         <div class="wc-backbone-modal">
             <div class="wc-backbone-modal-content">
                 <section class="wc-backbone-modal-main" role="main">
@@ -14,46 +14,46 @@
                     </header>
 
                     <article>
-                        <div id="udw-quote-container">
+                        <div id="udwd-quote-container">
                             <# if ( data.shipping ) { #>
 
-                            <div id="udw-shipping-preview-address" class="udw-shipping-preview-block">
+                            <div id="udwd-shipping-preview-address" class="udwd-shipping-preview-block">
                                 <h2><?php esc_html_e('Shipping Information', 'udwdelivery'); ?></h2>
-                                <div class="udw-shipping-preview-input-wrapper">
+                                <div class="udwd-shipping-preview-input-wrapper">
                                     <label><?php esc_html_e('Delivery Address', 'udwdelivery') ?></label>
-                                    <input type="text" class="short udw-shipping-input-address-1" value="{{{ data.shipping.address_1 }}}" disabled/>
+                                    <input type="text" class="short udwd-shipping-input-address-1" value="{{{ data.shipping.address_1 }}}" disabled/>
                                 </div>
-                                <div class="udw-shipping-preview-input-wrapper">
+                                <div class="udwd-shipping-preview-input-wrapper">
                                     <label><?php esc_html_e('Complement', 'udwdelivery') ?></label>
-                                    <input type="text" class="udw-shipping-input-address-2" value="{{{ data.shipping.address_2 }}}" disabled/>
+                                    <input type="text" class="udwd-shipping-input-address-2" value="{{{ data.shipping.address_2 }}}" disabled/>
                                 </div>
-                                <div class="udw-shipping-preview-input-wrapper">
+                                <div class="udwd-shipping-preview-input-wrapper">
                                     <label><?php esc_html_e('Paid Shipping', 'udwdelivery') ?></label>
-                                    <input type="text" class="udw-shipping-input-shipping_total" value="R$ {{{ data.shipping_total }}}" disabled/>
+                                    <input type="text" class="udwd-shipping-input-shipping_total" value="R$ {{{ data.shipping_total }}}" disabled/>
                                 </div>
                             </div>
 
-                            <div id="udw-shipping-preview-buyer" class="udw-shipping-preview-block">
+                            <div id="udwd-shipping-preview-buyer" class="udwd-shipping-preview-block">
                                 <h2><?php esc_html_e('Recipient', 'udwdelivery'); ?></h2>
-                                <div class="udw-shipping-preview-input-names-container">
-                                    <div class="udw-shipping-preview-input-wrapper name">
+                                <div class="udwd-shipping-preview-input-names-container">
+                                    <div class="udwd-shipping-preview-input-wrapper name">
                                         <label><?php esc_html_e('Name', 'udwdelivery'); ?></label>
-                                        <input type="text" class="udw-shipping-input-first_name" value="{{{ data.shipping.first_name }}}" disabled/>
+                                        <input type="text" class="udwd-shipping-input-first_name" value="{{{ data.shipping.first_name }}}" disabled/>
                                     </div>
 
-                                    <div class="udw-shipping-preview-input-wrapper name">
+                                    <div class="udwd-shipping-preview-input-wrapper name">
                                         <label><?php esc_html_e('Sobrenome', 'udwdelivery'); ?></label>
-                                        <input type="text" class="udw-shipping-input-last_name" value="{{{ data.shipping.last_name }}}" disabled/>
+                                        <input type="text" class="udwd-shipping-input-last_name" value="{{{ data.shipping.last_name }}}" disabled/>
                                     </div>
                                 </div>
 
-                                <div class="udw-shipping-preview-input-wrapper">
+                                <div class="udwd-shipping-preview-input-wrapper">
                                     <label><?php esc_html_e('Phone number', 'udwdelivery'); ?></label>
-                                    <input type="text" class="udw-shipping-input-phone" value="{{{ data.billing.phone }}}" disabled/>
+                                    <input type="text" class="udwd-shipping-input-phone" value="{{{ data.billing.phone }}}" disabled/>
                                 </div>
 
                                 <# if ( data.customer_note ) { #>
-                                <div class="udw-shipping-preview-input-wrapper">
+                                <div class="udwd-shipping-preview-input-wrapper">
                                     <div class="wc-order-preview-note">
                                         <strong><?php esc_html_e('Notes', 'udwdelivery'); ?></strong>
                                         {{ data.customer_note }}
@@ -62,11 +62,11 @@
                                 <# } #>
                             </div>
 
-                            <div id="udw-shipping-preview-package" class="udw-shipping-preview-block">
+                            <div id="udwd-shipping-preview-package" class="udwd-shipping-preview-block">
                                 <h2><?php esc_html_e('Package', 'udwdelivery'); ?></h2>
-                                <div class="udw-shipping-preview-input-wrapper">
+                                <div class="udwd-shipping-preview-input-wrapper">
                                     <label><?php esc_html_e('Order ID', 'udwdelivery'); ?></label>
-                                    <input type="text" class="udw-shipping-order-id" value="{{{ data.number }}}" disabled />
+                                    <input type="text" class="udwd-shipping-order-id" value="{{{ data.number }}}" disabled />
                                 </div>
                             </div>
 
@@ -77,7 +77,7 @@
 
                     <footer>
                         <div class="inner">
-                            <a id="udw-button-create-delivery" data-order-id="{{data.number}}" class="button button-primary button-large inner" aria-label="<?php esc_attr_e('Request courier', 'udwdelivery'); ?>" href="<?php echo '#'; ?>" ><?php esc_html_e('Request courier', 'udwdelivery'); ?></a>
+                            <a id="udwd-button-create-delivery" data-order-id="{{data.number}}" class="button button-primary button-large inner" aria-label="<?php esc_attr_e('Request courier', 'udwdelivery'); ?>" href="<?php echo '#'; ?>" ><?php esc_html_e('Request courier', 'udwdelivery'); ?></a>
                         </div>
                     </footer>
 
