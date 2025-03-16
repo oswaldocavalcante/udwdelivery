@@ -225,3 +225,9 @@ msgstr ""
 
 msgid "The average time needed to prepare the package to be ready for pickup."
 msgstr ""
+
+msgid "Error"
+msgstr
+
+msgid "Courier photo"
+msgstr

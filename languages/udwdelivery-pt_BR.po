@@ -218,3 +218,9 @@ msgstr "Tempo de preparação"
 
 msgid "The average time needed to prepare the package to be ready for pickup."
 msgstr "O tempo médio necessário para preparar o pacote para ser recolhido."
+
+msgid "Error"
+msgstr "Erro"
+
+msgid "Courier photo"
+msgstr "Foto do entregador"

@@ -39,7 +39,8 @@
 
                             <# if( data.courier.img_href ) { #>
                             <div id="udwd-delivery-courier-photo">
-                                <img src="{{{ data.courier.img_href }}}" />
+                                <?php // phpcs:ignore PluginCheck.CodeAnalysis.ImageFunctions.NonEnqueuedImage -- Dinamic image from Uber Direct API ?>
+                                <img src="{{{ data.courier.img_href }}}" alt="<?php esc_attr_e('Courier photo', 'udwdelivery'); ?>" />
                             </div>
                             <# } #>
 
