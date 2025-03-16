@@ -186,7 +186,7 @@ class UDW_Admin
 			<?php if($order->meta_exists('_udw_delivery_id') && !is_wp_error($delivery)) : ?>
 					
 				<?php /* translators: %s: delivery status */ ?>
-				<h4><?php echo esc_html(sprintf(__('Status: %s', 'udwdelivery'), __($delivery_status, 'udwdelivery'))); ?></h4>
+				<h4><?php echo esc_html(sprintf(__('Status: %s', 'udwdelivery'), $delivery_status)); ?></h4>
 
 				<h4><?php esc_html_e('Courier', 'udwdelivery'); ?></h4>
 				<span><?php echo esc_html($delivery->courier->name ?? ''); ?></span>
