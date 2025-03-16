@@ -30,7 +30,7 @@ This plugin connects to Uber Direct API to obtain delivery information. It's nee
 
 It sends your Uber API Credentials and the stores's address every time that a request is made. To get delivery quotes and create deliveries, this plugin also sends the customers address and order informations.
 
-This service is provided by "Uber Technologies Inc.": (terms of use)[https://www.uber.com/legal/terms], (privacy policy)[https://privacy.uber.com/policy].
+This service is provided by "Uber Technologies Inc.": [terms of use](https://www.uber.com/legal/terms), [privacy policy](https://privacy.uber.com/policy).
 
 
 ## Frequently Asked Questions
