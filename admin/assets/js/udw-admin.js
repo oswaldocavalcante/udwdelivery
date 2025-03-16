@@ -70,11 +70,18 @@ var WCOrdersTable = function ()
 							variable: response.data
 						});
 					}
-                } else {
-                    console.error(response.data);
+                } 
+				else 
+				{
+					$(this).WCBackboneModal
+					({
+						template: 'udw-modal-error',
+						variable: response.data
+					});
                 }
             },
-            error: function (xhr, status, error) {
+            error: function (xhr, status, error)
+			{
 				console.error(error);
             }
         });
@@ -105,15 +112,23 @@ var WCOrdersTable = function ()
 				{
 					document.getElementById('udw-modal-quote-container').remove();
 					$("a[data-order-id='" + $order_id + "']").text('Ver envio'); //Configure translation
-					$(this).WCBackboneModal({
+					$(this).WCBackboneModal
+					({
 						template: 'udw-modal-delivery',
 						variable: response.data
 					});
-				} else {
-					console.error(response.data);
+				}
+				else
+				{
+					$(this).WCBackboneModal
+					({
+						template: 'udw-modal-error',
+						variable: response.data
+					});
 				}
 			},
-			error: function (xhr, status, error) {
+			error: function (xhr, status, error) 
+			{
 				console.error(error);
 			}
 		});
@@ -173,11 +188,17 @@ var WCOrdersTable = function ()
 					$('#udw-delivery-tip').remove();
 					$button.addClass('disabled');
 				} 
-				else {
-					console.error(response.data);
+				else
+				{
+					$(this).WCBackboneModal
+					({
+						template: 'udw-modal-error',
+						variable: response.data
+					});
 				}
 			},
-			error: function (xhr, status, error) {
+			error: function (xhr, status, error) 
+			{
 				console.error(error);
 			}
 		});

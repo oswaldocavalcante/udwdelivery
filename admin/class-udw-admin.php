@@ -170,26 +170,23 @@ class UDW_Admin
 		$order = ($post_or_order_object instanceof WP_Post) ? wc_get_order($post_or_order_object->ID) : $post_or_order_object;
 		// Note: $post_or_order_object should not be used directly below this point.
 
-		$delivery_status = false;
+		$delivery_status = null;
 
 		if ($order->meta_exists('_udw_delivery_id'))
 		{
 			$delivery_id = $order->get_meta('_udw_delivery_id');
 			$delivery = $this->udw_ud_api->get_delivery($delivery_id);
-			$delivery_status = $delivery->status;
+
+			if(!is_wp_error($delivery)) $delivery_status = $delivery->status;
 		}
 		?>
 
 		<div id="udw-metabox-container">
-
-			<div id="udw-metabox-status">
-				<?php if ($order->meta_exists('_udw_delivery_id')) : ?>
-					<?php /* translators: %s: delivery status */ ?>
-					<h4><?php echo esc_html(sprintf(__('Status: %s', 'udwdelivery'), $delivery_status)); ?></h4>
-				<?php endif; ?>
-			</div>
-
-			<?php if ($order->meta_exists('_udw_delivery_id')) : ?>
+				
+			<?php if($order->meta_exists('_udw_delivery_id') && !is_wp_error($delivery)) : ?>
+					
+				<?php /* translators: %s: delivery status */ ?>
+				<h4><?php echo esc_html(sprintf(__('Status: %s', 'udwdelivery'), __($delivery_status, 'udwdelivery'))); ?></h4>
 
 				<h4><?php esc_html_e('Courier', 'udwdelivery'); ?></h4>
 				<span><?php echo esc_html($delivery->courier->name ?? ''); ?></span>
@@ -205,7 +202,7 @@ class UDW_Admin
 				<button id="udw-delivery-btn_coppy-tracking_url" class="button"><?php esc_html_e('Copy', 'udwdelivery'); ?></button>
 				<a href="<?php echo esc_url($delivery->tracking_url ?? '') ?>" target="_blank" class="button button-primary dashicons-before dashicons-external"><?php esc_html_e('Open', 'udwdelivery'); ?></a>
 
-			<?php else : ?>
+			<?php elseif(!is_wp_error($delivery)) : ?>
 
 				<?php
 				$delivery_quote = $this->udw_ud_api->create_quote($order->get_shipping_address_1() . ', ' . $order->get_shipping_postcode());
@@ -225,6 +222,11 @@ class UDW_Admin
 					</a>
 				</div>
 
+			<?php else : ?>
+				
+				<h4><?php echo esc_html(__('Error', 'udwdelivery')); ?></h4>
+				<span><?php echo esc_html($delivery->get_error_message()); ?></span>
+
 			<?php endif; ?>
 		</div>
 		<?php
@@ -241,12 +243,11 @@ class UDW_Admin
 			{
 				$delivery_id = $order->get_meta('_udw_delivery_id');
 				$delivery = $this->udw_ud_api->get_delivery($delivery_id);
-				wp_send_json_success($delivery);
+
+				if (is_wp_error($delivery)) wp_send_json_error($delivery);
+				else wp_send_json_success($delivery);
 			}
-			else
-			{
-				wp_send_json_success(json_decode($order));
-			}
+			else wp_send_json_success(json_decode($order));
 		}
 	}
 
@@ -282,19 +283,23 @@ class UDW_Admin
 
 			$delivery = $this->udw_ud_api->create_delivery($order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items);
 
-			$tip = (float) $order->get_shipping_total() - ($delivery->fee / 100); // Fee is in cents
-			if ($tip > 0)
+			if (is_wp_error($delivery)) wp_send_json_error($delivery);
+			else
 			{
-				$delivery = $this->udw_ud_api->update_delivery($delivery->id, $tip); // Updates the delivery repassing the difference between the quote and the real delivery to Uber for tax issues
+				$tip = (float) $order->get_shipping_total() - ($delivery->fee / 100); // Fee is in cents
+				if ($tip > 0)
+				{
+					$delivery = $this->udw_ud_api->update_delivery($delivery->id, $tip); // Updates the delivery repassing the difference between the quote and the real delivery to Uber for tax issues
+				}
+	
+				if (!$order->meta_exists('_udw_delivery_id'))
+				{
+					$order->add_meta_data('_udw_delivery_id', $delivery->id);
+					$order->save_meta_data();
+				}
+	
+				wp_send_json_success($delivery);
 			}
-
-			if (!$order->meta_exists('_udw_delivery_id'))
-			{
-				$order->add_meta_data('_udw_delivery_id', $delivery->id);
-				$order->save_meta_data();
-			}
-
-			wp_send_json_success($delivery);
 		}
 	}
 
@@ -309,12 +314,11 @@ class UDW_Admin
 			{
 				$delivery_id = $order->get_meta('_udw_delivery_id');
 				$delivery = $this->udw_ud_api->cancel_delivery($delivery_id);
-				wp_send_json_success($delivery);
+
+				if (is_wp_error($delivery)) wp_send_json_error($delivery); 
+				else wp_send_json_success($delivery);
 			}
-			else
-			{
-				wp_send_json_success(json_decode($order));
-			}
+			else wp_send_json_success(json_decode($order));
 		}
 	}
 
@@ -322,5 +326,6 @@ class UDW_Admin
 	{
 		include_once 'views/udw-modal-quote.php';
 		include_once 'views/udw-modal-delivery.php';
+		include_once 'views/udw-modal-error.php';
 	}
 }

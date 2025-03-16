@@ -7,7 +7,7 @@
  * Plugin Name:       UDW Delivery - Uber Direct for WooCommerce
  * Plugin URI:        https://github.com/oswaldocavalcante/udwdelivery
  * Description:       Delivery service for WooCommerce integrating with Uber Direct API.
- * Version:           2.2.1
+ * Version:           2.2.2
  * Author:            Oswaldo Cavalcante
  * Author URI:        https://oswaldocavalcante.com/
  * License:           GPL-2.0+
@@ -26,7 +26,7 @@ if (!defined( 'WPINC' )) die;
 if (!defined('UDW_PLUGIN_FILE')) define('UDW_PLUGIN_FILE', __FILE__);
 define('UDW_ABSPATH', dirname(UDW_PLUGIN_FILE) . '/');
 define('UDW_BASENAME', plugin_basename(__FILE__));
-define('UDW_VERSION', '2.2.1');
+define('UDW_VERSION', '2.2.2');
 
 require plugin_dir_path( __FILE__ ) . 'includes/class-udw.php';
 

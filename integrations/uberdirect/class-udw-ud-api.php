@@ -247,19 +247,39 @@ class UDW_UD_API
 	{
 		$logger = function_exists('wc_get_logger') ? wc_get_logger() : new WC_Logger();
 		$logger_context = array('source' => 'udwdelivery');
+
+		$code = '';
 		$message = '';
 		
 		if(isset($response['response']['code']) && $response['response']['code'] != 200)
 		{
-			$message = $response['response']['code'] . ' - ' . $request_name . ': ' . $response['response']['message'];
+			$error = json_decode(wp_remote_retrieve_body($response));
+
+			if(isset($error->code) && isset($error->message))
+			{
+				$code = $error->code;
+				$message = $request_name . ' - ' . $code . ': ' . $error->message;
+			}
+			elseif(isset($error->error) && isset($error->error_description))
+			{
+				$code = $error->error;
+				$message = $request_name . ' - ' . $code . ': ' . $error->error_description;
+			}
+			else
+			{
+				$code = $response['response']['code'];
+				$message = $request_name . ': ' . $response['response']['message'];
+			}
+
 			$logger->error($message, $logger_context);
 		}
 		elseif(is_wp_error($response))
 		{
+			$code = $response->get_error_code();
 			$message = $request_name . ': ' . $response->get_error_message();
 			$logger->error($message, $logger_context);
 		}
 
-		return $message;
+		return new WP_Error($code, $message);
 	}
 }
