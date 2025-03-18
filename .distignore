@@ -3,6 +3,7 @@
 *.DS_Store
 *.code-workspace
 *.zip
+*banner-source*
 composer.json
 composer.lock
 .distignore
