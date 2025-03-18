@@ -34,6 +34,12 @@ jobs:
     # Github does offer other platforms if you need them: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      deployments: write
+
     # Every job has a specific set of steps that it goes through to do its "work".
     #
     # Each step has a two key elements:
@@ -83,3 +89,5 @@ jobs:
       with:
         # Provide what the file should be named when attached to the release (plugin-name.zip)
         files: ${{ github.workspace }}/${{ github.event.repository.name }}.zip
+        draft: false
+        prerelease: false
