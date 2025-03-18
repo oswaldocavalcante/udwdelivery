@@ -1,6 +1,6 @@
 === UDW Delivery - Uber Direct for WooCommerce ===
 Contributors: oswaldocavalcante
-Donate link: https://oswaldocavalcante.com/donations/donation
+Donate link: https://oswaldocavalcante.com/donation
 Tags: woocommerce, delivery, shipping, uber, courier
 Requires at least: 5.0
 Tested up to: 6.7
