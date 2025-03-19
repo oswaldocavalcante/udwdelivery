@@ -4,7 +4,7 @@ Donate link: https://oswaldocavalcante.com/donation
 Tags: woocommerce, delivery, shipping, uber, courier
 Requires at least: 5.0
 Tested up to: 6.7
-Stable tag: 2.2.4
+Stable tag: 2.2.5
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Requires PHP: 7.4
