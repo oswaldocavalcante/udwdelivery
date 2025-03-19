@@ -35,19 +35,12 @@ if (!class_exists('UDWD_WC_Shipping_Method'))
 		 */
 		public function calculate_shipping($package = array()) 
 		{
-			$destination = 
-				$package['destination']['address'] . ', ' . 
-				$package['destination']['postcode'] . ', ' .
-				$package['destination']['city'] . ', ' .
-				$package['destination']['state'] . ', ' .
-				$package['destination']['country']
-			;
-
-			$current_time 				= current_datetime();
-			$pickup_time_start 			= DateTime::createFromFormat('H:i', get_option('udwd-pickup_time-start'), wp_timezone());
-			$pickup_time_end 			= DateTime::createFromFormat('H:i', get_option('udwd-pickup_time-end'), wp_timezone());
-			$pickup_time_processing		= get_option('udwd-pickup_time-processing');
-			$pickup_time 				= '';
+			$destination 			= WC()->countries->get_formatted_address($package['destination'], ', ');
+			$current_time 			= current_datetime();
+			$pickup_time_start 		= DateTime::createFromFormat('H:i', get_option('udwd-pickup_time-start'), wp_timezone());
+			$pickup_time_end 		= DateTime::createFromFormat('H:i', get_option('udwd-pickup_time-end'), wp_timezone());
+			$pickup_time_processing	= get_option('udwd-pickup_time-processing');
+			$pickup_time 			= '';
 
 			// Checks if the shop doesn't delivers at weekends ant the current day is Saturday (6) or Sunday (7) using ISO-8601 format (Monday = 1, ... Sunday = 7)
 			if(in_array($current_time->format('N'), array(6, 7)) && get_option('udwd-pickup_time-weekend') == 'no')
@@ -82,9 +75,10 @@ if (!class_exists('UDWD_WC_Shipping_Method'))
 			}
 
 			$pickup_time = $pickup_time->modify("+{$pickup_time_processing} minutes"); // Add the time for processing the package
+			
 			$delivery_quote = $this->ud_api->create_quote($destination, $pickup_time->format(DateTimeInterface::RFC3339));
 
-			if(isset($delivery_quote['fee']) && $delivery_quote['fee'])
+			if(!is_wp_error($delivery_quote) && is_array($delivery_quote))
 			{
 				$delivery_variation = floatval(get_option('udwd-extra_fee')); // Maximum variable of variation price for delivery
 				$delivery_cost 		= ($delivery_quote['fee'] / 100) + $delivery_variation;

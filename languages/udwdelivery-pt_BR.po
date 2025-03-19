@@ -224,3 +224,6 @@ msgstr "Erro"
 
 msgid "Courier photo"
 msgstr "Foto do entregador"
+
+msgid "Get support"
+msgstr "Obter ajuda"

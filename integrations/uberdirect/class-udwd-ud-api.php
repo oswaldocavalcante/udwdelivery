@@ -1,18 +1,18 @@
 <?php
 
-/**
- * The admin-specific functionality of the plugin.
- *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the admin-specific stylesheet and JavaScript.
- *
- * @package    UDWDelivery
- * @subpackage UDWDelivery/admin
- * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
- */
-
 if(!defined('ABSPATH')) exit; // Exit if accessed directly
 
+/**
+ * The UberDirect API class.
+ *
+ * This class is responsible for handling the communication with the UberDirect API.
+ *
+ * @link       https://oswaldocavalcante.com
+ * @since      1.0.0
+ *
+ * @package    UDWDelivery
+ * @subpackage UDWDelivery/integrations/uberdirect
+ */
 class UDWD_UD_API
 {
 	private $access_token;
@@ -38,6 +38,12 @@ class UDWD_UD_API
 		$this->endpoint_get_delivery 	= $this->base_url . $this->customer_id . '/deliveries/';
 	}
 
+	/**
+	 * Retrieves the Access Token from the UberDirect API.
+	 *
+	 * @return string | bool The Access Token or false if the request fails.
+	 * @see https://developer.uber.com/docs/deliveries/guides/authentication
+	 */
 	public function get_access_token()
 	{
 		// Checks if the Access Token is expired to regenate it
@@ -82,18 +88,29 @@ class UDWD_UD_API
 		return $this->access_token;
 	}
 
+	/**
+	 * Creates a delivery quote for a given destination address.
+	 * 
+	 * @param string $dropoff_address The destination address.
+	 * @param string $pickup_ready_dt The date and time the package will be ready for pickup.
+	 * @param string $pickup_address The address where the package will be picked up.
+	 * @return array | WP_Error The delivery quote data or an error message.
+	 * @see https://developer.uber.com/docs/deliveries/api-reference/daas#tag/Quotes/paths/~1customers~1%7Bcustomer_id%7D~1delivery_quotes/post
+	 */
 	public function create_quote($dropoff_address, $pickup_ready_dt = '', $pickup_address = '')
 	{
 		if($pickup_address == '')
 		{
-			$default = wc_get_base_location();
-			$pickup_address = 
-				get_option('woocommerce_store_address') . ', ' . 
-				get_option('woocommerce_store_postcode') . ', ' . 
-				get_option('woocommerce_store_city') . ', ' .
-				$default['state'] . ', ' .
-				$default['country']
-			;
+			$raw_base_address = array
+			(
+				'address_1' => WC()->countries->get_base_address(),
+				'city'      => WC()->countries->get_base_city(),
+				'state'     => WC()->countries->get_base_state(),
+				'country'   => WC()->countries->get_base_country(),
+				'postcode'  => WC()->countries->get_base_postcode(),
+			);
+			
+			$pickup_address = WC()->countries->get_formatted_address($raw_base_address, ', ');
 		}
 
 		$headers = array
@@ -129,6 +146,18 @@ class UDWD_UD_API
 		return $quote;
 	}
 
+	/**
+	 * Creates a delivery for a given order ID.
+	 * 
+	 * @param int $order_id The order ID.
+	 * @param string $dropoff_name The name of the recipient.
+	 * @param string $dropoff_address The address of the recipient.
+	 * @param string $dropoff_notes The notes for the recipient.
+	 * @param string $dropoff_phone_number The phone number of the recipient.
+	 * @param array $manifest_items The items to be delivered.
+	 * @return array | WP_Error The delivery data or an error message.
+	 * @see https://developer.uber.com/docs/deliveries/api-reference/daas#tag/Delivery/paths/~1customers~1%7Bcustomer_id%7D~1deliveries/post
+	 */
 	public function create_delivery($order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items = array())
 	{
 		$headers = array
@@ -171,6 +200,14 @@ class UDWD_UD_API
 		return $delivery;
 	}
 
+	/**
+	 * Updates the tip amount for a given delivery ID.
+	 * 
+	 * @param string $delivery_id The delivery ID.
+	 * @param float $tip The tip amount.
+	 * @return array | WP_Error The delivery data or an error message.
+	 * @see https://developer.uber.com/docs/deliveries/api-reference/daas#tag/Delivery/paths/~1customers~1%7Bcustomer_id%7D~1deliveries~1%7Bdelivery_id%7D/post
+	 */
 	public function update_delivery($delivery_id, $tip)
 	{
 		$headers = array
@@ -204,6 +241,13 @@ class UDWD_UD_API
 		return $delivery;
 	}
 
+	/**
+	 * Retrieves the delivery data for a given delivery ID.
+	 * 
+	 * @param string $delivery_id The delivery ID.
+	 * @return array | WP_Error The delivery data or an error message.
+	 * @see https://developer.uber.com/docs/deliveries/api-reference/daas#tag/Delivery/paths/~1customers~1%7Bcustomer_id%7D~1deliveries~1%7Bdelivery_id%7D/get
+	 */
 	public function get_delivery($delivery_id)
 	{
 		$headers = array
@@ -228,6 +272,13 @@ class UDWD_UD_API
 		return $delivery;
 	}
 
+	/**
+	 * Cancels a delivery for a given delivery ID.
+	 * 
+	 * @param string $delivery_id The delivery ID.
+	 * @return array | WP_Error The delivery data or an error message.
+	 * @see https://developer.uber.com/docs/deliveries/api-reference/daas#tag/Delivery/paths/~1customers~1%7Bcustomer_id%7D~1deliveries~1%7Bdelivery_id%7D~1cancel/post
+	 */
 	public function cancel_delivery($delivery_id)
 	{
 		$headers = array
@@ -257,8 +308,7 @@ class UDWD_UD_API
 	 *
 	 * @param string $request_name The request name sent to the UberDirect API.
 	 * @param array | WP_Error $response The response data received from the UberDirect API.
-	 *
-	 * @return void
+	 * @return WP_Error The error message logged in WooCommerce logs.
 	 */
 	private function log($request_name, $response)
 	{

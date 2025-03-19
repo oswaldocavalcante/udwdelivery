@@ -1,16 +1,6 @@
 <?php
 
-/**
- * The admin-specific functionality of the plugin.
- *
- * @link       https://oswaldocavalcante.com
- * @since      1.0.0
- *
- * @package    UDWDelivery
- * @subpackage UDWDelivery/admin
- */
-
-if(!defined('ABSPATH')) exit; // Exit if accessed directly
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
 
@@ -19,12 +9,12 @@ require_once UDWD_ABSPATH . 'integrations/uberdirect/class-udwd-ud-api.php';
 /**
  * The admin-specific functionality of the plugin.
  *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the admin-specific stylesheet and JavaScript.
- *
+ * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
+ * @link       https://oswaldocavalcante.com
+ * @since      1.0.0
+ * 
  * @package    UDWDelivery
  * @subpackage UDWDelivery/admin
- * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
  */
 class UDWD_Admin
 {
@@ -86,6 +76,14 @@ class UDWD_Admin
 		return new WP_REST_Response('Status Webhook received', 200);
 	}
 
+	/**
+	 * Change the order status to the desired one.
+	 *
+	 * @since    1.0.0
+	 * @param    int    $order_id    The order ID.
+	 * @param    string $status      The desired status.
+	 * @return   void
+	 */
 	public function change_order_status($order_id, $status)
 	{
 		$order = wc_get_order($order_id);
@@ -97,6 +95,13 @@ class UDWD_Admin
 		}
 	}
 
+	/**
+	 * Add the Uber Direct integration to WooCommerce.
+	 *
+	 * @since    1.0.0
+	 * @param    array    $integrations    The integrations array.
+	 * @return   array
+	 */
 	public function add_integration($integrations)
 	{
 		include_once UDWD_ABSPATH . 'integrations/woocommerce/class-udwd-wc-integration.php';
@@ -156,96 +161,155 @@ class UDWD_Admin
 		);
 	}
 
+	/**
+	 * Add the Uber Direct meta box to the order page.
+	 */
 	public function add_meta_box()
 	{
 		$screen = class_exists('\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController') && wc_get_container()->get(CustomOrdersTableController::class)->custom_orders_table_usage_is_enabled()
 			? wc_get_page_screen_id('shop-order')
 			: 'shop_order';
 
-		add_meta_box('wc-udwd-widget', 'Uber Direct', array($this, 'render_meta_box'), $screen, 'side', 'high');
+		add_meta_box('wc-udwd-widget', 'Uber Direct', array($this, 'set_meta_box'), $screen, 'side', 'high');
 	}
 
-	public function render_meta_box($post_or_order_object)
+	/**
+	 * Set the meta box content.
+	 *
+	 * @param WP_Post|WC_Order $post_or_order_object The post or order object.
+	 */
+	public function set_meta_box($post_or_order_object)
 	{
 		/**
 		 * Get order or legacy post.
 		 * @var WC_Order $order
 		 */
-		$order = ($post_or_order_object instanceof WP_Post) ? wc_get_order($post_or_order_object->ID) : $post_or_order_object;
-		// Note: $post_or_order_object should not be used directly below this point.
+		$order = ($post_or_order_object instanceof WP_Post) ? wc_get_order($post_or_order_object->ID) : $post_or_order_object; // Note: $post_or_order_object should not be used directly below this point.
 
-		$delivery = '';
-		$delivery_status = '';
-
-		if ($order->meta_exists('_udw_delivery_id'))
+		if ($order->meta_exists('_udw_delivery_id')) // If there is a delivery ID, we can get the delivery
 		{
 			$delivery_id = $order->get_meta('_udw_delivery_id');
 			$delivery = $this->udwd_ud_api->get_delivery($delivery_id);
 
-			if(!is_wp_error($delivery)) $delivery_status = $delivery->status;
+			if (!is_wp_error($delivery)) 	$this->render_meta_box_delivery($delivery, $order->ID);
+			else 							$this->render_meta_box_error($delivery->get_error_message());
 		}
+		else // If there is no delivery ID, we can create a quote
+		{
+			$address = $this->get_formatted_address($order->get_address('shipping'));
+			$quote = $this->udwd_ud_api->create_quote($address);
+
+			if (!is_wp_error($quote)) 	$this->render_meta_box_quote($quote, $order->ID);
+			else 						$this->render_meta_box_error($quote->get_error_message());
+		}
+	}
+
+	/**
+	 * Render the meta box content if the order has a delivery.
+	 *
+	 * @param WC_Order $order The order object.
+	 * @param int $order_id The order ID.
+	 */
+	private function render_meta_box_delivery($delivery, $order_id)
+	{
 		?>
-
 		<div id="udwd-metabox-container">
-				
-			<?php if($order->meta_exists('_udw_delivery_id') && !is_wp_error($delivery)) : ?>
-					
-				<?php /* translators: %s: delivery status */ ?>
-				<h4><?php echo esc_html(sprintf(__('Status: %s', 'udwdelivery'), $delivery_status)); ?></h4>
 
-				<h4><?php esc_html_e('Courier', 'udwdelivery'); ?></h4>
-				<span><?php echo esc_html($delivery->courier->name ?? ''); ?></span>
+			<?php /* translators: %s: delivery status */ ?>
+			<h4><?php echo esc_html(sprintf(__('Status: %s', 'udwdelivery'), $delivery->status)); ?></h4>
 
-				<h4><?php esc_html_e('Vehicle', 'udwdelivery'); ?></h4>
-				<span><?php echo esc_html($delivery->courier->vehicle_type ?? ''); ?></span>
+			<h4><?php esc_html_e('Courier', 'udwdelivery'); ?></h4>
+			<span><?php echo esc_html($delivery->courier->name ?? ''); ?></span>
 
-				<h4><?php esc_html_e('Phone number', 'udwdelivery'); ?></h4>
-				<span><?php echo esc_html($delivery->courier->phone_number ?? ''); ?></span>
+			<h4><?php esc_html_e('Vehicle', 'udwdelivery'); ?></h4>
+			<span><?php echo esc_html($delivery->courier->vehicle_type ?? ''); ?></span>
 
-				<h4><?php esc_html_e('Tracking URL', 'udwdelivery'); ?></h4>
-				<input id="udwd-delivery-tracking_url" type="text" value="<?php echo esc_url($delivery->tracking_url ?? ''); ?>" readonly />
-				<button id="udwd-delivery-btn_coppy-tracking_url" class="button"><?php esc_html_e('Copy', 'udwdelivery'); ?></button>
-				<a href="<?php echo esc_url($delivery->tracking_url ?? '') ?>" target="_blank" class="button button-primary dashicons-before dashicons-external"><?php esc_html_e('Open', 'udwdelivery'); ?></a>
+			<h4><?php esc_html_e('Phone number', 'udwdelivery'); ?></h4>
+			<span><?php echo esc_html($delivery->courier->phone_number ?? ''); ?></span>
 
-			<?php elseif(!is_wp_error($delivery)) : ?>
+			<h4><?php esc_html_e('Tracking URL', 'udwdelivery'); ?></h4>
+			<input id="udwd-delivery-tracking_url" type="text" value="<?php echo esc_url($delivery->tracking_url ?? ''); ?>" readonly />
+			<button id="udwd-delivery-btn_coppy-tracking_url" class="button"><?php esc_html_e('Copy', 'udwdelivery'); ?></button>
+			<a href="<?php echo esc_url($delivery->tracking_url ?? '') ?>" target="_blank" class="button button-primary dashicons-before dashicons-external"><?php esc_html_e('Open', 'udwdelivery'); ?></a>
 
-				<?php
-				$shipping_address = $order->get_address('shipping');
-				$delivery_address =
-					$shipping_address['address_1'] . ', ' .
-					$shipping_address['number'] . ', ' .
-					$shipping_address['postcode'] . ', ' .
-					$shipping_address['city'] . ', ' .
-					$shipping_address['state'] . ', ' .
-					$shipping_address['country']
-				;
-				$delivery_quote 	= $this->udwd_ud_api->create_quote($delivery_address);
-				$delivery_variation = floatval(get_option('udwd-extra_fee')); // Maximum variable of variation price for delivery
-				$delivery_cost 		= isset($delivery_quote['fee']) ? wc_price(($delivery_quote['fee'] / 100) + $delivery_variation) : '';
-				?>
+			<div id="udwd-metabox-action">
+				<a href="#" class="button button-primary" id="udwd-button-cancel" data-order-id="<?php echo esc_attr($order_id); ?>">
+					<?php esc_html_e('Cancel', 'udwdelivery'); ?>
+				</a>
+			</div>
 
-				<h4><?php echo esc_html(__('Shipping cost', 'udwdelivery')); ?></h4>
-				<span><?php echo isset($delivery_quote['fee']) ? wp_kses_post($delivery_cost) : ''; ?></span>
-
-				<h4><?php echo esc_html(__('Delivery time', 'udwdelivery')); ?></h4>
-				<span><?php echo isset($delivery_quote['duration']) ? esc_attr($delivery_quote['duration']) . ' ' . esc_attr__('minutes', 'udwdelivery') : ''; ?></span>
-
-				<div id="udwd-metabox-action">
-					<a href="#" class="button button-primary" id="udwd-button-pre-send" data-order-id="<?php echo esc_attr($order->ID); ?>">
-						<?php esc_html_e('Send now', 'udwdelivery'); ?>
-					</a>
-				</div>
-
-			<?php else : ?>
-				
-				<h4><?php echo esc_html(__('Error', 'udwdelivery')); ?></h4>
-				<span><?php echo esc_html($delivery->get_error_message()); ?></span>
-
-			<?php endif; ?>
 		</div>
 		<?php
 	}
 
+	/**
+	 * Render the meta box content with a quote.
+	 *
+	 * @param WC_Order $order The order object.	
+	 * @param int $order_id The order ID.
+	 */
+	private function render_meta_box_quote($quote, $order_id)
+	{
+		$extra_fee 	= floatval(get_option('udwd-extra_fee')); // Maximum variable of variation price for delivery
+		$total_cost	= isset($quote['fee']) ? wc_price(($quote['fee'] / 100) + $extra_fee) : '';
+		?>
+		<div id="udwd-metabox-container">
+
+			<h4><?php echo esc_html(__('Shipping cost', 'udwdelivery')); ?></h4>
+			<span><?php echo isset($quote['fee']) ? wp_kses_post($total_cost) : ''; ?></span>
+
+			<h4><?php echo esc_html(__('Delivery time', 'udwdelivery')); ?></h4>
+			<span><?php echo isset($quote['duration']) ? esc_attr($quote['duration']) . ' ' . esc_attr__('minutes', 'udwdelivery') : ''; ?></span>
+
+			<div id="udwd-metabox-action">
+				<a href="#" class="button button-primary" id="udwd-button-pre-send" data-order-id="<?php echo esc_attr($order_id); ?>">
+					<?php esc_html_e('Send now', 'udwdelivery'); ?>
+				</a>
+			</div>
+
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render the meta box content with an error.
+	 *
+	 * @param string $error The error message.
+	 */
+	private function render_meta_box_error($error)
+	{
+		?>
+		<div id="udwd-metabox-container">
+
+			<h4><?php echo esc_html(__('Error', 'udwdelivery')); ?></h4>
+			<span><?php echo esc_html($error); ?></span>
+
+			<div id="udwd-metabox-action">
+				<a href="https://wordpress.org/support/plugin/udwdelivery/" class="button button-primary" target="_blank">
+					<?php esc_html_e('Get support', 'udwdelivery'); ?>
+				</a>
+			</div>
+
+		</div>
+		<?php
+	}
+
+	/**
+	 * Get the formatted address.
+	 *
+	 * @param array $raw_address The raw address.
+	 * @return string The formatted address.
+	 */
+	private function get_formatted_address($raw_address)
+	{
+		unset($raw_address['first_name'], $raw_address['last_name'], $raw_address['address_2'], $raw_address['company'], $raw_address['phone']); // Remove unnecessary fields
+		
+		return WC()->countries->get_formatted_address($raw_address, ', ');
+	}
+
+	/**
+	 * Get the delivery.
+	 */
 	public function ajax_get_delivery()
 	{
 		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udwd_nonce_delivery', 'security'))
@@ -265,6 +329,9 @@ class UDWD_Admin
 		}
 	}
 
+	/**
+	 * Create a delivery.
+	 */
 	public function ajax_create_delivery()
 	{
 		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udwd_nonce_delivery', 'security'))
@@ -276,24 +343,14 @@ class UDWD_Admin
 			$calling_code = WC()->countries->get_country_calling_code($country_code);
 			$dropoff_phone_number = $calling_code . $order->get_billing_phone();
 
-			$shipping_address = $order->get_address('shipping');
-			$dropoff_address = 
-				$shipping_address['address_1'] . ', ' . 
-				$shipping_address['number'] . ', ' .
-				$shipping_address['postcode'] . ', ' .
-				$shipping_address['city'] . ', ' . 
-				$shipping_address['state'] . ', ' .
-				$shipping_address['country']
-			;
-
+			$dropoff_address = $this->get_formatted_address($order->get_address('shipping'));
 			$dropoff_name 	= $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name();
 			$dropoff_notes 	= $order->get_shipping_address_2() . '; ' . $order->get_customer_note();
 			$manifest_items = array();
 
 			foreach ($order->get_items() as $item)
 			{
-				// ManifestItem needs to be named like this to be recognized by Uber Direct API
-				$manifest_items[] = new ManifestItem($item->get_name(), $item->get_quantity());
+				$manifest_items[] = new ManifestItem($item->get_name(), $item->get_quantity()); // ManifestItem needs to be named like this to be recognized by Uber Direct API
 			}
 
 			$delivery = $this->udwd_ud_api->create_delivery($order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items);
@@ -302,22 +359,22 @@ class UDWD_Admin
 			else
 			{
 				$tip = (float) $order->get_shipping_total() - ($delivery->fee / 100); // Fee is in cents
-				if ($tip > 0)
-				{
-					$delivery = $this->udwd_ud_api->update_delivery($delivery->id, $tip); // Updates the delivery repassing the difference between the quote and the real delivery to Uber for tax issues
-				}
-	
+				if ($tip > 0) $delivery = $this->udwd_ud_api->update_delivery($delivery->id, $tip); // Updates the delivery repassing the difference between the quote and the real delivery to Uber for tax issues
+
 				if (!$order->meta_exists('_udw_delivery_id'))
 				{
 					$order->add_meta_data('_udw_delivery_id', $delivery->id);
 					$order->save_meta_data();
 				}
-	
+
 				wp_send_json_success($delivery);
 			}
 		}
 	}
 
+	/**
+	 * Cancel a delivery.
+	 */
 	public function ajax_cancel_delivery()
 	{
 		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udwd_nonce_delivery', 'security'))
@@ -330,13 +387,16 @@ class UDWD_Admin
 				$delivery_id = $order->get_meta('_udw_delivery_id');
 				$delivery = $this->udwd_ud_api->cancel_delivery($delivery_id);
 
-				if (is_wp_error($delivery)) wp_send_json_error($delivery); 
+				if (is_wp_error($delivery)) wp_send_json_error($delivery);
 				else wp_send_json_success($delivery);
 			}
 			else wp_send_json_success(json_decode($order));
 		}
 	}
 
+	/**
+	 * Add the modal templates for AJAX requests.
+	 */
 	public function add_modal_templates(): void
 	{
 		include_once 'views/udwd-modal-quote.php';

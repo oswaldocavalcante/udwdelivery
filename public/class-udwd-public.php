@@ -1,32 +1,27 @@
 <?php
 
-/**
- * The public-specific functionality of the plugin.
- *
- * @link       https://oswaldocavalcante.com
- * @since      1.0.0
- *
- * @package    UDWDelivery
- * @subpackage UDWDelivery/public
- */
-
-/**
- * The public-specific functionality of the plugin.
- *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the public-specific stylesheet and JavaScript.
- *
- * @package    UDWDelivery
- * @subpackage UDWDelivery/public
- * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
- */
-
 if(!defined('ABSPATH')) exit; // Exit if accessed directly
 
 require_once UDWD_ABSPATH . 'integrations/uberdirect/class-udwd-ud-api.php';
 
+/**
+ * The public-specific functionality of the plugin.
+ *
+ * @author     Oswaldo Cavalcante <contato@oswaldocavalcante.com>
+ * @link       https://oswaldocavalcante.com
+ * 
+ * @package    UDWDelivery
+ * @subpackage UDWDelivery/public
+ */
 class UDWD_Public
 {
+	/**
+	 * Modifies the shipping label adding the shipping deadline.
+	 *
+	 * @param string $label The shipping label.
+	 * @param WC_Shipping_Rate $method The shipping method.
+	 * @return string The modified shipping label with the added deadline.
+	 */
 	public function display_deadline_on_label($label, $method)
 	{
 		if(key_exists('dropoff_deadline', $method->meta_data))
@@ -39,6 +34,12 @@ class UDWD_Public
 		return $label;
 	}
 
+	/**
+	 * Returns a message with the deadline day and time.
+	 *
+	 * @param DateTime $deadline
+	 * @return string
+	 */
 	public function get_deadline_message(DateTime $deadline)
 	{
 		$deadline_day = '';

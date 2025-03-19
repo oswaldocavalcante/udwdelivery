@@ -231,3 +231,6 @@ msgstr
 
 msgid "Courier photo"
 msgstr
+
+msgid "Get support"
+msgstr
