@@ -63,7 +63,7 @@ class UDWD_UD_API
 						'client_id' 	=> get_option('udwd-api-client-id'),
 						'client_secret' => get_option('udwd-api-client-secret'),
 						'grant_type' 	=> 'client_credentials',
-						'scope' 		=> 'eats.deliveries',
+						'scope' 		=> 'eats.deliveries direct.organizations',
 					)
 				)
 			);
