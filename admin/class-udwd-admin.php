@@ -146,7 +146,7 @@ class UDWD_Admin
 			array
 			(
 				'url' => admin_url('admin-ajax.php'),
-				'nonce' => wp_create_nonce('udwd_nonce_delivery'),
+				'nonce' => wp_create_nonce('udwd_nonce'),
 				'translations' => array
 				(
 					'pending' 			=> __('Pending', 'udwdelivery'),
@@ -312,7 +312,7 @@ class UDWD_Admin
 	 */
 	public function ajax_get_delivery()
 	{
-		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udwd_nonce_delivery', 'security'))
+		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udwd_nonce', 'security'))
 		{
 			$order_id = absint(wp_unslash($_POST['order_id']));
 			$order = wc_get_order($order_id);
@@ -334,7 +334,7 @@ class UDWD_Admin
 	 */
 	public function ajax_create_delivery()
 	{
-		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udwd_nonce_delivery', 'security'))
+		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udwd_nonce', 'security'))
 		{
 			$order_id = absint(wp_unslash($_POST['order_id']));
 			$order = wc_get_order($order_id);
@@ -377,7 +377,7 @@ class UDWD_Admin
 	 */
 	public function ajax_cancel_delivery()
 	{
-		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udwd_nonce_delivery', 'security'))
+		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udwd_nonce', 'security'))
 		{
 			$order_id = absint(wp_unslash($_POST['order_id']));
 			$order = wc_get_order($order_id);
