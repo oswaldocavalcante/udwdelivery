@@ -103,7 +103,7 @@ class UDWD
 		add_filter('woocommerce_integrations', 		array($plugin_admin, 'add_integration'));
 		add_action('add_meta_boxes', 				array($plugin_admin, 'add_meta_box'));
 
-		add_action('wp_ajax_udwd_get_delivery', 		array($plugin_admin, 'ajax_get_delivery'));
+		add_action('wp_ajax_udwd_get_delivery', 	array($plugin_admin, 'ajax_get_delivery'));
 		add_action('wp_ajax_udwd_create_delivery', 	array($plugin_admin, 'ajax_create_delivery'));
 		add_action('wp_ajax_udwd_cancel_delivery', 	array($plugin_admin, 'ajax_cancel_delivery'));
 		add_action('admin_footer', 					array($plugin_admin, 'add_modal_templates'));
