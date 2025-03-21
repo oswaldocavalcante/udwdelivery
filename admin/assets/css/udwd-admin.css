@@ -3,17 +3,20 @@
  * included in this file.
  */
 
-.udwd-integration-connection:before {
-    color: green;
-    margin-right: 5px;
- }
+ /* Integration settings page */
 
-.udwd-integration-connection {
+#udwd-integration-connection {
     font-size: 10px;
     color: darkslategray;
     display: block;
     margin: 20px 0 -5px 0;
 }
+
+#udwd-integration-connection:before
+{
+    color: green;
+    margin-right: 5px;
+ }
 
  /* General modals */
 

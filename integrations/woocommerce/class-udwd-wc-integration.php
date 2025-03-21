@@ -147,7 +147,7 @@ class UDWD_WC_Integration extends WC_Integration
 		
 		if ($this->udwd_ud_api->get_access_token()) 
 		{
-			echo '<div class="udwd-integration-connection dashicons-before dashicons-yes-alt">' . esc_html__('Connected', 'udwdelivery') . '</div>';
+			echo '<div id="udwd-integration-connection" class="dashicons-before dashicons-yes-alt">' . esc_html__('Connected', 'udwdelivery') . '</div>';
 		} 
 		else 
 		{
