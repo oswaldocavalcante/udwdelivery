@@ -49,10 +49,7 @@ class UDWD_Admin
 			(
 				'methods'  => 'POST',
 				'callback' => array($this, 'handle_webhook'),
-				'permission_callback' => function ()
-				{
-					return current_user_can('manage_options');
-				}
+				'permission_callback' => function() { return current_user_can('manage_options'); }
 			)
 		);
 	}
