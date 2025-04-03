@@ -5,6 +5,7 @@ UDW Delivery is a Wordpress plugin that integrates Uber Direct as a shipping met
 - Author: [Oswaldo Cavalcante](https://oswaldocavalcante.com/)
 - Donate link: https://oswaldocavalcante.com/donation
 - License: [GPL-2.0+](http://www.gnu.org/licenses/gpl-2.0.html)
+- Wordpress directory: https://wordpress.org/plugins/udwdelivery/
 
 ## Features
 
