@@ -49,7 +49,7 @@ class UDWD_Admin
 			(
 				'methods'  => 'POST',
 				'callback' => array($this, 'handle_webhook'),
-				'permission_callback' => function() { return current_user_can('manage_options'); }
+				'permission_callback' => fn() => current_user_can('manage_options')
 			)
 		);
 	}
@@ -309,21 +309,20 @@ class UDWD_Admin
 	 */
 	public function ajax_get_delivery()
 	{
-		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udwd_nonce', 'security'))
+		if (!isset($_POST['order_id']) || !isset($_POST['security']) || !check_ajax_referer('udwd_nonce', 'security')) return;
+
+		$order_id = absint(wp_unslash($_POST['order_id']));
+		$order = wc_get_order($order_id);
+
+		if ($order->meta_exists('_udw_delivery_id'))
 		{
-			$order_id = absint(wp_unslash($_POST['order_id']));
-			$order = wc_get_order($order_id);
+			$delivery_id = $order->get_meta('_udw_delivery_id');
+			$delivery = $this->udwd_ud_api->get_delivery($delivery_id);
 
-			if ($order->meta_exists('_udw_delivery_id'))
-			{
-				$delivery_id = $order->get_meta('_udw_delivery_id');
-				$delivery = $this->udwd_ud_api->get_delivery($delivery_id);
-
-				if (is_wp_error($delivery)) wp_send_json_error($delivery);
-				else wp_send_json_success($delivery);
-			}
-			else wp_send_json_success(json_decode($order));
+			if (is_wp_error($delivery)) wp_send_json_error($delivery);
+			else wp_send_json_success($delivery);
 		}
+		else wp_send_json_success(json_decode($order));
 	}
 
 	/**
@@ -331,41 +330,40 @@ class UDWD_Admin
 	 */
 	public function ajax_create_delivery()
 	{
-		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udwd_nonce', 'security'))
+		if (!isset($_POST['order_id']) || !isset($_POST['security']) || !check_ajax_referer('udwd_nonce', 'security')) return;
+		
+		$order_id = absint(wp_unslash($_POST['order_id']));
+		$order = wc_get_order($order_id);
+
+		$country_code = $order->get_billing_country();
+		$calling_code = WC()->countries->get_country_calling_code($country_code);
+		$dropoff_phone_number = $calling_code . $order->get_billing_phone();
+
+		$dropoff_address = $this->get_formatted_address($order->get_address('shipping'));
+		$dropoff_name 	= $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name();
+		$dropoff_notes 	= $order->get_shipping_address_2() . '; ' . $order->get_customer_note();
+		$manifest_items = array();
+
+		foreach ($order->get_items() as $item)
 		{
-			$order_id = absint(wp_unslash($_POST['order_id']));
-			$order = wc_get_order($order_id);
+			$manifest_items[] = new ManifestItem($item->get_name(), $item->get_quantity()); // ManifestItem needs to be named like this to be recognized by Uber Direct API
+		}
 
-			$country_code = $order->get_billing_country();
-			$calling_code = WC()->countries->get_country_calling_code($country_code);
-			$dropoff_phone_number = $calling_code . $order->get_billing_phone();
+		$delivery = $this->udwd_ud_api->create_delivery($order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items);
 
-			$dropoff_address = $this->get_formatted_address($order->get_address('shipping'));
-			$dropoff_name 	= $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name();
-			$dropoff_notes 	= $order->get_shipping_address_2() . '; ' . $order->get_customer_note();
-			$manifest_items = array();
+		if (is_wp_error($delivery)) wp_send_json_error($delivery);
+		else
+		{
+			$tip = (float) $order->get_shipping_total() - ($delivery->fee / 100); // Fee is in cents
+			if ($tip > 0) $delivery = $this->udwd_ud_api->update_delivery($delivery->id, $tip); // Updates the delivery repassing the difference between the quote and the real delivery to Uber for tax issues
 
-			foreach ($order->get_items() as $item)
+			if (!$order->meta_exists('_udw_delivery_id'))
 			{
-				$manifest_items[] = new ManifestItem($item->get_name(), $item->get_quantity()); // ManifestItem needs to be named like this to be recognized by Uber Direct API
+				$order->add_meta_data('_udw_delivery_id', $delivery->id);
+				$order->save_meta_data();
 			}
 
-			$delivery = $this->udwd_ud_api->create_delivery($order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items);
-
-			if (is_wp_error($delivery)) wp_send_json_error($delivery);
-			else
-			{
-				$tip = (float) $order->get_shipping_total() - ($delivery->fee / 100); // Fee is in cents
-				if ($tip > 0) $delivery = $this->udwd_ud_api->update_delivery($delivery->id, $tip); // Updates the delivery repassing the difference between the quote and the real delivery to Uber for tax issues
-
-				if (!$order->meta_exists('_udw_delivery_id'))
-				{
-					$order->add_meta_data('_udw_delivery_id', $delivery->id);
-					$order->save_meta_data();
-				}
-
-				wp_send_json_success($delivery);
-			}
+			wp_send_json_success($delivery);
 		}
 	}
 
@@ -374,21 +372,20 @@ class UDWD_Admin
 	 */
 	public function ajax_cancel_delivery()
 	{
-		if (isset($_POST['order_id']) && isset($_POST['security']) && check_ajax_referer('udwd_nonce', 'security'))
+		if (!isset($_POST['order_id']) || !isset($_POST['security']) || !check_ajax_referer('udwd_nonce', 'security')) return;
+		
+		$order_id = absint(wp_unslash($_POST['order_id']));
+		$order = wc_get_order($order_id);
+
+		if ($order->meta_exists('_udw_delivery_id'))
 		{
-			$order_id = absint(wp_unslash($_POST['order_id']));
-			$order = wc_get_order($order_id);
+			$delivery_id = $order->get_meta('_udw_delivery_id');
+			$delivery = $this->udwd_ud_api->cancel_delivery($delivery_id);
 
-			if ($order->meta_exists('_udw_delivery_id'))
-			{
-				$delivery_id = $order->get_meta('_udw_delivery_id');
-				$delivery = $this->udwd_ud_api->cancel_delivery($delivery_id);
-
-				if (is_wp_error($delivery)) wp_send_json_error($delivery);
-				else wp_send_json_success($delivery);
-			}
-			else wp_send_json_success(json_decode($order));
+			if (is_wp_error($delivery)) wp_send_json_error($delivery);
+			else wp_send_json_success($delivery);
 		}
+		else wp_send_json_success(json_decode($order));
 	}
 
 	/**
