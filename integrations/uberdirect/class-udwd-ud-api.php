@@ -75,7 +75,7 @@ class UDWD_UD_API
 				$this->access_token = $response_body['access_token'];
 				set_transient('udwd-api-access-token', $this->access_token, $response_body['expires_in']);
 
-				return true;
+				return $this->access_token;
 			} 
 			else 
 			{
