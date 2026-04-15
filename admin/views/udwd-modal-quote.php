@@ -77,7 +77,7 @@
 
                     <footer>
                         <div class="inner">
-                            <a id="udwd-button-create-delivery" data-order-id="{{data.number}}" class="button button-primary button-large inner" aria-label="<?php esc_attr_e('Request courier', 'udwdelivery'); ?>" href="<?php echo '#'; ?>" ><?php esc_html_e('Request courier', 'udwdelivery'); ?></a>
+                            <a id="udwd-button-create-delivery" data-order-id="{{data.id}}" class="button button-primary button-large inner" aria-label="<?php esc_attr_e('Request courier', 'udwdelivery'); ?>" href="<?php echo '#'; ?>" ><?php esc_html_e('Request courier', 'udwdelivery'); ?></a>
                         </div>
                     </footer>
 

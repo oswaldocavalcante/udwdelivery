@@ -155,7 +155,7 @@ class UDWD_UD_API
 	 * @param string $dropoff_notes The notes for the recipient.
 	 * @param string $dropoff_phone_number The phone number of the recipient.
 	 * @param array $manifest_items The items to be delivered.
-	 * @return array | WP_Error The delivery data or an error message.
+	 * @return object | WP_Error The delivery data or an error message.
 	 * @see https://developer.uber.com/docs/deliveries/api-reference/daas#tag/Delivery/paths/~1customers~1%7Bcustomer_id%7D~1deliveries/post
 	 */
 	public function create_delivery($order_id, $dropoff_name, $dropoff_address, $dropoff_notes, $dropoff_phone_number, $manifest_items = array())
@@ -205,7 +205,7 @@ class UDWD_UD_API
 	 * 
 	 * @param string $delivery_id The delivery ID.
 	 * @param float $tip The tip amount.
-	 * @return array | WP_Error The delivery data or an error message.
+	 * @return object | WP_Error The delivery data or an error message.
 	 * @see https://developer.uber.com/docs/deliveries/api-reference/daas#tag/Delivery/paths/~1customers~1%7Bcustomer_id%7D~1deliveries~1%7Bdelivery_id%7D/post
 	 */
 	public function update_delivery($delivery_id, $tip)
@@ -245,7 +245,7 @@ class UDWD_UD_API
 	 * Retrieves the delivery data for a given delivery ID.
 	 * 
 	 * @param string $delivery_id The delivery ID.
-	 * @return array | WP_Error The delivery data or an error message.
+	 * @return object | WP_Error The delivery data or an error message.
 	 * @see https://developer.uber.com/docs/deliveries/api-reference/daas#tag/Delivery/paths/~1customers~1%7Bcustomer_id%7D~1deliveries~1%7Bdelivery_id%7D/get
 	 */
 	public function get_delivery($delivery_id)
@@ -276,7 +276,7 @@ class UDWD_UD_API
 	 * Cancels a delivery for a given delivery ID.
 	 * 
 	 * @param string $delivery_id The delivery ID.
-	 * @return array | WP_Error The delivery data or an error message.
+	 * @return object | WP_Error The delivery data or an error message.
 	 * @see https://developer.uber.com/docs/deliveries/api-reference/daas#tag/Delivery/paths/~1customers~1%7Bcustomer_id%7D~1deliveries~1%7Bdelivery_id%7D~1cancel/post
 	 */
 	public function cancel_delivery($delivery_id)

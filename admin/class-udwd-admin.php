@@ -152,7 +152,8 @@ class UDWD_Admin
 					'dropoff' 			=> __('Dropoff', 'udwdelivery'),
 					'delivered' 		=> __('Delivered', 'udwdelivery'),
 					'canceled' 			=> __('Canceled', 'udwdelivery'),
-					'returned' 			=> __('Returned', 'udwdelivery')
+					'returned' 			=> __('Returned', 'udwdelivery'),
+					'see_delivery' 		=> __('See delivery', 'udwdelivery')
 				)
 			)
 		);
@@ -322,7 +323,7 @@ class UDWD_Admin
 			if (is_wp_error($delivery)) wp_send_json_error($delivery);
 			else wp_send_json_success($delivery);
 		}
-		else wp_send_json_success(json_decode($order));
+		else wp_send_json_success($order->get_data());
 	}
 
 	/**
@@ -385,7 +386,7 @@ class UDWD_Admin
 			if (is_wp_error($delivery)) wp_send_json_error($delivery);
 			else wp_send_json_success($delivery);
 		}
-		else wp_send_json_success(json_decode($order));
+		else wp_send_json_success($order->get_data());
 	}
 
 	/**

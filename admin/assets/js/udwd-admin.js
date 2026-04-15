@@ -23,6 +23,7 @@ var WCOrdersTable = function ()
 			}
 		};
 
+        var $document = $(document);
         $.ajax
 		({
 			url: udwdelivery_params.url,
@@ -56,7 +57,7 @@ var WCOrdersTable = function ()
 						response.data.fee = (parseFloat(response.data.fee) * 0.01).toFixed(2);
 						response.data.tip = (parseFloat(response.data.tip) * 0.01).toFixed(2);
 
-						$(this).WCBackboneModal
+						$document.WCBackboneModal
 						({
 							template: 'udwd-modal-delivery',
 							variable: response.data
@@ -64,7 +65,7 @@ var WCOrdersTable = function ()
 					} 
 					else 
 					{
-						$(this).WCBackboneModal
+						$document.WCBackboneModal
 						({
 							template: 'udwd-modal-quote',
 							variable: response.data
@@ -73,7 +74,7 @@ var WCOrdersTable = function ()
                 } 
 				else 
 				{
-					$(this).WCBackboneModal
+					$document.WCBackboneModal
 					({
 						template: 'udwd-modal-error',
 						variable: response.data
@@ -92,6 +93,7 @@ var WCOrdersTable = function ()
 		var $button = $(this);
 		var $order_id = $button.data('order-id');
 
+		var $document = $(document);
 		$.ajax
 		({
 			url: udwdelivery_params.url,
@@ -111,8 +113,10 @@ var WCOrdersTable = function ()
 				if (response.success) 
 				{
 					document.getElementById('udwd-modal-quote-container').remove();
-					$("a[data-order-id='" + $order_id + "']").text('Ver envio'); //Configure translation
-					$(this).WCBackboneModal
+					$("#udwd-button-pre-send[data-order-id='" + response.data.external_id + "']")
+						.text(udwdelivery_params.translations.see_delivery)
+						.removeClass('button-primary');
+					$document.WCBackboneModal
 					({
 						template: 'udwd-modal-delivery',
 						variable: response.data
@@ -120,7 +124,7 @@ var WCOrdersTable = function ()
 				}
 				else
 				{
-					$(this).WCBackboneModal
+					$document.WCBackboneModal
 					({
 						template: 'udwd-modal-error',
 						variable: response.data
@@ -159,7 +163,8 @@ var WCOrdersTable = function ()
 				opacity: 0.6
 			}
 		};
-		
+
+		var $document = $(document);
 		$.ajax
 		({
 			url: udwdelivery_params.url,
@@ -190,7 +195,7 @@ var WCOrdersTable = function ()
 				} 
 				else
 				{
-					$(this).WCBackboneModal
+$document.WCBackboneModal
 					({
 						template: 'udwd-modal-error',
 						variable: response.data
