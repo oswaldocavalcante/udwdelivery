@@ -355,12 +355,18 @@ class UDWD_Admin
 		if (is_wp_error($delivery)) wp_send_json_error($delivery);
 		else
 		{
+			$delivery_id = $delivery->id; // capture before possible overwrite
+
 			$tip = (float) $order->get_shipping_total() - ($delivery->fee / 100); // Fee is in cents
-			if ($tip > 0) $delivery = $this->udwd_ud_api->update_delivery($delivery->id, $tip); // Updates the delivery repassing the difference between the quote and the real delivery to Uber for tax issues
+			if ($tip > 0)
+			{
+				$updated = $this->udwd_ud_api->update_delivery($delivery_id, $tip); // Updates the delivery repassing the difference between the quote and the real delivery to Uber for tax issues
+				if (!is_wp_error($updated)) $delivery = $updated;
+			}
 
 			if (!$order->meta_exists('_udw_delivery_id'))
 			{
-				$order->add_meta_data('_udw_delivery_id', $delivery->id);
+				$order->add_meta_data('_udw_delivery_id', $delivery_id);
 				$order->save_meta_data();
 			}
 
