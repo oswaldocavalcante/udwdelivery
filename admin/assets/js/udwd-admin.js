@@ -113,7 +113,7 @@ var WCOrdersTable = function ()
 				if (response.success) 
 				{
 					document.getElementById('udwd-modal-quote-container').remove();
-					$("#udwd-button-pre-send[data-order-id='" + response.data.external_id + "']")
+					$("#udwd-button-pre-send[data-order-id='" + $order_id + "']")
 						.text(udwdelivery_params.translations.see_delivery)
 						.removeClass('button-primary');
 					$document.WCBackboneModal
